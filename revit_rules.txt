@@ -1,0 +1,237 @@
+═══════════════════════════════════════════════════════════
+ATENEA — REGLAS API REVIT
+Versión: 2.0 | Actualizado: 2026-03-31
+Repositorio: https://github.com/IXA-ATENEA/atenea-rules
+═══════════════════════════════════════════════════════════
+
+■ SINTAXIS C# OBLIGATORIA:
+- NUNCA uses LINQ (.Where, .Cast, .Select, .First, .ToList, .Any)
+- NUNCA uses interpolacion de strings ($"texto {var}") — usa concatenacion: "texto " + var
+- NUNCA uses lambdas (=>) excepto en Sort((a,b) => ...)
+- USA foreach en lugar de LINQ para iterar colecciones
+- Las variables 'document', 'uidoc' ya estan disponibles — NO las redeclares
+- ElementId requiere sufijo L: new ElementId(12345L)
+- Para obtener el valor numerico de ElementId usa: id.Value (no .IntegerValue)
+- SubTransaction: usala para modificaciones dentro de una Transaction del host
+
+■ REGLA 1 — COORDENADAS Y UNIDADES:
+Revit usa pies internamente. Convierte siempre: metros * 3.28084 = pies
+Ejemplo: 4 metros = 4.0 * 3.28084 = 13.12336 pies
+Para convertir de pies a metros: pies * 0.3048
+XYZ siempre en pies: new XYZ(x_pies, y_pies, z_pies)
+
+■ REGLA 2 — OBTENER NIVELES:
+Level nivel = null;
+FilteredElementCollector col = new FilteredElementCollector(document);
+col.OfClass(typeof(Level));
+foreach (Level l in col) {
+    if (l.Name == "Nivel 1") { nivel = l; break; }
+}
+if (nivel == null) { foreach (Level l in col) { nivel = l; break; } }
+PARA OBTENER EL NIVEL DE LA VISTA ACTIVA:
+Level nivel = null;
+ViewPlan vp = uidoc.ActiveView as ViewPlan;
+if (vp != null) nivel = document.GetElement(vp.LevelId) as Level;
+if (nivel == null) {
+    FilteredElementCollector c2 = new FilteredElementCollector(document);
+    c2.OfClass(typeof(Level));
+    foreach (Level l in c2) { nivel = l; break; }
+}
+NUNCA hagas: View as Level — un View NUNCA es un Level.
+
+■ REGLA 3 — REJILLAS (GRID):
+Las lineas para Grid.Create() SIEMPRE en el plano XY (Z=0).
+Eje vertical (corre en Y): Line.CreateBound(new XYZ(x, -30, 0), new XYZ(x, 30, 0))
+Eje horizontal (corre en X): Line.CreateBound(new XYZ(-30, y, 0), new XYZ(30, y, 0))
+NUNCA uses Z diferente de 0 para lineas de Grid.
+Grid NO tiene propiedad Elevation — NUNCA uses grid.Elevation.
+Grid.Create(document, line) — no necesita nivel.
+Grid.Curve devuelve un solo Curve, NO un CurveArray.
+USO CORRECTO: Curve curva = grid.Curve; XYZ p = curva.GetEndPoint(0);
+NUNCA uses grid.Curve.Size ni grid.Curve.get_Item()
+
+■ REGLA 4 — NOMENCLATURA DE INTERSECCIONES DE REJILLA:
+Los ejes tienen nombres simples: 'A', 'B', '1', '2' — NO existen ejes 'A1' o 'B2'.
+El punto A1 = interseccion del eje 'A' con el eje '1'.
+PATRON para obtener punto A1:
+Grid ejeA = null, eje1 = null;
+FilteredElementCollector cg = new FilteredElementCollector(document);
+cg.OfClass(typeof(Grid));
+foreach (Grid g in cg) {
+    if (g.Name == "A") ejeA = g;
+    if (g.Name == "1") eje1 = g;
+}
+IntersectionResultArray ira;
+SetComparisonResult scr = ejeA.Curve.Intersect(eje1.Curve, out ira);
+XYZ puntoA1 = (scr != SetComparisonResult.Disjoint && ira != null && ira.Size > 0)
+    ? ira.get_Item(0).XYZPoint
+    : new XYZ(ejeA.Curve.GetEndPoint(0).X, eje1.Curve.GetEndPoint(0).Y, 0);
+
+■ REGLA 5 — INTERSECCIONES DE CURVAS:
+Curve.Intersect() devuelve SetComparisonResult — el array va en parametro OUT.
+CORRECTO:
+IntersectionResultArray results;
+SetComparisonResult scr = c1.Intersect(c2, out results);
+if (scr != SetComparisonResult.Disjoint && results != null && results.Size > 0)
+    XYZ punto = results.get_Item(0).XYZPoint;
+NUNCA: IntersectionResultArray r = c1.Intersect(c2); // ERROR
+
+■ REGLA 6 — MUROS (WALL):
+Wall.Create() firma exacta:
+Wall.Create(document, curve, wallTypeId, levelId, height, offset, flip, structural)
+- height: metros * 3.28084 (ej: 3.0 * 3.28084)
+- offset: 0.0
+- flip: false
+- structural: false
+NUNCA uses XYZ.BasisZ como argumento de Wall.Create.
+La curva del muro debe estar en Z=0: new XYZ(x, y, 0)
+OBTENER TIPO DE MURO (siempre primer disponible):
+WallType tipoMuro = null;
+FilteredElementCollector cwt = new FilteredElementCollector(document);
+cwt.OfClass(typeof(WallType));
+foreach (WallType wt in cwt) { tipoMuro = wt; break; }
+
+■ REGLA 7 — PISOS Y LOSAS (FLOOR):
+Floor.Create(document, List<CurveLoop>, floorTypeId, levelId)
+NO uses el metodo legacy NewFloor().
+EJEMPLO:
+CurveLoop loop = new CurveLoop();
+loop.Append(Line.CreateBound(p1, p2));
+loop.Append(Line.CreateBound(p2, p3));
+loop.Append(Line.CreateBound(p3, p4));
+loop.Append(Line.CreateBound(p4, p1));
+List<CurveLoop> loops = new List<CurveLoop>(); loops.Add(loop);
+Floor piso = Floor.Create(document, loops, floorTypeId, levelId);
+Floor.Create() es solo para LOSAS — requiere FloorType, NO WallType.
+
+■ REGLA 8 — COLUMNAS ESTRUCTURALES Y VIGAS:
+COLUMNA: document.Create.NewFamilyInstance(punto, symbol, nivel, StructuralType.Column)
+- Primero activa el simbolo: symbol.Activate()
+VIGA: document.Create.NewFamilyInstance(lineaEje, symbol, nivel, StructuralType.Beam)
+FamilySymbol symbol = null;
+FilteredElementCollector cfs = new FilteredElementCollector(document);
+cfs.OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_StructuralColumns);
+foreach (FamilySymbol fs in cfs) { symbol = fs; break; }
+if (symbol != null && !symbol.IsActive) symbol.Activate();
+
+■ REGLA 9 — SELECCIONAR Y LEER ELEMENTOS (PATRON UNIVERSAL):
+FilteredElementCollector col = new FilteredElementCollector(document);
+col.OfClass(typeof(TipoClase));
+foreach (Element e in col) { /* usa e */ }
+TIPOS COMUNES:
+- Muros: OfClass(typeof(Wall))
+- Niveles: OfClass(typeof(Level))
+- Rejillas: OfClass(typeof(Grid))
+- Pisos: OfClass(typeof(Floor))
+- Habitaciones: OfCategory(BuiltInCategory.OST_Rooms)
+- Puertas: OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Doors)
+- Ventanas: OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Windows)
+- Columnas: OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_StructuralColumns)
+- Vigas: OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_StructuralFraming)
+SELECCION ACTIVA:
+ICollection<ElementId> sel = uidoc.Selection.GetElementIds();
+ESTABLECER SELECCION:
+List<ElementId> ids = new List<ElementId>(); ids.Add(elem.Id);
+uidoc.Selection.SetElementIds(ids);
+NUNCA uses SetElementId() (sin 's') — no existe.
+
+■ REGLA 10 — OBTENER TIPOS DE FAMILIA:
+NUNCA filtres por nombre para obtener un tipo — puede no existir.
+USA SIEMPRE el primer disponible como fallback:
+WallType tipo = null;
+FilteredElementCollector c = new FilteredElementCollector(document);
+c.OfClass(typeof(WallType));
+foreach (WallType wt in c) { tipo = wt; break; }
+
+■ REGLA 11 — CREAR Y ACTIVAR VISTAS:
+VISTA DE PLANTA:
+ViewFamilyType vft = null;
+FilteredElementCollector cvft = new FilteredElementCollector(document);
+cvft.OfClass(typeof(ViewFamilyType));
+foreach (ViewFamilyType v in cvft) {
+    if (v.ViewFamily == ViewFamily.FloorPlan) { vft = v; break; }
+}
+ViewPlan vista = ViewPlan.Create(document, vft.Id, nivel.Id);
+ACTIVAR VISTA:
+return "ACTIVATEVIEW:" + vista.Id.Value.ToString() + ":" + vista.Name;
+
+■ REGLA 12 — LAMINAS (VIEWSHEET) Y VIEWPORTS:
+FamilySymbol titleBlock = null;
+FilteredElementCollector ctb = new FilteredElementCollector(document);
+ctb.OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_TitleBlocks);
+foreach (FamilySymbol tb in ctb) { titleBlock = tb; break; }
+ViewSheet lamina = ViewSheet.Create(document, titleBlock.Id);
+Viewport vp = Viewport.Create(document, lamina.Id, vista.Id, centro);
+
+■ REGLA 13 — COTAS (DIMENSION):
+ReferenceArray ra = new ReferenceArray();
+ra.Append(grid1.Curve.Reference);
+ra.Append(grid2.Curve.Reference);
+Line cotaLine = Line.CreateBound(new XYZ(-5, -5, 0), new XYZ(20, -5, 0));
+Dimension dim = document.Create.NewDimension(uidoc.ActiveView, cotaLine, ra);
+
+■ REGLA 14 — ETIQUETAS (IndependentTag):
+IndependentTag.Create(doc, tagSymbolId, viewId, reference, addLeader, TagOrientation, headPos)
+- NO incluye parametro TagMode
+ETIQUETA DE HABITACION:
+document.Create.NewRoomTag(new LinkElementId(room.Id), new UV(x, y), viewId);
+
+■ REGLA 15 — TABLAS DE PLANIFICACION (VIEWSCHEDULE):
+ViewSchedule sched = ViewSchedule.CreateSchedule(document, categoryId);
+- NO incluye segundo argumento
+
+■ REGLA 16 — LEER Y ESCRIBIR PARAMETROS:
+Parameter p = element.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM);
+if (p != null) double valor = p.AsDouble();
+element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK).Set("valor");
+Parameter p = element.LookupParameter("Comentarios");
+
+■ REGLA 17 — MOVER, ROTAR, ELIMINAR ELEMENTOS:
+ElementTransformUtils.MoveElement(document, element.Id, new XYZ(dx, dy, dz));
+ElementTransformUtils.RotateElement(document, element.Id, ejeLinea, anguloRad);
+document.Delete(element.Id);
+
+■ REGLA 18 — GEOMETRIA Y BOUNDING BOX:
+BoundingBoxXYZ bb = element.get_BoundingBox(null);
+XYZ centro = new XYZ((bb.Min.X+bb.Max.X)/2, (bb.Min.Y+bb.Max.Y)/2, (bb.Min.Z+bb.Max.Z)/2);
+LocationCurve lc = muro.Location as LocationCurve; Curve c = lc.Curve;
+LocationPoint lp = familia.Location as LocationPoint; XYZ pos = lp.Point;
+
+■ REGLA 19 — EXPORTAR CON ATENEAFileService:
+EXCEL:
+List<string> headers = new List<string> { "Col1", "Col2" };
+List<List<object>> rows = new List<List<object>>();
+List<object> row = new List<object> { "val1", "val2" }; rows.Add(row);
+return ATENEAFileService.SaveExcelSimple("archivo", "Hoja1", headers, rows);
+PDF:
+Dictionary<string, List<string>> secciones = new Dictionary<string, List<string>>();
+List<string> items = new List<string> { "item1" }; secciones.Add("Sec", items);
+return ATENEAFileService.SavePDF("archivo", "Titulo", secciones);
+GRAFICA BARRAS:
+List<string> labels = new List<string> { "A", "B" };
+List<double> values = new List<double> { 10.0, 20.0 };
+return ATENEAFileService.SaveBarChart("archivo", "Titulo", labels, values);
+
+■ REGLA 20 — ACTIVAR VISTA DESPUES DE CREARLA:
+return "ACTIVATEVIEW:" + vista.Id.Value.ToString() + ":" + vista.Name;
+
+■ REGLA 21 — MANEJO DE ERRORES Y DIAGNOSTICO:
+if (nivel == null) return "Error: No se encontro ningun nivel en el proyecto";
+string info = "Niveles: ";
+FilteredElementCollector cd = new FilteredElementCollector(document);
+cd.OfClass(typeof(Level));
+foreach (Level l in cd) info += l.Name + " | ";
+return info;
+
+■ REGLA 22 — CONTORNO DE MUROS (MURO POR SEGMENTOS):
+Para crear muros que forman un contorno, usa multiples Wall.Create() — uno por segmento.
+NUNCA uses Floor.Create() para crear muros.
+double h = 3.0 * 3.28084;
+Wall.Create(document, Line.CreateBound(pB2, pC3), tipoMuro.Id, nivel.Id, h, 0, false, false);
+Wall.Create(document, Line.CreateBound(pC3, pC5), tipoMuro.Id, nivel.Id, h, 0, false, false);
+
+═══════════════════════════════════════════════════════════
+FIN DE REGLAS
+Para reportar errores o sugerir mejoras:
+https://github.com/IXA-ATENEA/atenea-rules/issues
+═══════════════════════════════════════════════════════════
