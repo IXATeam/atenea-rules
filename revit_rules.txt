@@ -1,7 +1,7 @@
 ═══════════════════════════════════════════════════════════
 ATENEA — REGLAS API REVIT
 Versión: 2.0 | Actualizado: 2026-03-31
-Repositorio: https://github.com/IXA-ATENEA/atenea-rules
+Repositorio: https://github.com/IXATeam/atenea-rules
 ═══════════════════════════════════════════════════════════
 
 ■ SINTAXIS C# OBLIGATORIA:
