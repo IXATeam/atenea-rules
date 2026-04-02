@@ -230,6 +230,36 @@ double h = 3.0 * 3.28084;
 Wall.Create(document, Line.CreateBound(pB2, pC3), tipoMuro.Id, nivel.Id, h, 0, false, false);
 Wall.Create(document, Line.CreateBound(pC3, pC5), tipoMuro.Id, nivel.Id, h, 0, false, false);
 
+■ REGLA 23 — ELIMINAR VISTAS (VIEWPLAN, VIEW3D, VIEWSECTION):
+NUNCA elimines la vista activa — lanza ArgumentException.
+NUNCA elimines vistas que son plantillas (IsTemplate == true).
+PATRON CORRECTO:
+ElementId vistaActivaId = uidoc.ActiveView.Id;
+FilteredElementCollector col = new FilteredElementCollector(document);
+col.OfClass(typeof(ViewPlan));
+foreach (ViewPlan vp in col) {
+    if (vp.Id == vistaActivaId) continue;
+    if (vp.IsTemplate) continue;
+    try { document.Delete(vp.Id); } catch { }
+}
+Si necesitas borrar la vista activa, primero activa otra vista:
+uidoc.ActiveView = otraVista;
+// luego borra la vista anterior
+
+■ REGLA 24 — SECTION BOX EN VISTA 3D:
+Para aplicar un Section Box a una vista 3D necesitas DOS pasos obligatorios:
+PASO 1: Asignar el BoundingBoxXYZ
+BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
+sectionBox.Min = new XYZ(minX, minY, elevInferior);
+sectionBox.Max = new XYZ(maxX, maxY, elevSuperior);
+vista3d.SectionBox = sectionBox;
+PASO 2: Activarlo — SIN ESTO EL SECTION BOX NO APARECE
+vista3d.IsSectionBoxActive = true;
+NUNCA omitas IsSectionBoxActive = true — el Section Box queda invisible sin ello.
+Para desactivarlo: vista3d.IsSectionBoxActive = false;
+
+
+
 ═══════════════════════════════════════════════════════════
 FIN DE REGLAS
 Para reportar errores o sugerir mejoras:
