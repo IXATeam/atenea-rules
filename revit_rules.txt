@@ -261,7 +261,19 @@ SIEMPRE usa: vista3d.SetSectionBox(sectionBox);  // CORRECTO
 Sin IsSectionBoxActive = true el Section Box queda invisible aunque esté configurado.
 Para desactivarlo: vista3d.IsSectionBoxActive = false;
 
+■ REGLA 25 — SELECCIONAR ELEMENTOS VISIBLES EN VISTA:
+ElementIsVisibleFilter NO EXISTE en el API de Revit — NUNCA lo uses.
+Para obtener elementos visibles en la vista activa, pasa el viewId
+directamente al FilteredElementCollector como segundo argumento:
 
+FilteredElementCollector col = new FilteredElementCollector(document, vista.Id);
+col.OfClass(typeof(Wall));
+foreach (Wall muro in col) { murosIds.Add(muro.Id); }
+uidoc.Selection.SetElementIds(murosIds);
+
+El segundo argumento vista.Id restringe automáticamente a elementos
+visibles en esa vista — no se necesita ningún filtro adicional.
+NUNCA uses ElementIsVisibleFilter — no existe en el API.
 
 
 
