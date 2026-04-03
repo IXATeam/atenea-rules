@@ -247,16 +247,25 @@ uidoc.ActiveView = otraVista;
 // luego borra la vista anterior
 
 ■ REGLA 24 — SECTION BOX EN VISTA 3D:
-Para aplicar un Section Box a una vista 3D necesitas DOS pasos obligatorios:
-PASO 1: Asignar el BoundingBoxXYZ
+View3D.SectionBox es de SOLO LECTURA — NUNCA uses vista3d.SectionBox = valor;
+El método correcto es SetSectionBox():
+
 BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
 sectionBox.Min = new XYZ(minX, minY, elevInferior);
 sectionBox.Max = new XYZ(maxX, maxY, elevSuperior);
-vista3d.SectionBox = sectionBox;
-PASO 2: Activarlo — SIN ESTO EL SECTION BOX NO APARECE
-vista3d.IsSectionBoxActive = true;
-NUNCA omitas IsSectionBoxActive = true — el Section Box queda invisible sin ello.
+vista3d.SetSectionBox(sectionBox);      ← método, NO propiedad
+vista3d.IsSectionBoxActive = true;      ← OBLIGATORIO para que aparezca
+
+NUNCA uses: vista3d.SectionBox = sectionBox;  // ERROR: propiedad de solo lectura
+SIEMPRE usa: vista3d.SetSectionBox(sectionBox);  // CORRECTO
+Sin IsSectionBoxActive = true el Section Box queda invisible aunque esté configurado.
 Para desactivarlo: vista3d.IsSectionBoxActive = false;
+
+
+
+
+
+
 
 
 
