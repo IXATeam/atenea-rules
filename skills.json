@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T19:56:06.9864731Z",
-  "total": 17,
+  "updated": "2026-04-08T19:57:42.1279730Z",
+  "total": 18,
   "skills": [
     {
       "id": "sk_001",
@@ -169,6 +169,16 @@
       "titulo": "Buscar WallType por nombre exacto para reemplazo de muros",
       "patron_error": "Confundir familias de muros con nombres similares como 'Muro cortina - simple' vs 'Muro cortina - vertical'",
       "solucion": "Filtrar WallTypes por nombre exacto con wt.Name == 'nombre exacto' antes de Wall.Create() para asegurar que se usa la familia correcta",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408145742",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: excelente ahora lo has hecho bien, corrige el skill con este...",
+      "patron_error": "",
+      "solucion": "Cambio: json → // Actualizar skill en el repositorio de ATENEA\r\nCambio: // ════════════════════════════════════════════════════════════ → string skillContent = @\"● [Muros] Reemplazar muros por familia Muro cortina - vertical especifica",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
