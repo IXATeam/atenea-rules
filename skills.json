@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T18:19:25.4641347Z",
-  "total": 8,
+  "updated": "2026-04-08T18:19:34.0253596Z",
+  "total": 9,
   "skills": [
     {
       "id": "sk_001",
@@ -79,6 +79,16 @@
       "titulo": "Autocorreccion: cámbialos por muros cortina verticales",
       "patron_error": "",
       "solucion": "Cambio: // Obtener tipo de muro cortina → // Obtener WallType de muro cortina\r\nCambio: CurtainSystemType tipoCortina = null; → WallType wallTypeCortina = null;\r\nCambio: FilteredElementCollector cCST = new FilteredElementCollector(document); → FilteredElementCollector cWT = new FilteredElementCollector(document);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408131934",
+      "categoria": "Muros",
+      "titulo": "Convertir muros a cortina: CurtainSystemType + WallKind.Curtain fallback",
+      "patron_error": "Confusion al buscar tipo de muro cortina: se intenta filtrar por nombre o categoria incorrecta",
+      "solucion": "Usar CurtainSystemType.OfClass() para muros cortina automaticos, con fallback a WallType filtrando por WallKind.Curtain cuando falla",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
