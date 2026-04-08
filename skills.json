@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T18:19:34.0253596Z",
-  "total": 9,
+  "updated": "2026-04-08T18:21:02.3423152Z",
+  "total": 10,
   "skills": [
     {
       "id": "sk_001",
@@ -89,6 +89,16 @@
       "titulo": "Convertir muros a cortina: CurtainSystemType + WallKind.Curtain fallback",
       "patron_error": "Confusion al buscar tipo de muro cortina: se intenta filtrar por nombre o categoria incorrecta",
       "solucion": "Usar CurtainSystemType.OfClass() para muros cortina automaticos, con fallback a WallType filtrando por WallKind.Curtain cuando falla",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408132102",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: no, no hay muros cortina donde estaban los muros originales",
+      "patron_error": "",
+      "solucion": "Cambio: // Guardar datos de muros originales → // Usar estructuras simples en lugar de clases\r\nCambio: List<MuroData> datosMuros = new List<MuroData>(); → List<XYZ> puntos1 = new List<XYZ>();\r\nCambio: foreach (Wall w in murosOrigen) { → List<XYZ> puntos2 = new List<XYZ>();",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
