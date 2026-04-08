@@ -190,7 +190,7 @@
       "patron_error": "Usar Wall.CreateCurtainWall() o filtrar por WallKind.Curtain crea muros cortina genericos, no la familia especifica",
       "solucion": "Buscar WallType por nombre exacto con wt.Name == \"Muro cortina - vertical\" y luego usar Wall.Create(document, linea, wallTypeVertical.Id, nivel.Id, altura, 0, false, false)",
       "exitoso": true,
-      "usos": 1,
+      "usos": 2,
       "fecha": "2026-04-08"
     },
     {
