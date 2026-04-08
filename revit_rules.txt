@@ -275,7 +275,29 @@ El segundo argumento vista.Id restringe automáticamente a elementos
 visibles en esa vista — no se necesita ningún filtro adicional.
 NUNCA uses ElementIsVisibleFilter — no existe en el API.
 
+■ REGLA 26 — SELECCION ACTIVA: NUNCA ASUMIR QUE HAY ELEMENTOS SELECCIONADOS:
+Cuando el usuario diga "bajo estos muros", "en estos elementos", "a estos objetos",
+NUNCA asumir que hay una seleccion activa en Revit.
+PATRON CORRECTO: Siempre verificar si hay seleccion, y si no hay, buscar los
+elementos por categoria en la vista activa como fallback:
 
+ICollection<ElementId> selIds = uidoc.Selection.GetElementIds();
+List<Wall> muros = new List<Wall>();
+
+if (selIds.Count > 0) {
+    // Usar seleccion activa
+    foreach (ElementId id in selIds) {
+        Wall w = document.GetElement(id) as Wall;
+        if (w != null) muros.Add(w);
+    }
+} else {
+    // Fallback: tomar todos los muros de la vista activa
+    FilteredElementCollector col = new FilteredElementCollector(document, uidoc.ActiveView.Id);
+    col.OfClass(typeof(Wall));
+    foreach (Wall w in col) muros.Add(w);
+}
+
+if (muros.Count == 0) return "Error: No se encontraron muros en la vista activa ni en la seleccion";
 
 
 
