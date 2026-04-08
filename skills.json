@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "updated": "2026-04-08T18:21:09.7629347Z",
-  "total": 11,
+  "total": 13,
   "skills": [
     {
       "id": "sk_001",
@@ -76,7 +76,7 @@
     {
       "id": "sk_20260408131925",
       "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: cámbialos por muros cortina verticales",
+      "titulo": "Autocorreccion: cambialos por muros cortina verticales",
       "patron_error": "",
       "solucion": "Cambio: // Obtener tipo de muro cortina → // Obtener WallType de muro cortina\r\nCambio: CurtainSystemType tipoCortina = null; → WallType wallTypeCortina = null;\r\nCambio: FilteredElementCollector cCST = new FilteredElementCollector(document); → FilteredElementCollector cWT = new FilteredElementCollector(document);",
       "exitoso": true,
@@ -111,6 +111,26 @@
       "solucion": "Usar Wall.CreateCurtainWall primero con try-catch, y como fallback usar WallType filtrando por WallKind.Curtain cuando falla",
       "exitoso": true,
       "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_006",
+      "categoria": "Seleccion",
+      "titulo": "La seleccion de Revit no persiste entre ejecuciones de scripts",
+      "patron_error": "uidoc.Selection.GetElementIds() retorna 0 aunque el script anterior selecciono elementos",
+      "solucion": "Nunca depender de la seleccion entre scripts. Buscar elementos directamente con FilteredElementCollector en la vista activa como fallback automatico.",
+      "exitoso": true,
+      "usos": 3,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_007",
+      "categoria": "Muros",
+      "titulo": "Line.CreateBound requiere dos puntos distintos con distancia mayor a 0",
+      "patron_error": "Line.CreateBound falla con longitud cero cuando se usa el mismo punto como inicio y fin",
+      "solucion": "Usar GetEndPoint(0) y GetEndPoint(1) de la curva original. Verificar: if (p0.DistanceTo(p1) < 0.01) return error antes de crear la linea.",
+      "exitoso": true,
+      "usos": 2,
       "fecha": "2026-04-08"
     }
   ]
