@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T19:57:50.6324439Z",
-  "total": 19,
+  "updated": "2026-04-08T19:58:21.6969029Z",
+  "total": 20,
   "skills": [
     {
       "id": "sk_001",
@@ -189,6 +189,16 @@
       "titulo": "Reemplazar muros por familia Muro cortina - vertical especifica",
       "patron_error": "Usar Wall.CreateCurtainWall() o filtrar por WallKind.Curtain crea muros cortina genericos, no la familia especifica",
       "solucion": "Buscar WallType por nombre exacto con wt.Name == \"Muro cortina - vertical\" y luego usar Wall.Create(document, linea, wallTypeVertical.Id, nivel.Id, altura, 0, false, false)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408145821",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: excelente ahora lo has hecho bien, corrige el skill con este...",
+      "patron_error": "",
+      "solucion": "Cambio: json → // ════════════════════════════════════════════════════════════\r\nCambio: [ → // ACTUALIZACIÓN DE SKILL - PATRÓN CORRECTO APRENDIDO\r\nCambio: { → // ════════════════════════════════════════════════════════════",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
