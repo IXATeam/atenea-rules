@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T19:57:42.1279730Z",
-  "total": 18,
+  "updated": "2026-04-08T19:57:50.6324439Z",
+  "total": 19,
   "skills": [
     {
       "id": "sk_001",
@@ -179,6 +179,16 @@
       "titulo": "Autocorreccion: excelente ahora lo has hecho bien, corrige el skill con este...",
       "patron_error": "",
       "solucion": "Cambio: json → // Actualizar skill en el repositorio de ATENEA\r\nCambio: // ════════════════════════════════════════════════════════════ → string skillContent = @\"● [Muros] Reemplazar muros por familia Muro cortina - vertical especifica",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408145750",
+      "categoria": "Muros",
+      "titulo": "Reemplazar muros por familia Muro cortina - vertical especifica",
+      "patron_error": "Usar Wall.CreateCurtainWall() o filtrar por WallKind.Curtain crea muros cortina genericos, no la familia especifica",
+      "solucion": "Buscar WallType por nombre exacto con wt.Name == \"Muro cortina - vertical\" y luego usar Wall.Create(document, linea, wallTypeVertical.Id, nivel.Id, altura, 0, false, false)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
