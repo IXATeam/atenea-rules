@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T18:06:49.4889864Z",
-  "total": 6,
+  "updated": "2026-04-08T18:18:26.9579923Z",
+  "total": 7,
   "skills": [
     {
       "id": "sk_001",
@@ -59,6 +59,16 @@
       "titulo": "Autocorreccion: bajo estos muros, es decir en el \"Nivel 1\" crea un suelo  de...",
       "patron_error": "",
       "solucion": "Cambio: // Obtener FloorType \"Suelo Por Defecto\" con 30 cm de espesor → // Obtener FloorType \"Suelo Por Defecto\"\r\nCambio: if (ft.Name.Contains(\"Default\") || ft.Name.Contains(\"Por Defecto\") || ft.Name.Contains(\"Generi\")) { → string nombre = ft.Name.ToLower();",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408131826",
+      "categoria": "Seleccion",
+      "titulo": "Seleccionar elementos visibles en vista 3D usando FilteredElementCollector con viewId",
+      "patron_error": "Confusion sobre como filtrar elementos por visibilidad en vista 3D sin ElementIsVisibleFilter",
+      "solucion": "Usar FilteredElementCollector(document, vista3d.Id).OfClass(typeof(Wall)) y luego SetElementIds() con los ElementId obtenidos",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
