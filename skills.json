@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T18:21:09.7629347Z",
-  "total": 13,
+  "updated": "2026-04-08T19:49:28.8229229Z",
+  "total": 14,
   "skills": [
     {
       "id": "sk_001",
@@ -131,6 +131,16 @@
       "solucion": "Usar GetEndPoint(0) y GetEndPoint(1) de la curva original. Verificar: if (p0.DistanceTo(p1) < 0.01) return error antes de crear la linea.",
       "exitoso": true,
       "usos": 2,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408144928",
+      "categoria": "Muros",
+      "titulo": "Reemplazar muros y seleccionar resultados: collect IDs durante creacion",
+      "patron_error": "Despues de crear muros cortina y eliminar los originales, un FilteredElementCollector posterior devuelve 0 elementos porque el estado del documento cambio",
+      "solucion": "Usar una List<ElementId> para guardar los IDs de los muros creados DURANTE el bucle de reemplazo, en lugar de consultar con un collector nuevo al final. Esto evita inconsistencias por cambios de estado del documento.",
+      "exitoso": true,
+      "usos": 1,
       "fecha": "2026-04-08"
     }
   ]
