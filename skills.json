@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T19:49:28.8229229Z",
-  "total": 14,
+  "updated": "2026-04-08T19:51:41.4291223Z",
+  "total": 15,
   "skills": [
     {
       "id": "sk_001",
@@ -139,6 +139,16 @@
       "titulo": "Reemplazar muros y seleccionar resultados: collect IDs durante creacion",
       "patron_error": "Despues de crear muros cortina y eliminar los originales, un FilteredElementCollector posterior devuelve 0 elementos porque el estado del documento cambio",
       "solucion": "Usar una List<ElementId> para guardar los IDs de los muros creados DURANTE el bucle de reemplazo, en lugar de consultar con un collector nuevo al final. Esto evita inconsistencias por cambios de estado del documento.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408145141",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: Has realizado el proceso casi bien, los has reemplazado por ...",
+      "patron_error": "",
+      "solucion": "Cambio: // Contadores → // Obtener WallType de tipo cortina (NO existe CreateCurtainWall, se usa Wall.Create con WallType de cortina)\r\nCambio: int murosCreados = 0; → WallType wallTypeCortina = null;",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
