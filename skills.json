@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-07T00:00:00",
-  "total": 5,
+  "updated": "2026-04-08T18:06:49.4889864Z",
+  "total": 6,
   "skills": [
     {
       "id": "sk_001",
@@ -52,6 +52,16 @@
       "exitoso": true,
       "usos": 9,
       "fecha": "2026-04-07"
+    },
+    {
+      "id": "sk_20260408130649",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: bajo estos muros, es decir en el \"Nivel 1\" crea un suelo  de...",
+      "patron_error": "",
+      "solucion": "Cambio: // Obtener FloorType \"Suelo Por Defecto\" con 30 cm de espesor → // Obtener FloorType \"Suelo Por Defecto\"\r\nCambio: if (ft.Name.Contains(\"Default\") || ft.Name.Contains(\"Por Defecto\") || ft.Name.Contains(\"Generi\")) { → string nombre = ft.Name.ToLower();",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
     }
   ]
 }
