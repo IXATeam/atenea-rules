@@ -299,7 +299,36 @@ if (selIds.Count > 0) {
 
 if (muros.Count == 0) return "Error: No se encontraron muros en la vista activa ni en la seleccion";
 
+■ REGLA 27 — LA SELECCION NO PERSISTE ENTRE EJECUCIONES DE SCRIPTS:
+uidoc.Selection.GetElementIds() puede retornar 0 elementos en scripts
+subsiguientes aunque el script anterior haya seleccionado elementos.
+NUNCA dependas de la seleccion de un script anterior.
+PATRON CORRECTO: En scripts que modifican elementos previamente
+"seleccionados", busca los elementos directamente por categoria y
+filtra por los criterios del usuario:
 
+// En lugar de leer la seleccion, buscar directamente:
+FilteredElementCollector col = new FilteredElementCollector(document, uidoc.ActiveView.Id);
+col.OfClass(typeof(Wall));
+List<Wall> muros = new List<Wall>();
+foreach (Wall w in col) muros.Add(w);
+
+// Si el usuario dijo "los muros que seleccionamos", buscarlos en la vista activa.
+// La seleccion visual del usuario en Revit es diferente a la seleccion del script.
+
+■ REGLA 28 — Line.CreateBound REQUIERE DOS PUNTOS DISTINTOS:
+Line.CreateBound(p1, p2) falla si p1 == p2 (longitud cero).
+Antes de crear una linea, verifica que los puntos sean distintos:
+
+XYZ p0 = curva.GetEndPoint(0);
+XYZ p1 = curva.GetEndPoint(1);
+if (p0.DistanceTo(p1) < 0.01) {
+    return "Error: La curva tiene longitud cero";
+}
+Line linea = Line.CreateBound(p0, p1);
+
+NUNCA uses el mismo punto como inicio y fin de una linea.
+NUNCA calcules un punto medio y uses ese mismo punto como ambos extremos.
 
 
 
