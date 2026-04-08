@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T18:18:26.9579923Z",
-  "total": 7,
+  "updated": "2026-04-08T18:19:25.4641347Z",
+  "total": 8,
   "skills": [
     {
       "id": "sk_001",
@@ -69,6 +69,16 @@
       "titulo": "Seleccionar elementos visibles en vista 3D usando FilteredElementCollector con viewId",
       "patron_error": "Confusion sobre como filtrar elementos por visibilidad en vista 3D sin ElementIsVisibleFilter",
       "solucion": "Usar FilteredElementCollector(document, vista3d.Id).OfClass(typeof(Wall)) y luego SetElementIds() con los ElementId obtenidos",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408131925",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: cámbialos por muros cortina verticales",
+      "patron_error": "",
+      "solucion": "Cambio: // Obtener tipo de muro cortina → // Obtener WallType de muro cortina\r\nCambio: CurtainSystemType tipoCortina = null; → WallType wallTypeCortina = null;\r\nCambio: FilteredElementCollector cCST = new FilteredElementCollector(document); → FilteredElementCollector cWT = new FilteredElementCollector(document);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
