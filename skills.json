@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T18:21:02.3423152Z",
-  "total": 10,
+  "updated": "2026-04-08T18:21:09.7629347Z",
+  "total": 11,
   "skills": [
     {
       "id": "sk_001",
@@ -99,6 +99,16 @@
       "titulo": "Autocorreccion: no, no hay muros cortina donde estaban los muros originales",
       "patron_error": "",
       "solucion": "Cambio: // Guardar datos de muros originales → // Usar estructuras simples en lugar de clases\r\nCambio: List<MuroData> datosMuros = new List<MuroData>(); → List<XYZ> puntos1 = new List<XYZ>();\r\nCambio: foreach (Wall w in murosOrigen) { → List<XYZ> puntos2 = new List<XYZ>();",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408132109",
+      "categoria": "Muros",
+      "titulo": "Fallback para conversion de muros a cortina con Wall.CreateCurtainWall y WallType",
+      "patron_error": "Confusion al buscar tipo de muro cortina: se intenta filtrar por nombre o categoria incorrecta",
+      "solucion": "Usar Wall.CreateCurtainWall primero con try-catch, y como fallback usar WallType filtrando por WallKind.Curtain cuando falla",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
