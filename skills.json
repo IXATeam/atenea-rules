@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-07T00:00:00",
+  "total": 5,
+  "skills": [
+    {
+      "id": "sk_001",
+      "categoria": "Grillas",
+      "titulo": "Grid.Create requiere lineas con Z=0 obligatorio",
+      "patron_error": "Grid.Create falla o crea grillas incorrectas cuando Z es diferente de 0",
+      "solucion": "SIEMPRE usar Z=0: Line.CreateBound(new XYZ(x,-30,0), new XYZ(x,30,0)). Nunca usar elevacion en lineas de grilla.",
+      "exitoso": true,
+      "usos": 24,
+      "fecha": "2026-04-07"
+    },
+    {
+      "id": "sk_002",
+      "categoria": "Section Box",
+      "titulo": "Section Box requiere SetSectionBox() + IsSectionBoxActive=true",
+      "patron_error": "vista3d.SectionBox = valor lanza error porque es propiedad de solo lectura",
+      "solucion": "Usar SIEMPRE: vista3d.SetSectionBox(sectionBox); vista3d.IsSectionBoxActive = true; Ambas lineas son obligatorias.",
+      "exitoso": true,
+      "usos": 18,
+      "fecha": "2026-04-07"
+    },
+    {
+      "id": "sk_003",
+      "categoria": "Vistas",
+      "titulo": "Eliminar vistas requiere excluir vista activa y plantillas",
+      "patron_error": "document.Delete(vistaId) lanza ArgumentException cuando se intenta eliminar la vista activa o una plantilla",
+      "solucion": "Siempre verificar: if (vp.Id == vistaActivaId) continue; if (vp.IsTemplate) continue; Envolver cada Delete en try-catch individual.",
+      "exitoso": true,
+      "usos": 15,
+      "fecha": "2026-04-07"
+    },
+    {
+      "id": "sk_004",
+      "categoria": "Seleccion",
+      "titulo": "ElementIsVisibleFilter no existe — usar FilteredElementCollector con viewId",
+      "patron_error": "ElementIsVisibleFilter no existe en el API de Revit y causa error de compilacion",
+      "solucion": "Pasar el viewId directamente al collector: new FilteredElementCollector(document, vista.Id).OfClass(typeof(Wall)). El segundo argumento ya filtra por visibilidad.",
+      "exitoso": true,
+      "usos": 11,
+      "fecha": "2026-04-07"
+    },
+    {
+      "id": "sk_005",
+      "categoria": "Niveles",
+      "titulo": "Nunca hacer cast de View a Level",
+      "patron_error": "View as Level siempre retorna null porque View y Level son tipos incompatibles",
+      "solucion": "Para obtener nivel de vista activa: ViewPlan vp = uidoc.ActiveView as ViewPlan; Level nivel = document.GetElement(vp.LevelId) as Level;",
+      "exitoso": true,
+      "usos": 9,
+      "fecha": "2026-04-07"
+    }
+  ]
+}
