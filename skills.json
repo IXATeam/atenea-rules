@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T19:51:55.3032578Z",
-  "total": 16,
+  "updated": "2026-04-08T19:56:06.9864731Z",
+  "total": 17,
   "skills": [
     {
       "id": "sk_001",
@@ -159,6 +159,16 @@
       "titulo": "Crear muros cortina verticales con Wall.CreateCurtainWall",
       "patron_error": "Confusion al buscar CurtainSystemType o usar WallType genérico para crear muros cortina verticales — estos crean mullones horizontales, no verticales",
       "solucion": "Usar Wall.CreateCurtainWall(document, lineaConZ0, nivelId) que crea automaticamente muros cortina con mullones verticales sin necesidad de buscar tipos especificos",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260408145606",
+      "categoria": "Muros",
+      "titulo": "Buscar WallType por nombre exacto para reemplazo de muros",
+      "patron_error": "Confundir familias de muros con nombres similares como 'Muro cortina - simple' vs 'Muro cortina - vertical'",
+      "solucion": "Filtrar WallTypes por nombre exacto con wt.Name == 'nombre exacto' antes de Wall.Create() para asegurar que se usa la familia correcta",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
