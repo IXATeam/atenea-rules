@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:34:03.6479749Z",
-  "total": 52,
+  "updated": "2026-04-09T21:34:27.7909498Z",
+  "total": 53,
   "skills": [
     {
       "id": "sk_001",
@@ -519,6 +519,16 @@
       "titulo": "Seleccionar elementos por categoria en la vista activa usando viewId en FilteredElementCollector",
       "patron_error": "Intentar usar ElementIsVisibleFilter que no existe, o no saber como filtrar elementos visibles en la vista",
       "solucion": "Usar FilteredElementCollector(document, uidoc.ActiveView.Id) con OfClass/OfCategory — el segundo argumento viewId filtra automaticamente por visibilidad en esa vista",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409163427",
+      "categoria": "Vistas",
+      "titulo": "Pintar elementos seleccionados de rojo en vista activa",
+      "patron_error": "No saber cómo cambiar colores de visualización de elementos en Revit API",
+      "solucion": "Crear Color(r,g,b) + OverrideGraphicSettings con SetProjectionLineColor y SetCutLineColor + vistaActiva.SetElementOverrides(id, overrides)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
