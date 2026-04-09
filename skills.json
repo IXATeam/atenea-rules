@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:10:22.8608746Z",
-  "total": 48,
+  "updated": "2026-04-09T21:12:46.3012557Z",
+  "total": 49,
   "skills": [
     {
       "id": "sk_001",
@@ -479,6 +479,16 @@
       "titulo": "Fallback robusto para obtener nivel de vista activa",
       "patron_error": "Error: No se encontro el nivel cuando la vista activa no tiene LevelId valido o es null",
       "solucion": "Despues de vp.LevelId, usar FilteredElementCollector para buscar cualquier nivel disponible como fallback si document.GetElement retorna null",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409161246",
+      "categoria": "Niveles",
+      "titulo": "Fallback obligatorio para obtener nivel cuando vp.LevelId retorna null",
+      "patron_error": "Error: No se encontro el nivel - la vista activa tiene vp.LevelId pero document.GetElement() retorna null porque no hay Level asociado",
+      "solucion": "Despues de nivel = document.GetElement(vp.LevelId) as Level; verificar si es null y usar FilteredElementCollector.OfClass(typeof(Level)) con foreach para obtener el primer nivel disponible como fallback",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
