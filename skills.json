@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T07:13:19.6937564Z",
-  "total": 32,
+  "updated": "2026-04-09T07:16:35.5269220Z",
+  "total": 33,
   "skills": [
     {
       "id": "sk_001",
@@ -319,6 +319,16 @@
       "titulo": "Crear suelo a partir de curvas de muros del contorno",
       "patron_error": "Crear CurveLoop sin verificar que las curvas sean válidas o sin obtener FloorType disponible",
       "solucion": "Extraer LocationCurve de muros con Wall.Location, verificar longitud > 0.01 pies, obtener FloorType con collector OfClass, usar Floor.Create(document, loops, floorTypeId, nivelId)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409021635",
+      "categoria": "Pisos",
+      "titulo": "Crear suelo con offset hacia dentro basado en contorno de muros",
+      "patron_error": "No existe metodo directo para offset en CurveLoop; Floor.Create no tiene parametro offset integrado",
+      "solucion": "Calcular centroide del poligono, luego para cada curva mover sus puntos hacia el centro usando: p0Offset = new XYZ(p0.X - dir0.X * desfasePies, p0.Y - dir0.Y * desfasePies, 0). Usar desfaseMetros * 3.28084 para convertir a pies.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
