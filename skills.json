@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:34:27.7909498Z",
-  "total": 53,
+  "updated": "2026-04-09T21:35:43.0645253Z",
+  "total": 54,
   "skills": [
     {
       "id": "sk_001",
@@ -529,6 +529,16 @@
       "titulo": "Pintar elementos seleccionados de rojo en vista activa",
       "patron_error": "No saber cómo cambiar colores de visualización de elementos en Revit API",
       "solucion": "Crear Color(r,g,b) + OverrideGraphicSettings con SetProjectionLineColor y SetCutLineColor + vistaActiva.SetElementOverrides(id, overrides)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409163543",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: ahora selecciona el suelo y píntalo de verde",
+      "patron_error": "",
+      "solucion": "Cambio: overrides.SetProjectionFillColor(verde); → overrides.SetProjectionLineColor(verde);\r\nCambio: overrides.SetProjectionLineColor(verde); → overrides.SetCutLineColor(verde);\r\nCambio: overrides.SetCutFillColor(verde); →",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
