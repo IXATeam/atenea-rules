@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T07:06:39.7962668Z",
-  "total": 28,
+  "updated": "2026-04-09T07:08:31.4024856Z",
+  "total": 29,
   "skills": [
     {
       "id": "sk_001",
@@ -279,6 +279,16 @@
       "titulo": "Buscar WallTypes por coincidencia parcial cuando el nombre exacto no existe",
       "patron_error": "Buscar WallType por nombre exacto puede fallar si el nombre real no tiene el prefijo esperado (ej: 'Muro Por defecto' vs 'Por defecto')",
       "solucion": "Usar Contains() para buscar coincidencias parciales: wt.Name.Contains('Por defecto') y wt.Name.Contains('20 cm') en lugar de nombre completo",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409020831",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: lo he cambiado yo, y están seleccionados, aprende las caract...",
+      "patron_error": "",
+      "solucion": "Cambio: ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); → long[] murosIds = new long[] { 165585L, 165586L, 165587L, 165588L, 165589L, 165590L, 165591L };\r\nCambio: if (selIds.Count == 0) { → if (murosIds.Length == 0) {",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
