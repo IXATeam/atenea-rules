@@ -262,6 +262,17 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_011",
+      "categoria": "Seleccion",
+      "titulo": "IDs del contexto pueden estar desactualizados tras reemplazar elementos",
+      "patron_error": "ChangeTypeId o document.GetElement retorna null porque el elemento fue eliminado y recreado con nuevo ID",
+      "solucion": "Siempre verificar: Wall w = document.GetElement(id) as Wall; if (w == null) buscar por FilteredElementCollector en vista activa como fallback automatico.",
+      "exitoso": true,
+      "usos": 2,
+      "fecha": "2026-04-09"
+      
     }
   ]
 }
