@@ -417,7 +417,26 @@ foreach (Parameter p in seccion.Parameters) {
     }
 }
 
+■ REGLA 36 — ViewFamilyType.ViewFamily SÍ existe pero requiere namespace correcto:
+ViewFamily.Section es valido en Revit API. Si falla la compilacion, verificar
+que el using de Autodesk.Revit.DB este presente. El error comun es confundir
+ViewFamilyType con ViewFamily. Patron correcto:
+FilteredElementCollector col = new FilteredElementCollector(document)
+    .OfClass(typeof(ViewFamilyType));
+foreach (ViewFamilyType vft in col)
+    if (vft.ViewFamily == ViewFamily.Section) { vftSec = vft; break; }
 
+■ REGLA 37 — Sección horizontal vs vertical: orientacion del Transform:
+Para seccion VERTICAL (mira en +X o -X):
+  BasisX=(0,1,0) BasisY=(0,0,1) BasisZ=(1,0,0) o BasisZ=(-1,0,0)
+
+Para seccion HORIZONTAL (mira en +Y o -Y):
+  BasisX=(1,0,0) BasisY=(0,0,1) BasisZ=(0,1,0) o BasisZ=(0,-1,0)
+
+BoundingBoxXYZ en coordenadas LOCALES de la sección:
+  Min = (-anchoMedio, 0, -alto)
+  Max = ( anchoMedio, profundidad, 0)
+NUNCA usar coordenadas globales en el BoundingBoxXYZ de la sección.
 
 
 
