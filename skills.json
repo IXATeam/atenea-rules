@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:12:46.3012557Z",
-  "total": 49,
+  "updated": "2026-04-09T21:15:45.3811782Z",
+  "total": 50,
   "skills": [
     {
       "id": "sk_001",
@@ -489,6 +489,16 @@
       "titulo": "Fallback obligatorio para obtener nivel cuando vp.LevelId retorna null",
       "patron_error": "Error: No se encontro el nivel - la vista activa tiene vp.LevelId pero document.GetElement() retorna null porque no hay Level asociado",
       "solucion": "Despues de nivel = document.GetElement(vp.LevelId) as Level; verificar si es null y usar FilteredElementCollector.OfClass(typeof(Level)) con foreach para obtener el primer nivel disponible como fallback",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409161545",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: dice:\r Error: no se encontró el nivel (además que tu respues...",
+      "patron_error": "",
+      "solucion": "Cambio: // Obtener Nivel 1 directamente → Level nivel = null;\r\nCambio: Level nivel = null; → FilteredElementCollector colNivel = new FilteredElementCollector(document);\r\nCambio: FilteredElementCollector colNivel = new FilteredElementCollector(document); → colNivel.OfClass(typeof(Level));",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
