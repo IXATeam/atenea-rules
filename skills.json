@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T07:20:08.5794618Z",
-  "total": 34,
+  "updated": "2026-04-09T07:21:30.1361333Z",
+  "total": 35,
   "skills": [
     {
       "id": "sk_001",
@@ -339,6 +339,16 @@
       "titulo": "Offset hacia afuera requiere SUMAR, no restar",
       "patron_error": "Confundir la dirección del offset: restar produce un desfase hacia ADENTRO (-1m) en lugar de hacia AFUERA (+1m)",
       "solucion": "Calcular vector desde centroide hacia punto, normalizarlo, y SUMAR desfasePies para mover hacia afuera. XYZ p0Offset = new XYZ(p0.X + dir0.X * desfasePies, p0.Y + dir0.Y * desfasePies, 0);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409022130",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: excelente lo has hecho bien, actualiza el skill",
+      "patron_error": "",
+      "solucion": "Cambio: // ACTUALIZACIÓN DE SKILL - PATRÓN CORRECTO APRENDIDO → // SKILL ACTUALIZADO - PATRÓN CORRECTO APRENDIDO",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
