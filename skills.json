@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T18:31:13.4530842Z",
-  "total": 42,
+  "updated": "2026-04-09T18:31:14.8342148Z",
+  "total": 43,
   "skills": [
     {
       "id": "sk_001",
@@ -419,6 +419,16 @@
       "titulo": "Diagnosticar grids y secciones existentes antes de crear sección horizontal",
       "patron_error": "Asumir coordenadas de grids o construir Transform manualmente sin leer datos reales del proyecto",
       "solucion": "Leer todos los grids, clasificarlos por orientación (horizontal si Y constante), calcular punto medio entre grids objetivo, y copiar Transform de sección horizontal existente como referencia",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409133114",
+      "categoria": "Vistas",
+      "titulo": "Diagnostico previo para secciones: identificar grids y copiar Transform de referencia",
+      "patron_error": "Crear seccion sin leer datos reales del proyecto, asumiendo coordenadas y orientacion incorrectas",
+      "solucion": "Ejecutar diagnostico: 1) Leer grids y clasificarlos horizontales/verticales comparando coordenadas Y/Y de extremos (diff<0.01m), 2) Si existen secciones del mismo tipo, copiar su Transform completo (BasisX/Y/Z + Origin) para la nueva seccion",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
