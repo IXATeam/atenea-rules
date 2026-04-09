@@ -472,6 +472,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
+      },
+    {
+      "id": "sk_013",
+      "categoria": "Vistas",
+      "titulo": "ViewSection no tiene ViewFamily ni Level — usar Parameters directamente",
+      "patron_error": "ViewSection no contiene definicion para ViewFamily ni Level — error de compilacion",
+      "solucion": "Usar seccion.get_Parameter(BuiltInParameter.VIEW_FAMILY).AsString() para la familia. Para parametros iterar seccion.Parameters con if (p.HasValue && p.Definition != null). Nunca usar ParameterFilterProvider con vistas.",
+      "exitoso": true,
+      "usos": 2,
+      "fecha": "2026-04-09"
     }
   ]
 }
