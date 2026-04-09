@@ -592,6 +592,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_018",
+      "categoria": "Vistas",
+      "titulo": "Crear secciones: siempre diagnosticar primero y copiar Transform de referencia",
+      "patron_error": "Sección creada con Origin en Z negativo o BasisY incorrecto por construir Transform manualmente",
+      "solucion": "PASO 1: leer Transform exacto de sección existente del mismo tipo. PASO 2: usar Transform.CreateTranslation con nuevo origen, copiar BasisX/Y/Z de referencia, usar mismo Min/Max. NUNCA construir Transform desde cero para secciones.",
+      "exitoso": true,
+      "usos": 4,
+      "fecha": "2026-04-09"
     }
   ]
 }
