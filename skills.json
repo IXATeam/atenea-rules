@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:05:53.1179760Z",
-  "total": 47,
+  "updated": "2026-04-09T21:10:22.8608746Z",
+  "total": 48,
   "skills": [
     {
       "id": "sk_001",
@@ -469,6 +469,16 @@
       "titulo": "Fallback de nivel cuando vista activa no es ViewPlan",
       "patron_error": "El cast as ViewPlan retorna null cuando la vista activa no es planta, causando NullReferenceException al acceder vp.LevelId",
       "solucion": "Verificar vp != null antes de vp.LevelId; si es null, buscar el primer nivel disponible con FilteredElementCollector como fallback seguro",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409161022",
+      "categoria": "Vistas",
+      "titulo": "Fallback robusto para obtener nivel de vista activa",
+      "patron_error": "Error: No se encontro el nivel cuando la vista activa no tiene LevelId valido o es null",
+      "solucion": "Despues de vp.LevelId, usar FilteredElementCollector para buscar cualquier nivel disponible como fallback si document.GetElement retorna null",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
