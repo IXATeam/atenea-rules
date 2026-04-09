@@ -222,6 +222,20 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_008",
+      "categoria": "Muros",
+      "titulo": "Cambiar tipo de muro usar ChangeTypeId no eliminar y recrear",
+      "patron_error": "Wall.Create con altura 0 falla. Eliminar y recrear muros es innecesario y propenso a errores",
+      "solucion": "Usar w.ChangeTypeId(nuevoWallTypeId) directamente. Si se recrea, obtener altura real con WALL_USER_HEIGHT_PARAM y usar fallback de 3m si es 0.",
+      "exitoso": true,
+      "usos": 3,
+      "fecha": "2026-04-08"
+    },
+    {  
+      "id": "sk_20260409011319",
+      
     }
   ]
 }
