@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:25:20.4695728Z",
-  "total": 46,
+  "updated": "2026-04-09T16:25:35.0421599Z",
+  "total": 47,
   "skills": [
     {
       "id": "sk_001",
@@ -459,6 +459,16 @@
       "titulo": "Autocorreccion: vamos a mejorar el concepto del comando o instrucción  \"secc...",
       "patron_error": "",
       "solucion": "Cambio: ElementId selId = new ElementId(166304L); → ElementId selId = new ElementId(166303L);\r\nCambio: if (elem == null) return \"Error: No se encontró el elemento con ID 166304\"; → if (elem == null) return \"Error: No se encontro el elemento con ID 166303\";",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409112535",
+      "categoria": "General",
+      "titulo": "Verificar cast a ViewSection antes de acceder a propiedades específicas",
+      "patron_error": "Asumir que elemento seleccionado es ViewSection sin verificar el tipo — causa NullReferenceException",
+      "solucion": "Usar elem as ViewSection y verificar null, luego acceder a propiedades específicas solo si el cast fue exitoso",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
