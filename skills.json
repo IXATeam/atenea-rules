@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:15:45.3811782Z",
-  "total": 50,
+  "updated": "2026-04-09T21:15:57.3497688Z",
+  "total": 51,
   "skills": [
     {
       "id": "sk_001",
@@ -499,6 +499,16 @@
       "titulo": "Autocorreccion: dice:\r Error: no se encontró el nivel (además que tu respues...",
       "patron_error": "",
       "solucion": "Cambio: // Obtener Nivel 1 directamente → Level nivel = null;\r\nCambio: Level nivel = null; → FilteredElementCollector colNivel = new FilteredElementCollector(document);\r\nCambio: FilteredElementCollector colNivel = new FilteredElementCollector(document); → colNivel.OfClass(typeof(Level));",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409161557",
+      "categoria": "Niveles",
+      "titulo": "Búsqueda robusta de nivel con fallback por nombre y primer disponible",
+      "patron_error": "Error 'no se encontró el nivel' cuando el nombre del nivel no existe exacto en el proyecto",
+      "solucion": "Buscar por nombre exacto, si null tomar el primer nivel disponible con foreach + break. Fallback obligatorio para evitar null.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
