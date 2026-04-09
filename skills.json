@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T07:21:30.1361333Z",
-  "total": 35,
+  "updated": "2026-04-09T16:03:20.1521119Z",
+  "total": 36,
   "skills": [
     {
       "id": "sk_001",
@@ -349,6 +349,16 @@
       "titulo": "Autocorreccion: excelente lo has hecho bien, actualiza el skill",
       "patron_error": "",
       "solucion": "Cambio: // ACTUALIZACIÓN DE SKILL - PATRÓN CORRECTO APRENDIDO → // SKILL ACTUALIZADO - PATRÓN CORRECTO APRENDIDO",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409110320",
+      "categoria": "Grillas",
+      "titulo": "Seleccionar todas las rejillas (Grid) del proyecto con SetElementIds",
+      "patron_error": "Confundir filtrado por vista con selección de grids - el código obtiene TODOS los grids del proyecto sin filtrar por vista activa",
+      "solucion": "FilteredElementCollector.OfClass(typeof(Grid)) + uidoc.Selection.SetElementIds(gridIds) selecciona todos los grids del proyecto independientemente de la vista",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
