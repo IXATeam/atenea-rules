@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T18:00:00.000Z",
-  "total": 40,
+  "updated": "2026-04-09T18:31:13.4530842Z",
+  "total": 42,
   "skills": [
     {
       "id": "sk_001",
@@ -402,8 +402,8 @@
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-09"
-     },
-     {
+    },
+    {
       "id": "sk_041",
       "categoria": "General",
       "titulo": "Transform.CreateTranslation no permite modificar BasisX/Y/Z — usar Transform.Identity",
@@ -411,7 +411,17 @@
       "solucion": "Transform t = Transform.Identity; t.BasisX = tRef.BasisX; t.BasisY = tRef.BasisY; t.BasisZ = tRef.BasisZ; t.Origin = new XYZ(x,y,z); SIEMPRE copiar BasisX/Y/Z de seccion de referencia existente. NUNCA usar CreateTranslation para secciones.",
       "exitoso": true,
       "usos": 4,
-      "fecha": "2026-04-09"    
-     }
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409133113",
+      "categoria": "Vistas",
+      "titulo": "Diagnosticar grids y secciones existentes antes de crear sección horizontal",
+      "patron_error": "Asumir coordenadas de grids o construir Transform manualmente sin leer datos reales del proyecto",
+      "solucion": "Leer todos los grids, clasificarlos por orientación (horizontal si Y constante), calcular punto medio entre grids objetivo, y copiar Transform de sección horizontal existente como referencia",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    }
   ]
 }
