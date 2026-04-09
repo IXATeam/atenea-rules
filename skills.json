@@ -402,6 +402,16 @@
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-09"
-    }
+     },
+     {
+      "id": "sk_041",
+      "categoria": "General",
+      "titulo": "Transform.CreateTranslation no permite modificar BasisX/Y/Z — usar Transform.Identity",
+      "patron_error": "t.BasisX asignado despues de CreateTranslation no tiene efecto — la seccion se crea con orientacion incorrecta",
+      "solucion": "Transform t = Transform.Identity; t.BasisX = tRef.BasisX; t.BasisY = tRef.BasisY; t.BasisZ = tRef.BasisZ; t.Origin = new XYZ(x,y,z); SIEMPRE copiar BasisX/Y/Z de seccion de referencia existente. NUNCA usar CreateTranslation para secciones.",
+      "exitoso": true,
+      "usos": 4,
+      "fecha": "2026-04-09"    
+     }
   ]
 }
