@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:22:46.9573754Z",
-  "total": 45,
+  "updated": "2026-04-09T16:25:20.4695728Z",
+  "total": 46,
   "skills": [
     {
       "id": "sk_001",
@@ -449,6 +449,16 @@
       "titulo": "Crear sección vertical entre dos grids con BoundingBoxXYZ sin Transform",
       "patron_error": "Intentar usar Transform en BoundingBoxXYZ cuando las coordenadas ya son globales",
       "solucion": "BoundingBoxXYZ directo con coordenadas globales (XYZ en pies), calcular punto medio entre grids: midX = (pC.X + pD.X) / 2, ancho = Math.Abs(pD.X - pC.X)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409112520",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: vamos a mejorar el concepto del comando o instrucción  \"secc...",
+      "patron_error": "",
+      "solucion": "Cambio: ElementId selId = new ElementId(166304L); → ElementId selId = new ElementId(166303L);\r\nCambio: if (elem == null) return \"Error: No se encontró el elemento con ID 166304\"; → if (elem == null) return \"Error: No se encontro el elemento con ID 166303\";",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
