@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:48:43.2405276Z",
-  "total": 51,
+  "updated": "2026-04-09T16:59:42.9839961Z",
+  "total": 54,
   "skills": [
     {
       "id": "sk_001",
@@ -512,7 +512,7 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
-      },
+    },
     {
       "id": "sk_014",
       "categoria": "Vistas",
@@ -529,6 +529,16 @@
       "titulo": "Diagnosticar secciones existentes antes de crear nuevas",
       "patron_error": "Crear sección sin conocer Transform de referencia produce orientacion incorrecta",
       "solucion": "Leer CropBox.Transform.BasisX/Y/Z de la sección de referencia para determinar orientacion exacta antes de crear nuevas secciones similares.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409115942",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: ok en base a esta sección seleccionada, quiero que crees una...",
+      "patron_error": "",
+      "solucion": "Cambio: ViewSection seccionActual = uidoc.Selection.GetElementIds().Count > 0 → ViewSection seccionActual = null;\r\nCambio: ? document.GetElement(uidoc.Selection.GetElementIds().First()) as ViewSection → ICollection<ElementId> selIds = uidoc.Selection.GetElementIds();",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
