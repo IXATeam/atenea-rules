@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:03:35.7504535Z",
-  "total": 37,
+  "updated": "2026-04-09T16:15:54.7317829Z",
+  "total": 39,
   "skills": [
     {
       "id": "sk_001",
@@ -372,7 +372,7 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
-     },
+    },
     {
       "id": "sk_012",
       "categoria": "Vistas",
@@ -382,7 +382,16 @@
       "exitoso": true,
       "usos": 2,
       "fecha": "2026-04-09"
-      }
-    
+    },
+    {
+      "id": "sk_20260409111554",
+      "categoria": "Vistas",
+      "titulo": "Obtener nivel de vista activa con fallback automático",
+      "patron_error": "Asumir que vp.LevelId siempre retorna un Level válido causa 'No se pudo obtener el nivel de la vista'",
+      "solucion": "Usar vp.LevelId pero con fallback: si nivel es null, tomar el primer nivel del proyecto con FilteredElementCollector para evitar que retorne null",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    }
   ]
 }
