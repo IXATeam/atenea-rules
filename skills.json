@@ -372,6 +372,17 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
-    }
+     },
+    {
+      "id": "sk_012",
+      "categoria": "Vistas",
+      "titulo": "ViewSection.CreateSection requiere BoundingBoxXYZ no Line",
+      "patron_error": "Argumento 3: no se puede convertir de Line a BoundingBoxXYZ — error de compilacion",
+      "solucion": "Usar BoundingBoxXYZ con Transform orientado. BasisX=direccion horizontal, BasisY=XYZ(0,0,1) arriba, BasisZ=normal a la seccion. Min/Max en coordenadas locales.",
+      "exitoso": true,
+      "usos": 2,
+      "fecha": "2026-04-09"
+      }
+    
   ]
 }
