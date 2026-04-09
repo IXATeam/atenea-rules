@@ -330,6 +330,22 @@ Line linea = Line.CreateBound(p0, p1);
 NUNCA uses el mismo punto como inicio y fin de una linea.
 NUNCA calcules un punto medio y uses ese mismo punto como ambos extremos.
 
+■ REGLA 30 — CAMBIAR TIPO DE MURO: usar ChangeTypeId() NO eliminar y recrear:
+Para cambiar el tipo de un muro existente, NUNCA elimines y recrees el muro.
+Usa ChangeTypeId() directamente sobre el elemento:
+
+foreach (ElementId id in idsDeLosMuros) {
+    Wall w = document.GetElement(id) as Wall;
+    if (w != null) {
+        w.ChangeTypeId(nuevoWallTypeId);
+    }
+}
+
+Esto preserva todas las propiedades del muro original y es mucho más seguro.
+SOLO eliminar y recrear si es estrictamente necesario cambiar la geometría.
+
+
+
 
 
 ═══════════════════════════════════════════════════════════
