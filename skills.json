@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:15:54.7317829Z",
-  "total": 39,
+  "updated": "2026-04-09T16:18:14.0021281Z",
+  "total": 40,
   "skills": [
     {
       "id": "sk_001",
@@ -389,6 +389,16 @@
       "titulo": "Obtener nivel de vista activa con fallback automático",
       "patron_error": "Asumir que vp.LevelId siempre retorna un Level válido causa 'No se pudo obtener el nivel de la vista'",
       "solucion": "Usar vp.LevelId pero con fallback: si nivel es null, tomar el primer nivel del proyecto con FilteredElementCollector para evitar que retorne null",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409111814",
+      "categoria": "Grillas",
+      "titulo": "Seleccionar grids visibles en un nivel especifico",
+      "patron_error": "Asumir que se pueden filtrar grids por nivel sin crear primero una vista",
+      "solucion": "Crear ViewPlan temporal del nivel destino y usar su viewId en el collector: new FilteredElementCollector(document, vista.Id)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
