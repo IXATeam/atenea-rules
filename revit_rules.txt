@@ -438,6 +438,33 @@ BoundingBoxXYZ en coordenadas LOCALES de la sección:
   Max = ( anchoMedio, profundidad, 0)
 NUNCA usar coordenadas globales en el BoundingBoxXYZ de la sección.
 
+■ REGLA 38 — Transform es INMUTABLE: no se pueden asignar BasisX/Y/Z directamente:
+// INCORRECTO — lanza excepción:
+sectionBox.Transform.BasisX = new XYZ(1, 0, 0);
+
+// CORRECTO — crear Transform nuevo con Identity y asignar:
+Transform t = Transform.Identity;
+t = t.ScaleBasis(1);
+// O mejor, usar constructor directo:
+XYZ basisX = new XYZ(1, 0, 0);
+XYZ basisY = new XYZ(0, 0, 1);
+XYZ basisZ = new XYZ(0, 1, 0);
+XYZ origin  = new XYZ(midX, midY, 0);
+Transform t = Transform.CreateTranslation(origin);
+t = Transform.Identity;
+t.BasisX solo se puede leer — NUNCA escribir.
+PATRON CORRECTO: usar campos del Transform al crearlo con CreateTranslation
+o usar el constructor del Transform directamente como variable nueva.
+
+■ REGLA 39 — LINQ (.First(), .Select(), .ToList()) esta PROHIBIDO:
+NUNCA usar .First(), .Last(), .Where(), .Select(), .ToList(), .ToArray()
+SIEMPRE reemplazar con foreach:
+// INCORRECTO: var sel = ids.First();
+// CORRECTO:
+ElementId primerIdSel = null;
+foreach (ElementId id in selIds) { primerIdSel = id; break; }
+
+
 
 
 ═══════════════════════════════════════════════════════════
