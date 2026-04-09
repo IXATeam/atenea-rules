@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:19:31.5870163Z",
-  "total": 41,
+  "updated": "2026-04-09T16:19:51.5980983Z",
+  "total": 42,
   "skills": [
     {
       "id": "sk_001",
@@ -409,6 +409,16 @@
       "titulo": "Autocorreccion: es necesario que corrijas el skill para que no cometas estos...",
       "patron_error": "",
       "solucion": "Cambio: ● [Rejilla] Seleccionar grids de la vista activa - patrón simple → FilteredElementCollector col = new FilteredElementCollector(document);\r\nCambio: Evitar: Crear vistas temporales, complicar la lógica, verificar niveles innecesariamente → col.OfClass(typeof(Grid));",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409111951",
+      "categoria": "Grillas",
+      "titulo": "Seleccionar todas las rejillas sin filtrar por vista",
+      "patron_error": "Filtrar grids por viewId o crear vistas temporales causa que no se encuentren - no complicar",
+      "solucion": "Usar FilteredElementCollector(document).OfClass(typeof(Grid)) sin viewId. Los grids existen en todo el modelo y se seleccionan directamente.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
