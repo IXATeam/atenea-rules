@@ -344,8 +344,20 @@ foreach (ElementId id in idsDeLosMuros) {
 Esto preserva todas las propiedades del muro original y es mucho más seguro.
 SOLO eliminar y recrear si es estrictamente necesario cambiar la geometría.
 
+■ REGLA 31 — NUNCA eliminar muros antes de guardar sus curvas completas:
+Al reemplazar muros, guardar TODAS las curvas y datos ANTES de eliminar
+cualquier muro. Los muros conectados comparten geometría — eliminar uno
+puede invalidar las curvas de los adyacentes.
+PATRON CORRECTO:
+1. Recopilar TODOS los datos (curvas, niveles, alturas)
+2. Verificar que curvas.Count == murosIds.Length antes de eliminar
+3. Solo entonces eliminar y recrear
 
-
+■ REGLA 32 — Para cambiar tipo de muro usar ChangeTypeId() cuando sea posible:
+w.ChangeTypeId(nuevoWallTypeId) es más seguro que eliminar y recrear.
+Si ChangeTypeId() no funciona (ej: cambio de Basic a Curtain),
+entonces usar Wall.Create() con los datos guardados previamente.
+SIEMPRE verificar que la altura sea > 0 antes de Wall.Create().
 
 
 ═══════════════════════════════════════════════════════════
