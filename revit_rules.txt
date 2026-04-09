@@ -464,6 +464,66 @@ SIEMPRE reemplazar con foreach:
 ElementId primerIdSel = null;
 foreach (ElementId id in selIds) { primerIdSel = id; break; }
 
+■ REGLA 40 — CREAR SECCIONES: SIEMPRE diagnosticar antes de crear:
+Antes de crear cualquier sección, ejecutar un script de diagnóstico
+que lea los datos reales del proyecto. NUNCA asumir orientaciones,
+coordenadas o transforms.
+
+PATRON OBLIGATORIO EN 2 PASOS:
+
+PASO 1 — Script de diagnóstico (ejecutar primero):
+// Leer secciones existentes para copiar su Transform exacto
+FilteredElementCollector csec = new FilteredElementCollector(document)
+    .OfClass(typeof(ViewSection));
+foreach (ViewSection vs in csec) {
+    if (vs.IsTemplate) continue;
+    BoundingBoxXYZ cb = vs.CropBox;
+    Transform t = cb.Transform;
+    info += "ID:" + vs.Id.Value + " Nombre:" + vs.Name + "\n";
+    info += "  Origin:(" + t.Origin.X*0.3048 + "," + t.Origin.Y*0.3048 + "," + t.Origin.Z*0.3048 + ")m\n";
+    info += "  BasisX:(" + t.BasisX.X + "," + t.BasisX.Y + "," + t.BasisX.Z + ")\n";
+    info += "  BasisY:(" + t.BasisY.X + "," + t.BasisY.Y + "," + t.BasisY.Z + ")\n";
+    info += "  BasisZ:(" + t.BasisZ.X + "," + t.BasisZ.Y + "," + t.BasisZ.Z + ")\n";
+    info += "  Min:(" + cb.Min.X*0.3048 + "," + cb.Min.Y*0.3048 + "," + cb.Min.Z*0.3048 + ")m\n";
+    info += "  Max:(" + cb.Max.X*0.3048 + "," + cb.Max.Y*0.3048 + "," + cb.Max.Z*0.3048 + ")m\n";
+}
+// Leer grids con coordenadas exactas
+FilteredElementCollector cg = new FilteredElementCollector(document).OfClass(typeof(Grid));
+foreach (Grid g in cg) {
+    XYZ p0 = g.Curve.GetEndPoint(0);
+    XYZ p1 = g.Curve.GetEndPoint(1);
+    info += "Grid:" + g.Name + " p0:(" + p0.X*0.3048 + "," + p0.Y*0.3048 + ")m" +
+            " p1:(" + p1.X*0.3048 + "," + p1.Y*0.3048 + ")m\n";
+}
+// VFT de sección
+FilteredElementCollector cvft = new FilteredElementCollector(document).OfClass(typeof(ViewFamilyType));
+foreach (ViewFamilyType v in cvft)
+    if (v.ViewFamily == ViewFamily.Section)
+        info += "VFT_ID:" + v.Id.Value + " " + v.Name + "\n";
+return info;
+
+PASO 2 — Crear la sección usando los datos reales del PASO 1:
+// Copiar el Transform EXACTO de una sección de referencia
+// Cambiar SOLO el Origin al punto deseado
+// Usar Min/Max de la sección de referencia
+
+Transform tRef = seccionReferencia.CropBox.Transform;
+Transform tNuevo = Transform.CreateTranslation(new XYZ(newX, newY, tRef.Origin.Z));
+tNuevo.BasisX = tRef.BasisX;
+tNuevo.BasisY = tRef.BasisY;
+tNuevo.BasisZ = tRef.BasisZ;
+
+BoundingBoxXYZ bb = new BoundingBoxXYZ();
+bb.Transform = tNuevo;
+bb.Min = seccionReferencia.CropBox.Min;
+bb.Max = seccionReferencia.CropBox.Max;
+
+ViewSection nueva = ViewSection.CreateSection(document, vftId, bb);
+
+REGLA CRITICA: Para sección HORIZONTAL copiar Transform de sección
+horizontal existente. Para VERTICAL copiar de vertical existente.
+NUNCA construir Transform manualmente para secciones.
+
 
 
 
