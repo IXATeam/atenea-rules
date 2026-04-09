@@ -252,6 +252,26 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
-    }
+    },
+    {
+      "id": "sk_009",
+      "categoria": "Muros",
+      "titulo": "Guardar TODAS las curvas antes de eliminar cualquier muro",
+      "patron_error": "Eliminar muros antes de guardar todas sus curvas invalida la geometria de muros adyacentes",
+      "solucion": "Recopilar todas las curvas, niveles y alturas en listas separadas PRIMERO. Verificar que curvas.Count == murosIds.Length ANTES de eliminar. Solo entonces eliminar y recrear.",
+      "exitoso": true,
+      "usos": 2,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_010",
+      "categoria": "Muros",
+      "titulo": "ChangeTypeId es mas seguro que eliminar y recrear para cambiar tipo de muro",
+      "patron_error": "Wall.Create con altura 0 falla. Eliminar y recrear es propenso a errores de geometria invalida",
+      "solucion": "Usar w.ChangeTypeId(nuevoWallTypeId) directamente cuando sea posible. Si no funciona (cambio Basic a Curtain), usar Wall.Create con altura real del parametro WALL_USER_HEIGHT_PARAM con fallback de 3m.",
+      "exitoso": true,
+      "usos": 3,
+      "fecha": "2026-04-09"
+     }
   ]
 }
