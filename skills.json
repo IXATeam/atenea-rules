@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:35:43.0645253Z",
-  "total": 54,
+  "updated": "2026-04-09T21:35:51.8028130Z",
+  "total": 55,
   "skills": [
     {
       "id": "sk_001",
@@ -539,6 +539,16 @@
       "titulo": "Autocorreccion: ahora selecciona el suelo y píntalo de verde",
       "patron_error": "",
       "solucion": "Cambio: overrides.SetProjectionFillColor(verde); → overrides.SetProjectionLineColor(verde);\r\nCambio: overrides.SetProjectionLineColor(verde); → overrides.SetCutLineColor(verde);\r\nCambio: overrides.SetCutFillColor(verde); →",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409163551",
+      "categoria": "Vistas",
+      "titulo": "Aplicar color de OverrideGraphicSettings a elementos",
+      "patron_error": "Confusion sobre como aplicar colores de visualizationOverrideSettings sin cambiar el tipo real del elemento",
+      "solucion": "Usar OverrideGraphicSettings con SetProjectionFillColor/CutFillColor, luego aplicar con vistaActiva.SetElementOverrides(id, overrides)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
