@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T18:31:14.8342148Z",
-  "total": 43,
+  "updated": "2026-04-09T21:00:11.4955185Z",
+  "total": 44,
   "skills": [
     {
       "id": "sk_001",
@@ -432,16 +432,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
-     },
-     {
-       id": "sk_042",
+    },
+    {
+      "id": "sk_20260409160011",
       "categoria": "Vistas",
-      "titulo": "Ancho de seccion basado en bounding box real de muros, no en Min/Max de referencia",
-      "patron_error": "Seccion cubre 36m de ancho dejando los muros en el extremo porque se copio Min/Max de seccion de referencia con ancho de proyecto completo",
-      "solucion": "Calcular centroX y anchoMitad del bounding box real de los muros. t.Origin = new XYZ(centroX, midY, z); bb.Min = new XYZ(-anchoMitad-margen, -prof, altoMin); bb.Max = new XYZ(anchoMitad+margen, prof, altoMax). Agregar 1m de margen a cada lado.",
+      "titulo": "Diagnóstico obligatorio antes de crear secciones: leer Transform de referencia",
+      "patron_error": "Crear secciones horizontales sin conocer el Transform exacto de secciones existentes — BasisZ incorrecto genera secciones que no aparecen en planta",
+      "solucion": "Ejecutar diagnóstico que lea Grid.Curve.GetEndPoint() para coordenadas y ViewSection.CropBox.Transform de secciones existentes del mismo tipo, luego copiar BasisX/Y/Z exactos al crear la nueva sección",
       "exitoso": true,
-      "usos": 3,
+      "usos": 1,
       "fecha": "2026-04-09"
-     }
+    }
   ]
 }
