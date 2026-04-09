@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:00:11.4955185Z",
-  "total": 44,
+  "updated": "2026-04-09T21:03:05.2624933Z",
+  "total": 45,
   "skills": [
     {
       "id": "sk_001",
@@ -439,6 +439,16 @@
       "titulo": "Diagnóstico obligatorio antes de crear secciones: leer Transform de referencia",
       "patron_error": "Crear secciones horizontales sin conocer el Transform exacto de secciones existentes — BasisZ incorrecto genera secciones que no aparecen en planta",
       "solucion": "Ejecutar diagnóstico que lea Grid.Curve.GetEndPoint() para coordenadas y ViewSection.CropBox.Transform de secciones existentes del mismo tipo, luego copiar BasisX/Y/Z exactos al crear la nueva sección",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409160305",
+      "categoria": "Seleccion",
+      "titulo": "Seleccionar elementos por categoria con SetElementIds",
+      "patron_error": "Confusion sobre como seleccionar elementos programaticamente sin depender de seleccion previa del usuario",
+      "solucion": "FilteredElementCollector.OfClass(typeof(Tipo)).Iterar, acumular IDs en lista, uidoc.Selection.SetElementIds(lista)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
