@@ -432,6 +432,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
-    }
+     },
+     {
+       id": "sk_042",
+      "categoria": "Vistas",
+      "titulo": "Ancho de seccion basado en bounding box real de muros, no en Min/Max de referencia",
+      "patron_error": "Seccion cubre 36m de ancho dejando los muros en el extremo porque se copio Min/Max de seccion de referencia con ancho de proyecto completo",
+      "solucion": "Calcular centroX y anchoMitad del bounding box real de los muros. t.Origin = new XYZ(centroX, midY, z); bb.Min = new XYZ(-anchoMitad-margen, -prof, altoMin); bb.Max = new XYZ(anchoMitad+margen, prof, altoMax). Agregar 1m de margen a cada lado.",
+      "exitoso": true,
+      "usos": 3,
+      "fecha": "2026-04-09"
+     }
   ]
 }
