@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T06:13:02.7587216Z",
-  "total": 21,
+  "updated": "2026-04-09T06:13:19.7790330Z",
+  "total": 22,
   "skills": [
     {
       "id": "sk_001",
@@ -209,6 +209,16 @@
       "titulo": "Autocorreccion: cambia los muros actuales por la familia de muro cortina - v...",
       "patron_error": "",
       "solucion": "Cambio: // Buscar WallType \"Muro cortina - vertical\" por nombre exacto → // Usar WallType \"Muro cortina - vertical\" con ID directo del contexto\r\nCambio: WallType wallTypeCortina = null; → ElementId wallTypeCortinaId = new ElementId(16280L);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409011319",
+      "categoria": "Muros",
+      "titulo": "Crear muros cortina verticales con Wall.Create() + WallType de cortina",
+      "patron_error": "Confusion al intentar usar Wall.CreateCurtainWall() o buscar CurtainSystemType para crear muros cortina verticales",
+      "solucion": "Buscar WallType por nombre exacto con wt.Name == 'Muro cortina - vertical', luego usar Wall.Create(document, linea, wallTypeCortina.Id, nivelId, 0, 0, false, false)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
