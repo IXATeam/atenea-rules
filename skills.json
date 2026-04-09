@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:25:35.0421599Z",
-  "total": 47,
+  "updated": "2026-04-09T16:43:31.9371369Z",
+  "total": 49,
   "skills": [
     {
       "id": "sk_001",
@@ -472,7 +472,7 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
-      },
+    },
     {
       "id": "sk_013",
       "categoria": "Vistas",
@@ -481,6 +481,16 @@
       "solucion": "Usar seccion.get_Parameter(BuiltInParameter.VIEW_FAMILY).AsString() para la familia. Para parametros iterar seccion.Parameters con if (p.HasValue && p.Definition != null). Nunca usar ParameterFilterProvider con vistas.",
       "exitoso": true,
       "usos": 2,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409114331",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: Vamos a mejorar el concepto del comando o instrucción  \"secc...",
+      "patron_error": "",
+      "solucion": "Cambio: return \"Error: No hay ninguna sección seleccionada. Por favor selecciona una sección en el navegador de proyecto.\"; → return \"Error: No hay ninguna seccion seleccionada.\";\r\nCambio: return \"Error: El elemento seleccionado no es una sección. Por favor selecciona una sección (ViewSection).\"; → return \"Error: El elemento seleccionado no es una seccion.\";",
+      "exitoso": true,
+      "usos": 1,
       "fecha": "2026-04-09"
     }
   ]
