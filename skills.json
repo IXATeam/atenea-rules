@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:45:12.2488681Z",
-  "total": 50,
+  "updated": "2026-04-09T16:48:43.2405276Z",
+  "total": 51,
   "skills": [
     {
       "id": "sk_001",
@@ -499,6 +499,16 @@
       "titulo": "Obtener información completa de ViewSection: CropBox, IsSectionBoxActive, SECTION_LEVEL y parámetros",
       "patron_error": "Asumir que ViewSection tiene propiedades ViewFamily o Level (no existen); intentar usar ParameterFilterProvider con vistas",
       "solucion": "Usar seccion.CropBox para cajón de recorte, seccion.IsSectionBoxActive para section box, get_Parameter(BuiltInParameter.SECTION_LEVEL) para nivel, e iterar seccion.Parameters con HasValue y Definition",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409114843",
+      "categoria": "Vistas",
+      "titulo": "Verificar ViewSection por tipo y ViewFamily antes de procesar",
+      "patron_error": "El código hace `elem is ViewSection` pero no verifica si el elemento seleccionado realmente es una ViewSection. En el contexto actual, el elemento ID:166303 puede ser cualquier tipo de vista (ViewPlan, View3D, ViewSheet) y no un ViewSection. El cast falla silenciosamente y retorna el error genérico.",
+      "solucion": "Usar `elem is ViewSection` y luego `elem.Category.Id.Value == 2001051L` (OST_Views) para verificar que es una sección real, no solo cualquier vista. Alternativamente, verificar `ViewFamily.Section` del ViewFamilyType asociado.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
