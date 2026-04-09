@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:59:42.9839961Z",
-  "total": 54,
+  "updated": "2026-04-09T17:00:09.2533775Z",
+  "total": 55,
   "skills": [
     {
       "id": "sk_001",
@@ -539,6 +539,16 @@
       "titulo": "Autocorreccion: ok en base a esta sección seleccionada, quiero que crees una...",
       "patron_error": "",
       "solucion": "Cambio: ViewSection seccionActual = uidoc.Selection.GetElementIds().Count > 0 → ViewSection seccionActual = null;\r\nCambio: ? document.GetElement(uidoc.Selection.GetElementIds().First()) as ViewSection → ICollection<ElementId> selIds = uidoc.Selection.GetElementIds();",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409120009",
+      "categoria": "Vistas",
+      "titulo": "Replicar seccion existente con parametros copiados y orientacion horizontal",
+      "patron_error": "Error: Selecciona una sección existente para replicar sus parámetros",
+      "solucion": "El codigo valida que hay seleccion activa de ViewSection antes de continuar. Cuando no hay seleccion, retorna error en lugar de fallar en ejecucion. Esto es proteccion correcta.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
