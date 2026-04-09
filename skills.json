@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:03:05.2624933Z",
-  "total": 45,
+  "updated": "2026-04-09T21:05:04.9862187Z",
+  "total": 46,
   "skills": [
     {
       "id": "sk_001",
@@ -449,6 +449,16 @@
       "titulo": "Seleccionar elementos por categoria con SetElementIds",
       "patron_error": "Confusion sobre como seleccionar elementos programaticamente sin depender de seleccion previa del usuario",
       "solucion": "FilteredElementCollector.OfClass(typeof(Tipo)).Iterar, acumular IDs en lista, uidoc.Selection.SetElementIds(lista)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409160504",
+      "categoria": "Vistas",
+      "titulo": "Crear sección horizontal centrada entre dos grids horizontales con dimensión basada en bounding box de muros",
+      "patron_error": "Sección falla con 'No se encontro el nivel de la vista activa' cuando la vista activa no es ViewPlan o no tiene LevelId",
+      "solucion": "Antes de crear sección, verificar que vp != null Y nivel != null; si no hay nivel valido, usar fallback con nivel 0 o primer nivel del proyecto",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
