@@ -374,6 +374,27 @@ FilteredElementCollector col = new FilteredElementCollector(document, uidoc.Acti
 col.OfClass(typeof(Wall));
 // usar estos en lugar de los IDs del contexto
 
+■ REGLA 34 — ViewSection.CreateSection requiere BoundingBoxXYZ NO Line:
+ViewSection.CreateSection(document, viewFamilyTypeId, boundingBox)
+El tercer argumento DEBE ser un BoundingBoxXYZ orientado, NO una Line ni Curve.
+
+PATRON CORRECTO para crear una sección:
+// 1. Definir transform orientado de la sección
+Transform t = Transform.Identity;
+t.BasisX = new XYZ(1, 0, 0);  // dirección horizontal de la sección
+t.BasisY = new XYZ(0, 0, 1);  // dirección vertical (Z=arriba)
+t.BasisZ = new XYZ(0, -1, 0); // dirección de profundidad (normal a la sección)
+t.Origin = new XYZ(midX, midY, 0); // origen de la sección
+
+// 2. Crear BoundingBoxXYZ en coordenadas locales de la sección
+BoundingBoxXYZ bb = new BoundingBoxXYZ();
+bb.Transform = t;
+bb.Min = new XYZ(-anchoMedio, 0, -1);      // izquierda, base, profundidad atrás
+bb.Max = new XYZ( anchoMedio, altura,  1); // derecha, tope, profundidad frente
+
+// 3. Crear la sección
+ViewSection seccion = ViewSection.CreateSection(document, vftSec.Id, bb);
+
 
 
 ═══════════════════════════════════════════════════════════
