@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:03:20.1521119Z",
-  "total": 36,
+  "updated": "2026-04-09T16:03:35.7504535Z",
+  "total": 37,
   "skills": [
     {
       "id": "sk_001",
@@ -359,6 +359,16 @@
       "titulo": "Seleccionar todas las rejillas (Grid) del proyecto con SetElementIds",
       "patron_error": "Confundir filtrado por vista con selección de grids - el código obtiene TODOS los grids del proyecto sin filtrar por vista activa",
       "solucion": "FilteredElementCollector.OfClass(typeof(Grid)) + uidoc.Selection.SetElementIds(gridIds) selecciona todos los grids del proyecto independientemente de la vista",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409110335",
+      "categoria": "Grillas",
+      "titulo": "Seleccionar todas las rejillas del proyecto sin filtrar por vista",
+      "patron_error": "Confundir rejillas con elementos de vista - filtrar por viewId en FilteredElementCollector causa que no se encuentren las rejillas",
+      "solucion": "Usar FilteredElementCollector(document).OfClass(typeof(Grid)) SIN segundo argumento viewId. Las rejillas existen en todo el proyecto. Iterar con foreach, collectar IDs en lista y usar SetElementIds para seleccionar.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
