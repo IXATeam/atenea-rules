@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:15:57.3497688Z",
-  "total": 51,
+  "updated": "2026-04-09T22:00:00.000Z",
+  "total": 45,
   "skills": [
     {
       "id": "sk_001",
@@ -46,12 +46,12 @@
     {
       "id": "sk_005",
       "categoria": "Niveles",
-      "titulo": "Nunca hacer cast de View a Level",
-      "patron_error": "View as Level siempre retorna null porque View y Level son tipos incompatibles",
-      "solucion": "Para obtener nivel de vista activa: ViewPlan vp = uidoc.ActiveView as ViewPlan; Level nivel = document.GetElement(vp.LevelId) as Level;",
+      "titulo": "Obtener nivel con fallback robusto — nunca asumir vista activa es ViewPlan",
+      "patron_error": "uidoc.ActiveView as ViewPlan retorna null en vista 3D o seccion — causa Error: no se encontro el nivel",
+      "solucion": "PATRON CORRECTO CON 3 FALLBACKS: Level nivel = null; ViewPlan vp = uidoc.ActiveView as ViewPlan; if (vp != null) nivel = document.GetElement(vp.LevelId) as Level; if (nivel == null) { foreach (Level l in new FilteredElementCollector(document).OfClass(typeof(Level))) { if (l.Name == 'Nivel 1' || l.Name == 'Level 1') { nivel = l; break; } } } if (nivel == null) { foreach (Level l in new FilteredElementCollector(document).OfClass(typeof(Level))) { nivel = l; break; } } if (nivel == null) return 'Error: No hay niveles en el proyecto';",
       "exitoso": true,
       "usos": 9,
-      "fecha": "2026-04-07"
+      "fecha": "2026-04-09"
     },
     {
       "id": "sk_006",
@@ -98,7 +98,7 @@
       "categoria": "Muros",
       "titulo": "Reemplazar muros por familia especifica: buscar WallType por nombre exacto",
       "patron_error": "Usar WallKind.Curtain o CreateCurtainWall crea muros cortina genericos, no la familia especifica solicitada",
-      "solucion": "Buscar WallType por nombre exacto: foreach(WallType wt in col) if (wt.Name == \"Muro cortina - vertical\") { tipoBuscado = wt; break; } Luego Wall.Create(document, curva, tipoBuscado.Id, nivelId, altura, 0, false, false)",
+      "solucion": "Buscar WallType por nombre exacto: foreach(WallType wt in col) if (wt.Name == 'Muro cortina - vertical') { tipoBuscado = wt; break; } Luego Wall.Create(document, curva, tipoBuscado.Id, nivelId, altura, 0, false, false)",
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-08"
@@ -147,10 +147,10 @@
       "id": "sk_015",
       "categoria": "Vistas",
       "titulo": "Diagnosticar secciones existentes ANTES de crear nuevas — copiar Transform de referencia",
-      "patron_error": "Sección creada con BasisY=(0,1,0) en lugar de (0,0,1) — seccion mira hacia abajo y no aparece en planta",
-      "solucion": "PASO 1: Leer CropBox.Transform de secciones existentes del mismo tipo. PASO 2: Copiar BasisX/Y/Z exactos de referencia. PASO 3: Crear Transform con CreateTranslation y nuevo origen. NUNCA construir Transform desde cero para secciones.",
+      "patron_error": "Seccion creada con BasisY=(0,1,0) en lugar de (0,0,1) — seccion mira hacia abajo y no aparece en planta",
+      "solucion": "PASO 1: Leer CropBox.Transform de secciones existentes del mismo tipo. PASO 2: Copiar BasisX/Y/Z exactos de referencia. PASO 3: Transform t = Transform.Identity; t.BasisX=tRef.BasisX; t.BasisY=tRef.BasisY; t.BasisZ=tRef.BasisZ; t.Origin=nuevoOrigen; NUNCA construir Transform desde cero.",
       "exitoso": true,
-      "usos": 5,
+      "usos": 6,
       "fecha": "2026-04-09"
     },
     {
@@ -177,10 +177,10 @@
       "id": "sk_018",
       "categoria": "Vistas",
       "titulo": "Crear secciones en 2 pasos: diagnostico primero, creacion con datos reales despues",
-      "patron_error": "Seccion con Origin Z=-7m creada porque se construyo Transform manualmente sin leer datos reales del proyecto",
-      "solucion": "PASO 1 — Script diagnostico: leer Transform exacto de seccion existente (BasisX/Y/Z + Origin + Min/Max). PASO 2 — Crear: Transform t = Transform.CreateTranslation(newOrigin); t.BasisX=tRef.BasisX; t.BasisY=tRef.BasisY; t.BasisZ=tRef.BasisZ; bb.Min=tRef.Min; bb.Max=tRef.Max;",
+      "patron_error": "Seccion con Origin Z negativo o ancho incorrecto por construir Transform y dimensiones manualmente",
+      "solucion": "PASO 1 — Script diagnostico: leer Transform exacto de seccion existente + bounding box de muros + coordenadas de grids. PASO 2 — Crear: Transform t = Transform.Identity; t.BasisX=tRef.BasisX; t.BasisY=tRef.BasisY; t.BasisZ=tRef.BasisZ; t.Origin=new XYZ(centroX, midY, tRef.Origin.Z); bb.Min=new XYZ(-anchoMitad,-prof,altoMin); bb.Max=new XYZ(anchoMitad,prof,altoMax);",
       "exitoso": true,
-      "usos": 5,
+      "usos": 6,
       "fecha": "2026-04-09"
     },
     {
@@ -247,7 +247,7 @@
       "id": "sk_025",
       "categoria": "Muros",
       "titulo": "Buscar WallType con Contains cuando el nombre exacto es incierto",
-      "patron_error": "wt.Name == nombre exacto falla si el nombre real tiene prefijo diferente (ej: 'Por defecto - 20 cm' vs 'Muro Por defecto - 20 cm')",
+      "patron_error": "wt.Name == nombre exacto falla si el nombre real tiene prefijo diferente",
       "solucion": "Usar Contains para coincidencia parcial: foreach(WallType wt in col) { if (wt.Name.Contains('Por defecto') && wt.Name.Contains('20 cm')) { tipo = wt; break; } } Como ultimo fallback, usar el primer tipo disponible.",
       "exitoso": true,
       "usos": 3,
@@ -268,7 +268,7 @@
       "categoria": "Vistas",
       "titulo": "Secciones visibles en planta: Origin.Z debe estar dentro del rango del nivel",
       "patron_error": "Seccion no aparece en vista de Nivel 1 porque Origin.Z = -7m (bajo tierra) en lugar de 0 o positivo",
-      "solucion": "El Origin.Z de la seccion debe coincidir con la elevacion del nivel donde debe ser visible. Nivel 1 = Z=0. Copiar Origin.Z de una seccion de referencia que SI sea visible en ese nivel. NUNCA usar Z negativo como origen de seccion.",
+      "solucion": "El Origin.Z de la seccion debe coincidir con la elevacion del nivel. Nivel 1 = Z=0. Copiar Origin.Z de una seccion de referencia que SI sea visible en ese nivel. NUNCA usar Z negativo como origen de seccion.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -286,11 +286,11 @@
     {
       "id": "sk_029",
       "categoria": "Vistas",
-      "titulo": "Crear secciones: diagnosticar grids y VFT antes de calcular coordenadas",
+      "titulo": "Crear secciones: leer coordenadas reales de grids antes de calcular puntos medios",
       "patron_error": "Calcular punto medio entre grids sin leer sus coordenadas reales produce ubicacion incorrecta",
       "solucion": "SIEMPRE leer coordenadas reales de grids con GetEndPoint(0) y (1) antes de calcular puntos medios. Verificar VFT de seccion con ViewFamily.Section. Script diagnostico primero, creacion despues.",
       "exitoso": true,
-      "usos": 3,
+      "usos": 4,
       "fecha": "2026-04-09"
     },
     {
@@ -298,7 +298,7 @@
       "categoria": "General",
       "titulo": "Scripts de mas de 100 lineas causan timeout — dividir en pasos",
       "patron_error": "Script de 150+ lineas no retorna resultado — timeout de 60 segundos agotado",
-      "solucion": "Dividir scripts largos en 2-3 scripts separados de menos de 80 lineas cada uno. PASO 1: diagnostico y recopilacion de datos. PASO 2: ejecucion con datos del PASO 1. El usuario ejecuta cada paso por separado.",
+      "solucion": "Dividir scripts largos en 2-3 scripts separados de menos de 80 lineas cada uno. PASO 1: diagnostico y recopilacion de datos. PASO 2: ejecucion con datos del PASO 1.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -316,9 +316,9 @@
     {
       "id": "sk_032",
       "categoria": "Muros",
-      "titulo": "Contorno cerrado de muros: adyacentes comparten geometria — no eliminar antes de guardar todo",
+      "titulo": "Contorno cerrado de muros: no eliminar antes de guardar todas las curvas",
       "patron_error": "Al eliminar el primer muro de un contorno, los muros adyacentes pierden sus LocationCurve",
-      "solucion": "Recopilar TODAS las curvas en una lista antes de eliminar cualquier elemento. Verificar que la lista tiene el mismo Count que los muros antes de proceder con eliminaciones.",
+      "solucion": "Recopilar TODAS las curvas en una lista antes de eliminar cualquier elemento. Verificar que la lista tiene el mismo Count que los muros antes de proceder.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -328,7 +328,7 @@
       "categoria": "Seleccion",
       "titulo": "Patron fallback para seleccion: contexto primero, FilteredElementCollector despues",
       "patron_error": "Script falla con Error: No hay muros seleccionados cuando el usuario uso seleccion manual antes",
-      "solucion": "ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); List<Wall> muros = new List<Wall>(); if (selIds.Count > 0) { foreach(ElementId id in selIds){ Wall w = document.GetElement(id) as Wall; if (w!=null) muros.Add(w); } } if (muros.Count == 0) { FilteredElementCollector col = new FilteredElementCollector(document, uidoc.ActiveView.Id).OfClass(typeof(Wall)); foreach(Wall w in col) muros.Add(w); }",
+      "solucion": "ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); List<Wall> muros = new List<Wall>(); if (selIds.Count > 0) { foreach(ElementId id in selIds){ Wall w = document.GetElement(id) as Wall; if (w!=null) muros.Add(w); } } if (muros.Count == 0) { foreach(Wall w in new FilteredElementCollector(document, uidoc.ActiveView.Id).OfClass(typeof(Wall))) muros.Add(w); }",
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-09"
@@ -337,10 +337,10 @@
       "id": "sk_034",
       "categoria": "Vistas",
       "titulo": "Crear seccion basada en existente: copiar todos los parametros del Transform",
-      "patron_error": "Seccion nueva con orientacion diferente a la de referencia porque solo se copio el origen y no los vectores base",
-      "solucion": "Transform tRef = seccionReferencia.CropBox.Transform; Transform tNew = Transform.CreateTranslation(nuevoOrigen); tNew.BasisX = tRef.BasisX; tNew.BasisY = tRef.BasisY; tNew.BasisZ = tRef.BasisZ; BoundingBoxXYZ bb = new BoundingBoxXYZ(); bb.Transform = tNew; bb.Min = seccionReferencia.CropBox.Min; bb.Max = seccionReferencia.CropBox.Max;",
+      "patron_error": "Seccion nueva con orientacion diferente a la de referencia porque solo se copio el origen",
+      "solucion": "Transform tRef = seccionReferencia.CropBox.Transform; Transform tNew = Transform.Identity; tNew.BasisX = tRef.BasisX; tNew.BasisY = tRef.BasisY; tNew.BasisZ = tRef.BasisZ; tNew.Origin = nuevoOrigen; BoundingBoxXYZ bb = new BoundingBoxXYZ(); bb.Transform = tNew; bb.Min = new XYZ(-anchoMitad,-prof,altoMin); bb.Max = new XYZ(anchoMitad,prof,altoMax);",
       "exitoso": true,
-      "usos": 4,
+      "usos": 5,
       "fecha": "2026-04-09"
     },
     {
@@ -356,9 +356,9 @@
     {
       "id": "sk_036",
       "categoria": "Muros",
-      "titulo": "WallType por nombre: verificar FamilyName y Name por separado",
-      "patron_error": "wt.Name == 'Muro Por defecto - 20 cm' falla porque el nombre real es 'Por defecto - 20 cm' y la familia es diferente",
-      "solucion": "Buscar con Contains en Name y FamilyName: if (wt.Name.Contains('Por defecto') && wt.Name.Contains('20')) { tipo = wt; break; } O usar el ID exacto si se conoce del contexto.",
+      "titulo": "WallType por nombre: usar Contains cuando nombre exacto es incierto",
+      "patron_error": "wt.Name == 'Muro Por defecto - 20 cm' falla porque el nombre real es 'Por defecto - 20 cm'",
+      "solucion": "Buscar con Contains: if (wt.Name.Contains('Por defecto') && wt.Name.Contains('20')) { tipo = wt; break; } O usar el ID exacto si se conoce del contexto.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -410,107 +410,47 @@
       "patron_error": "t.BasisX asignado despues de CreateTranslation no tiene efecto — la seccion se crea con orientacion incorrecta",
       "solucion": "Transform t = Transform.Identity; t.BasisX = tRef.BasisX; t.BasisY = tRef.BasisY; t.BasisZ = tRef.BasisZ; t.Origin = new XYZ(x,y,z); SIEMPRE copiar BasisX/Y/Z de seccion de referencia existente. NUNCA usar CreateTranslation para secciones.",
       "exitoso": true,
+      "usos": 5,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_042",
+      "categoria": "Vistas",
+      "titulo": "Ancho de seccion basado en bounding box real de muros, no en Min/Max de referencia",
+      "patron_error": "Seccion cubre 36m de ancho dejando los muros en el extremo porque se copio Min/Max de seccion con ancho de todo el proyecto",
+      "solucion": "Calcular centroX y anchoMitad del bounding box real de los muros: foreach(Wall w in col){ XYZ p0=lc.Curve.GetEndPoint(0); if(p0.X<minX)minX=p0.X; if(p0.X>maxX)maxX=p0.X; } centroX=(minX+maxX)/2; anchoMitad=(maxX-minX)/2 + (1.0/0.3048); t.Origin=new XYZ(centroX,midY,z); bb.Min=new XYZ(-anchoMitad,-prof,altoMin); bb.Max=new XYZ(anchoMitad,prof,altoMax);",
+      "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-09"
     },
     {
-      "id": "sk_20260409133113",
+      "id": "sk_043",
       "categoria": "Vistas",
-      "titulo": "Diagnosticar grids y secciones existentes antes de crear sección horizontal",
-      "patron_error": "Asumir coordenadas de grids o construir Transform manualmente sin leer datos reales del proyecto",
-      "solucion": "Leer todos los grids, clasificarlos por orientación (horizontal si Y constante), calcular punto medio entre grids objetivo, y copiar Transform de sección horizontal existente como referencia",
+      "titulo": "Secciones deben cubrir la CONSTRUCCION — centrar en bounding box de elementos",
+      "patron_error": "Seccion centrada en X=5m del proyecto pero muros estan entre X=-0.73m y X=10.89m — 90% de la seccion cubre aire vacio",
+      "solucion": "El origen X/Y de la seccion debe coincidir con el centroide geometrico real de los muros/pisos, NO con el centro del sistema de coordenadas del proyecto. Calcular: centroX=(minX+maxX)/2 del bounding box de muros. El objetivo de una seccion es CORTAR la construccion, no el espacio vacio.",
       "exitoso": true,
-      "usos": 1,
+      "usos": 3,
       "fecha": "2026-04-09"
     },
     {
-      "id": "sk_20260409133114",
+      "id": "sk_044",
       "categoria": "Vistas",
-      "titulo": "Diagnostico previo para secciones: identificar grids y copiar Transform de referencia",
-      "patron_error": "Crear seccion sin leer datos reales del proyecto, asumiendo coordenadas y orientacion incorrectas",
-      "solucion": "Ejecutar diagnostico: 1) Leer grids y clasificarlos horizontales/verticales comparando coordenadas Y/Y de extremos (diff<0.01m), 2) Si existen secciones del mismo tipo, copiar su Transform completo (BasisX/Y/Z + Origin) para la nueva seccion",
+      "titulo": "Crear secciones en 2 scripts separados: diagnostico y creacion",
+      "patron_error": "Script de 100+ lineas que mezcla diagnostico y creacion causa timeout o datos incorrectos",
+      "solucion": "Script 1: leer grids (coordenadas exactas), secciones existentes (Transform completo), muros (bounding box), niveles — retornar datos como string. Script 2: usar datos exactos del Script 1 para crear seccion con Transform copiado de referencia y bounding box de muros.",
       "exitoso": true,
-      "usos": 1,
+      "usos": 4,
       "fecha": "2026-04-09"
     },
     {
-      "id": "sk_20260409160011",
-      "categoria": "Vistas",
-      "titulo": "Diagnóstico obligatorio antes de crear secciones: leer Transform de referencia",
-      "patron_error": "Crear secciones horizontales sin conocer el Transform exacto de secciones existentes — BasisZ incorrecto genera secciones que no aparecen en planta",
-      "solucion": "Ejecutar diagnóstico que lea Grid.Curve.GetEndPoint() para coordenadas y ViewSection.CropBox.Transform de secciones existentes del mismo tipo, luego copiar BasisX/Y/Z exactos al crear la nueva sección",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409160305",
-      "categoria": "Seleccion",
-      "titulo": "Seleccionar elementos por categoria con SetElementIds",
-      "patron_error": "Confusion sobre como seleccionar elementos programaticamente sin depender de seleccion previa del usuario",
-      "solucion": "FilteredElementCollector.OfClass(typeof(Tipo)).Iterar, acumular IDs en lista, uidoc.Selection.SetElementIds(lista)",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409160504",
-      "categoria": "Vistas",
-      "titulo": "Crear sección horizontal centrada entre dos grids horizontales con dimensión basada en bounding box de muros",
-      "patron_error": "Sección falla con 'No se encontro el nivel de la vista activa' cuando la vista activa no es ViewPlan o no tiene LevelId",
-      "solucion": "Antes de crear sección, verificar que vp != null Y nivel != null; si no hay nivel valido, usar fallback con nivel 0 o primer nivel del proyecto",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409160553",
-      "categoria": "Vistas",
-      "titulo": "Fallback de nivel cuando vista activa no es ViewPlan",
-      "patron_error": "El cast as ViewPlan retorna null cuando la vista activa no es planta, causando NullReferenceException al acceder vp.LevelId",
-      "solucion": "Verificar vp != null antes de vp.LevelId; si es null, buscar el primer nivel disponible con FilteredElementCollector como fallback seguro",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409161022",
-      "categoria": "Vistas",
-      "titulo": "Fallback robusto para obtener nivel de vista activa",
-      "patron_error": "Error: No se encontro el nivel cuando la vista activa no tiene LevelId valido o es null",
-      "solucion": "Despues de vp.LevelId, usar FilteredElementCollector para buscar cualquier nivel disponible como fallback si document.GetElement retorna null",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409161246",
+      "id": "sk_045",
       "categoria": "Niveles",
-      "titulo": "Fallback obligatorio para obtener nivel cuando vp.LevelId retorna null",
-      "patron_error": "Error: No se encontro el nivel - la vista activa tiene vp.LevelId pero document.GetElement() retorna null porque no hay Level asociado",
-      "solucion": "Despues de nivel = document.GetElement(vp.LevelId) as Level; verificar si es null y usar FilteredElementCollector.OfClass(typeof(Level)) con foreach para obtener el primer nivel disponible como fallback",
+      "titulo": "Fallback obligatorio para nivel — nunca asumir vista activa es ViewPlan",
+      "patron_error": "Error: no se encontro el nivel porque uidoc.ActiveView as ViewPlan retorna null en vista 3D o seccion activa",
+      "solucion": "SIEMPRE usar 3 intentos: 1) ViewPlan vp = uidoc.ActiveView as ViewPlan; if(vp!=null) nivel=doc.GetElement(vp.LevelId) as Level; 2) if(nivel==null) buscar por nombre 'Nivel 1'; 3) if(nivel==null) tomar primer nivel del collector. NUNCA retornar error si el primer intento falla.",
       "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409161545",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: dice:\r Error: no se encontró el nivel (además que tu respues...",
-      "patron_error": "",
-      "solucion": "Cambio: // Obtener Nivel 1 directamente → Level nivel = null;\r\nCambio: Level nivel = null; → FilteredElementCollector colNivel = new FilteredElementCollector(document);\r\nCambio: FilteredElementCollector colNivel = new FilteredElementCollector(document); → colNivel.OfClass(typeof(Level));",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409161557",
-      "categoria": "Niveles",
-      "titulo": "Búsqueda robusta de nivel con fallback por nombre y primer disponible",
-      "patron_error": "Error 'no se encontró el nivel' cuando el nombre del nivel no existe exacto en el proyecto",
-      "solucion": "Buscar por nombre exacto, si null tomar el primer nivel disponible con foreach + break. Fallback obligatorio para evitar null.",
-      "exitoso": true,
-      "usos": 1,
+      "usos": 5,
       "fecha": "2026-04-09"
     }
   ]
