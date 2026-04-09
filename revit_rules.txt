@@ -359,6 +359,22 @@ Si ChangeTypeId() no funciona (ej: cambio de Basic a Curtain),
 entonces usar Wall.Create() con los datos guardados previamente.
 SIEMPRE verificar que la altura sea > 0 antes de Wall.Create().
 
+■ REGLA 33 — LOS IDs DEL CONTEXTO PUEDEN ESTAR DESACTUALIZADOS:
+Si en la conversacion anterior se eliminaron y recrearon elementos,
+los IDs del CONTEXTO ACTUAL DE REVIT pueden ser de elementos que ya
+no existen. SIEMPRE verificar que el elemento existe antes de usarlo:
+
+Wall w = document.GetElement(new ElementId(id)) as Wall;
+if (w == null) continue; // el elemento ya no existe — ignorar
+
+Si el elemento es null, buscar los elementos actuales por categoria
+en la vista activa como fallback:
+
+FilteredElementCollector col = new FilteredElementCollector(document, uidoc.ActiveView.Id);
+col.OfClass(typeof(Wall));
+// usar estos en lugar de los IDs del contexto
+
+
 
 ═══════════════════════════════════════════════════════════
 FIN DE REGLAS
