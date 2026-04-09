@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T07:16:35.5269220Z",
-  "total": 33,
+  "updated": "2026-04-09T07:20:08.5794618Z",
+  "total": 34,
   "skills": [
     {
       "id": "sk_001",
@@ -329,6 +329,16 @@
       "titulo": "Crear suelo con offset hacia dentro basado en contorno de muros",
       "patron_error": "No existe metodo directo para offset en CurveLoop; Floor.Create no tiene parametro offset integrado",
       "solucion": "Calcular centroide del poligono, luego para cada curva mover sus puntos hacia el centro usando: p0Offset = new XYZ(p0.X - dir0.X * desfasePies, p0.Y - dir0.Y * desfasePies, 0). Usar desfaseMetros * 3.28084 para convertir a pies.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409022008",
+      "categoria": "Pisos",
+      "titulo": "Offset hacia afuera requiere SUMAR, no restar",
+      "patron_error": "Confundir la dirección del offset: restar produce un desfase hacia ADENTRO (-1m) en lugar de hacia AFUERA (+1m)",
+      "solucion": "Calcular vector desde centroide hacia punto, normalizarlo, y SUMAR desfasePies para mover hacia afuera. XYZ p0Offset = new XYZ(p0.X + dir0.X * desfasePies, p0.Y + dir0.Y * desfasePies, 0);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
