@@ -552,6 +552,26 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
-    }
+    },
+    {
+      "id": "sk_016",
+      "categoria": "General",
+      "titulo": "Transform es inmutable — no asignar BasisX/Y/Z directamente",
+      "patron_error": "sectionBox.Transform.BasisX = valor lanza excepcion porque Transform es de solo lectura",
+      "solucion": "Crear variable Transform nueva: Transform t = Transform.Identity; luego asignar t.BasisX = valor (en variable local nueva, no en propiedad de otro objeto). Usar CreateTranslation como base.",
+      "exitoso": true,
+      "usos": 2,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_017",
+      "categoria": "General",
+      "titulo": "LINQ prohibido — reemplazar First Select ToList con foreach",
+      "patron_error": ".First() .Select() .ToList() .ToArray() causan error de compilacion en el contexto de ejecucion",
+      "solucion": "Reemplazar ids.First() con: ElementId primerId = null; foreach(ElementId id in ids){ primerId = id; break; }. Nunca usar LINQ en scripts de Revit.",
+      "exitoso": true,
+      "usos": 3,
+      "fecha": "2026-04-09"
+     }
   ]
 }
