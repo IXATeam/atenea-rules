@@ -545,6 +545,35 @@ t.Origin  = new XYZ(newX, newY, newZ);
 // 3. Solo cambiar el Origin al nuevo punto
 // 4. NUNCA construir vectores base manualmente
 
+■ REGLA 42 — El ancho de una sección debe cubrir la CONSTRUCCION, no el proyecto completo:
+Al crear secciones, el Min/Max del BoundingBoxXYZ debe calcularse en base al
+bounding box REAL de los elementos construidos (muros, pisos, columnas),
+NO copiar el Min/Max de otra sección que puede cubrir toda la planta.
+
+PATRON CORRECTO:
+// 1. Calcular bounding box real de los muros
+double minX=999999, maxX=-999999, minY=999999, maxY=-999999;
+FilteredElementCollector cw = new FilteredElementCollector(document).OfClass(typeof(Wall));
+foreach (Wall w in cw) {
+    LocationCurve lc = w.Location as LocationCurve;
+    if (lc == null) continue;
+    XYZ p0 = lc.Curve.GetEndPoint(0);
+    XYZ p1 = lc.Curve.GetEndPoint(1);
+    if (p0.X < minX) minX = p0.X; if (p1.X < minX) minX = p1.X;
+    if (p0.X > maxX) maxX = p0.X; if (p1.X > maxX) maxX = p1.X;
+}
+double centroX = (minX + maxX) / 2;
+double anchoMitad = (maxX - minX) / 2 + (1.0 / 0.3048); // + 1m de margen
+
+// 2. Usar centroX como origen de la seccion y anchoMitad para Min/Max
+t.Origin = new XYZ(centroX, midY, originZ);
+bb.Min = new XYZ(-anchoMitad, -profundidad, altoMin);
+bb.Max = new XYZ( anchoMitad,  profundidad, altoMax);
+
+NUNCA copiar Min/Max de otra seccion sin verificar que cubra la construccion correctamente.
+El usuario espera ver los ELEMENTOS en la seccion, no aire vacio.
+
+
 
 ═══════════════════════════════════════════════════════════
 FIN DE REGLAS
