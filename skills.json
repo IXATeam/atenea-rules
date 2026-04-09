@@ -512,6 +512,26 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
+      },
+    {
+      "id": "sk_014",
+      "categoria": "Vistas",
+      "titulo": "Seccion horizontal BasisX=(1,0,0) BasisY=(0,0,1) BasisZ=(0,1,0)",
+      "patron_error": "Seccion creada en orientacion incorrecta por usar BasisZ equivocado",
+      "solucion": "Horizontal mira +Y: BasisX=(1,0,0) BasisY=(0,0,1) BasisZ=(0,1,0). Vertical mira +X: BasisX=(0,1,0) BasisY=(0,0,1) BasisZ=(1,0,0). BoundingBox en coordenadas locales.",
+      "exitoso": true,
+      "usos": 2,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_015",
+      "categoria": "Vistas",
+      "titulo": "Diagnosticar secciones existentes antes de crear nuevas",
+      "patron_error": "Crear sección sin conocer Transform de referencia produce orientacion incorrecta",
+      "solucion": "Leer CropBox.Transform.BasisX/Y/Z de la sección de referencia para determinar orientacion exacta antes de crear nuevas secciones similares.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
     }
   ]
 }
