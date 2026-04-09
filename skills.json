@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:19:51.5980983Z",
-  "total": 42,
+  "updated": "2026-04-09T16:20:10.5644866Z",
+  "total": 43,
   "skills": [
     {
       "id": "sk_001",
@@ -419,6 +419,16 @@
       "titulo": "Seleccionar todas las rejillas sin filtrar por vista",
       "patron_error": "Filtrar grids por viewId o crear vistas temporales causa que no se encuentren - no complicar",
       "solucion": "Usar FilteredElementCollector(document).OfClass(typeof(Grid)) sin viewId. Los grids existen en todo el modelo y se seleccionan directamente.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409112010",
+      "categoria": "Vistas",
+      "titulo": "Crear sección vertical entre dos grids (ejes) usando punto medio",
+      "patron_error": "Confusión sobre cómo especificar la ubicación y orientación de una sección entre dos grids sin usar Line ni Transform",
+      "solucion": "Calcular el punto medio entre las coordenadas X/Y de dos grids y usarlo como origen del BoundingBoxXYZ. El ancho define la extensión horizontal de la sección. Usar ViewFamilyType de tipo Section.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
