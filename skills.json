@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T17:23:22.2152123Z",
-  "total": 58,
+  "updated": "2026-04-09T17:23:37.1358821Z",
+  "total": 59,
   "skills": [
     {
       "id": "sk_001",
@@ -579,6 +579,16 @@
       "titulo": "Autocorreccion: ok en base a esta sección seleccionada, quiero que crees una...",
       "patron_error": "",
       "solucion": "Cambio: double elevacionOriginal = 0; → double anchoOriginal = 10;\r\nCambio: double anchoOriginal = 10; → double altoOriginal = 10;\r\nCambio: double altoOriginal = 10; → double profundidadOriginal = 10;",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409122337",
+      "categoria": "Seleccion",
+      "titulo": "Crear sección basada en existente sin selección activa requiere fallback por nombre",
+      "patron_error": "Error: No hay ninguna sección seleccionada - el script requiere selección activa pero la selección no persiste entre scripts",
+      "solucion": "Cuando el usuario dice 'basado en esta sección' y no hay selección, buscar todas las secciones existentes con FilteredElementCollector y mostrar opciones al usuario en lugar de fallar con error",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
