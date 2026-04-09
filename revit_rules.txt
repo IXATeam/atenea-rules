@@ -524,7 +524,26 @@ REGLA CRITICA: Para sección HORIZONTAL copiar Transform de sección
 horizontal existente. Para VERTICAL copiar de vertical existente.
 NUNCA construir Transform manualmente para secciones.
 
+■ REGLA 41 — Transform.CreateTranslation NO permite modificar BasisX/Y/Z:
+Transform.CreateTranslation() crea un Transform INMUTABLE para sus vectores base.
+Asignar t.BasisX después de CreateTranslation NO tiene efecto.
 
+// INCORRECTO — BasisX/Y/Z son ignorados:
+Transform t = Transform.CreateTranslation(new XYZ(x, y, z));
+t.BasisX = new XYZ(1, 0, 0); // SIN EFECTO
+
+// CORRECTO — asignar todos los campos en Transform.Identity:
+Transform t = Transform.Identity;
+t.BasisX  = tRef.BasisX;  // copiar de seccion de referencia
+t.BasisY  = tRef.BasisY;
+t.BasisZ  = tRef.BasisZ;
+t.Origin  = new XYZ(newX, newY, newZ);
+
+// PATRON OBLIGATORIO para secciones:
+// 1. Leer Transform de seccion existente del MISMO tipo (horizontal/vertical)
+// 2. Copiar BasisX/Y/Z exactos
+// 3. Solo cambiar el Origin al nuevo punto
+// 4. NUNCA construir vectores base manualmente
 
 
 ═══════════════════════════════════════════════════════════
