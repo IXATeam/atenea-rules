@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-08T19:58:21.6969029Z",
-  "total": 20,
+  "updated": "2026-04-09T06:13:02.7587216Z",
+  "total": 21,
   "skills": [
     {
       "id": "sk_001",
@@ -202,6 +202,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-08"
+    },
+    {
+      "id": "sk_20260409011302",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: cambia los muros actuales por la familia de muro cortina - v...",
+      "patron_error": "",
+      "solucion": "Cambio: // Buscar WallType \"Muro cortina - vertical\" por nombre exacto → // Usar WallType \"Muro cortina - vertical\" con ID directo del contexto\r\nCambio: WallType wallTypeCortina = null; → ElementId wallTypeCortinaId = new ElementId(16280L);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
     }
   ]
 }
