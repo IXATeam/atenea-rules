@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T16:18:14.0021281Z",
-  "total": 40,
+  "updated": "2026-04-09T16:19:31.5870163Z",
+  "total": 41,
   "skills": [
     {
       "id": "sk_001",
@@ -399,6 +399,16 @@
       "titulo": "Seleccionar grids visibles en un nivel especifico",
       "patron_error": "Asumir que se pueden filtrar grids por nivel sin crear primero una vista",
       "solucion": "Crear ViewPlan temporal del nivel destino y usar su viewId en el collector: new FilteredElementCollector(document, vista.Id)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409111931",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: es necesario que corrijas el skill para que no cometas estos...",
+      "patron_error": "",
+      "solucion": "Cambio: ● [Rejilla] Seleccionar grids de la vista activa - patrón simple → FilteredElementCollector col = new FilteredElementCollector(document);\r\nCambio: Evitar: Crear vistas temporales, complicar la lógica, verificar niveles innecesariamente → col.OfClass(typeof(Grid));",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
