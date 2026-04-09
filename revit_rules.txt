@@ -395,6 +395,30 @@ bb.Max = new XYZ( anchoMedio, altura,  1); // derecha, tope, profundidad frente
 // 3. Crear la sección
 ViewSection seccion = ViewSection.CreateSection(document, vftSec.Id, bb);
 
+■ REGLA 35 — ViewSection NO tiene propiedad ViewFamily ni Level directamente:
+ViewSection hereda de View. Las propiedades correctas son:
+
+// INCORRECTO:
+seccion.ViewFamily       // no existe
+seccion.Level            // no existe en ViewSection
+
+// CORRECTO:
+string familia = seccion.get_Parameter(BuiltInParameter.VIEW_FAMILY)?.AsString() ?? "";
+// El nivel no aplica a secciones — usan CropBox para definir su rango
+
+// Para iterar parametros de un elemento — NO usar ParameterFilterProvider:
+// INCORRECTO: new FilteredElementCollector(document, seccion.Id)
+// CORRECTO:
+foreach (Parameter p in seccion.Parameters) {
+    if (p.HasValue && p.Definition != null) {
+        string valor = p.AsValueString() ?? p.AsString() ?? "";
+        if (!string.IsNullOrEmpty(valor))
+            info += p.Definition.Name + ": " + valor + "\n";
+    }
+}
+
+
+
 
 
 ═══════════════════════════════════════════════════════════
