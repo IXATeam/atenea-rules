@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T04:47:35.2600354Z",
-  "total": 58,
+  "updated": "2026-04-10T04:48:50.9586730Z",
+  "total": 59,
   "skills": [
     {
       "id": "sk_001",
@@ -579,6 +579,16 @@
       "titulo": "Parametro Width puede retornar 0 si el nombre no coincide exactamente",
       "patron_error": "Usar LookupParameter(\"Width\") directamente retorna null o 0 si el parametro tiene nombre diferente segun idioma de Revit o familia",
       "solucion": "Usar BuiltInParameter.DIMENSION_LENGTH o calcular ancho desde el BoundingBox del Symbol para evitar dependencia del nombre del parametro",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409234850",
+      "categoria": "Familias",
+      "titulo": "Cambiar tipo de ventana con ChangeTypeId y Activate",
+      "patron_error": "Error común: intentar cambiar tipo de familia sin activar el nuevo FamilySymbol primero",
+      "solucion": "Para cambiar tipo de FamilyInstance (ventanas, puertas, etc.): 1) Buscar el nuevo FamilySymbol, 2) Verificar IsActive y llamar Activate() si es necesario, 3) Usar ChangeTypeId(nuevoSymbol.Id)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
