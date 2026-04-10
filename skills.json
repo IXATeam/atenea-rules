@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T05:01:29.5394442Z",
-  "total": 66,
+  "updated": "2026-04-10T17:31:52.1951541Z",
+  "total": 67,
   "skills": [
     {
       "id": "sk_001",
@@ -659,6 +659,16 @@
       "titulo": "Cambiar tipo de puerta con ChangeTypeId preservando ubicacion",
       "patron_error": "Eliminar y recrear FamilyInstance pierde la ubicacion y requiere recalcular-intersecciones",
       "solucion": "Usar ChangeTypeId(nuevoFamilySymbol.Id) sobre la FamilyInstance existente, con IsActive/Activate() del simbolo",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410123152",
+      "categoria": "Grillas",
+      "titulo": "Clasificar grids y obtener intersecciones para seleccionar elementos por zona",
+      "patron_error": "Confusion sobre como identificar si un grid es vertical u horizontal y como calcular puntos de interseccion entre rejillas",
+      "solucion": "Usar Math.Abs(p1.X - p0.X) < 0.01 para clasificar grids; Grid.Curve.Intersect() con SetComparisonResult para obtener puntos de interseccion exactos entre rejillas",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
