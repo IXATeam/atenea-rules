@@ -584,6 +584,43 @@ bb.Max = new XYZ( anchoMitad,  profundidad, altoMax);
 NUNCA copiar Min/Max de otra seccion sin verificar que cubra la construccion correctamente.
 El usuario espera ver los ELEMENTOS en la seccion, no aire vacio.
 
+■ REGLA 46 — SELECCIONAR MURO ENTRE DOS INTERSECCIONES DE REJILLA:
+Para encontrar el muro entre C5 y E5, calcular las intersecciones
+y buscar el muro cuyo PUNTO MEDIO esté más cercano al segmento entre
+los dos puntos de intersección. NO filtrar por orientación del muro.
+
+PATRON CORRECTO:
+// Calcular intersecciones
+XYZ ptC5 = interseccion(gridC, grid5); // (3m, 11m)
+XYZ ptE5 = interseccion(gridE, grid5); // (11m, 11m)
+
+// Calcular punto medio del segmento objetivo
+XYZ midObjetivo = new XYZ((ptC5.X+ptE5.X)/2, (ptC5.Y+ptE5.Y)/2, 0);
+
+// Buscar muro con punto medio más cercano al midObjetivo
+double menorDist = double.MaxValue;
+Wall muroEncontrado = null;
+foreach (Wall w in collector) {
+    LocationCurve lc = w.Location as LocationCurve;
+    if (lc == null) continue;
+    XYZ p0 = lc.Curve.GetEndPoint(0);
+    XYZ p1 = lc.Curve.GetEndPoint(1);
+    XYZ midMuro = new XYZ((p0.X+p1.X)/2, (p0.Y+p1.Y)/2, 0);
+    double dist = midMuro.DistanceTo(midObjetivo);
+    if (dist < menorDist) {
+        menorDist = dist;
+        muroEncontrado = w;
+    }
+}
+// Tolerancia: aceptar si dist < 2 metros (en pies: 2/0.3048)
+if (menorDist < 2.0/0.3048 && muroEncontrado != null)
+    → seleccionar muroEncontrado
+
+NUNCA filtrar por orientacion del muro antes de calcular distancias.
+NUNCA asumir que el muro es "horizontal" o "vertical" — buscar por proximidad.
+
+
+
 
 
 ═══════════════════════════════════════════════════════════
