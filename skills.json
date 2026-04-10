@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T04:52:47.3471009Z",
-  "total": 61,
+  "updated": "2026-04-10T04:54:49.3709057Z",
+  "total": 62,
   "skills": [
     {
       "id": "sk_001",
@@ -609,6 +609,16 @@
       "titulo": "Verificar distancia antes de reubicar puertas para evitar colisiones",
       "patron_error": "Colocar puertas sobre ventanas u otros elementos existentes en muros cercanos",
       "solucion": "Calcular distancia entre punto medio del muro candidato y posicion de elementos existentes, solo reubicar si distancia > 1.5 metros, usar fallback al primero disponible si todos estan cerca",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409235449",
+      "categoria": "Seleccion",
+      "titulo": "Verificar categoria del elemento seleccionado antes de procesarlo",
+      "patron_error": "El script busca puertas (OST_Doors) pero el usuario selecciona una ventana (OST_Windows), resultando en 'No hay puerta seleccionada' sin indicar que se selecciono otro tipo",
+      "solucion": "Validar la categoria del elemento con fi.Category y retornar un mensaje claro indicando que tipo de elemento se esperaba vs cual se encontro",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
