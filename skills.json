@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T04:54:49.3709057Z",
-  "total": 62,
+  "updated": "2026-04-10T04:57:43.8984725Z",
+  "total": 63,
   "skills": [
     {
       "id": "sk_001",
@@ -619,6 +619,16 @@
       "titulo": "Verificar categoria del elemento seleccionado antes de procesarlo",
       "patron_error": "El script busca puertas (OST_Doors) pero el usuario selecciona una ventana (OST_Windows), resultando en 'No hay puerta seleccionada' sin indicar que se selecciono otro tipo",
       "solucion": "Validar la categoria del elemento con fi.Category y retornar un mensaje claro indicando que tipo de elemento se esperaba vs cual se encontro",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409235743",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: ok ahora con la puerta seleccionada puedes revisar los parám...",
+      "patron_error": "",
+      "solucion": "Cambio: ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); → FamilyInstance puerta = document.GetElement(new ElementId(166655L)) as FamilyInstance;\r\nCambio: if (selIds.Count == 0) { → if (puerta == null) {",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
