@@ -702,6 +702,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
-    }
+     },
+     {
+      "id": "sk_047",
+      "categoria": "Cotas",
+      "titulo": "Referencias de Grids para NewDimension via get_Geometry con ComputeReferences=true",
+      "patron_error": "gridC.Curve.Reference lanza excepcion en NewDimension — InvocationException",
+      "solucion": "Options geoOpts = new Options(); geoOpts.View = vista; geoOpts.ComputeReferences = true; GeometryElement geo = grid.get_Geometry(geoOpts); foreach(GeometryObject obj in geo){ Line l = obj as Line; if(l!=null && l.Reference!=null){ refs.Append(l.Reference); break; } }",
+      "exitoso": true,
+      "usos": 3,
+      "fecha": "2026-04-10"
+      }
   ]
 }
