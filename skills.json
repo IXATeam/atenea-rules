@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T04:45:55.5756646Z",
-  "total": 56,
+  "updated": "2026-04-10T04:46:56.6324798Z",
+  "total": 57,
   "skills": [
     {
       "id": "sk_001",
@@ -559,6 +559,16 @@
       "titulo": "Colocar ventana en muro con NewFamilyInstance y punto medio",
       "patron_error": "NewFamilyInstance en muro requiere pasar el muro como parámetro para que se ancle correctamente",
       "solucion": "Usar document.Create.NewFamilyInstance(punto, symbol, muro, nivel, StructuralType.NonStructural). Para el punto medio del muro usar puntoMedio = curva.GetEndPoint(0) + (curva.GetEndPoint(1) - curva.GetEndPoint(0)) * 0.5",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409234656",
+      "categoria": "Seleccion",
+      "titulo": "Filtrar elementos visibles en vista activa con viewId en collector",
+      "patron_error": "Confundir ElementIsVisibleFilter (no existe en API) con filtrado por visibilidad",
+      "solucion": "Usar FilteredElementCollector(document, uidoc.ActiveView.Id) con OfClass y OfCategory. El segundo argumento viewId filtra automaticamente por visibilidad.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
