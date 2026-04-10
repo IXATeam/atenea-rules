@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T18:20:43.7898679Z",
-  "total": 68,
+  "updated": "2026-04-10T23:47:11.9446287Z",
+  "total": 70,
   "skills": [
     {
       "id": "sk_001",
@@ -682,8 +682,8 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
-     },
-     {
+    },
+    {
       "id": "sk_046",
       "categoria": "Seleccion",
       "titulo": "Muro entre intersecciones de rejilla: buscar por punto medio mas cercano",
@@ -691,7 +691,17 @@
       "solucion": "Calcular midObjetivo = punto medio entre las dos intersecciones de rejilla. Buscar el muro con punto medio mas cercano a midObjetivo usando DistanceTo(). Tolerancia de 2m. NUNCA filtrar por dy<0.05 ni por orientacion.",
       "exitoso": true,
       "usos": 3,
-      "fecha": "2026-04-10" 
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410184711",
+      "categoria": "Seleccion",
+      "titulo": "Seleccionar muro entre dos intersecciones de rejilla por punto medio",
+      "patron_error": "Seleccionar muro por nombre o filtrar por orientacion (horizontal/vertical) sin considerar la ubicacion real",
+      "solucion": "Calcular intersecciones de rejilla, obtener punto medio del segmento, buscar muro con punto medio mas cercano usando DistanceTo con tolerancia de 2 metros",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
     }
   ]
 }
