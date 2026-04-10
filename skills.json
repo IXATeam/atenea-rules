@@ -682,6 +682,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
+     },
+     {
+      "id": "sk_046",
+      "categoria": "Seleccion",
+      "titulo": "Muro entre intersecciones de rejilla: buscar por punto medio mas cercano",
+      "patron_error": "Filtrar muros por orientacion antes de calcular distancias elimina el muro correcto",
+      "solucion": "Calcular midObjetivo = punto medio entre las dos intersecciones de rejilla. Buscar el muro con punto medio mas cercano a midObjetivo usando DistanceTo(). Tolerancia de 2m. NUNCA filtrar por dy<0.05 ni por orientacion.",
+      "exitoso": true,
+      "usos": 3,
+      "fecha": "2026-04-10" 
     }
   ]
 }
