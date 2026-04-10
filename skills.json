@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T05:00:01.0154676Z",
-  "total": 65,
+  "updated": "2026-04-10T05:01:29.5394442Z",
+  "total": 66,
   "skills": [
     {
       "id": "sk_001",
@@ -649,6 +649,16 @@
       "titulo": "Leer y modificar parametros de puertas seleccionadas",
       "patron_error": "Asumir que el elemento seleccionado es del tipo correcto sin verificar categoria ni existencia del parametro",
       "solucion": "Verificar Category.Id.Value == OST_Doors antes de castear, usar LookupParameter para buscar parametros de familia, mostrar diagnostico completo antes de modificar valores",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410000129",
+      "categoria": "Familias",
+      "titulo": "Cambiar tipo de puerta con ChangeTypeId preservando ubicacion",
+      "patron_error": "Eliminar y recrear FamilyInstance pierde la ubicacion y requiere recalcular-intersecciones",
+      "solucion": "Usar ChangeTypeId(nuevoFamilySymbol.Id) sobre la FamilyInstance existente, con IsActive/Activate() del simbolo",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
