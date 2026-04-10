@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-09T21:35:51.8028130Z",
-  "total": 55,
+  "updated": "2026-04-10T04:45:55.5756646Z",
+  "total": 56,
   "skills": [
     {
       "id": "sk_001",
@@ -549,6 +549,16 @@
       "titulo": "Aplicar color de OverrideGraphicSettings a elementos",
       "patron_error": "Confusion sobre como aplicar colores de visualizationOverrideSettings sin cambiar el tipo real del elemento",
       "solucion": "Usar OverrideGraphicSettings con SetProjectionFillColor/CutFillColor, luego aplicar con vistaActiva.SetElementOverrides(id, overrides)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409234555",
+      "categoria": "Familias",
+      "titulo": "Colocar ventana en muro con NewFamilyInstance y punto medio",
+      "patron_error": "NewFamilyInstance en muro requiere pasar el muro como parámetro para que se ancle correctamente",
+      "solucion": "Usar document.Create.NewFamilyInstance(punto, symbol, muro, nivel, StructuralType.NonStructural). Para el punto medio del muro usar puntoMedio = curva.GetEndPoint(0) + (curva.GetEndPoint(1) - curva.GetEndPoint(0)) * 0.5",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
