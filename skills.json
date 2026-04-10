@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T04:51:25.1333365Z",
-  "total": 60,
+  "updated": "2026-04-10T04:52:47.3471009Z",
+  "total": 61,
   "skills": [
     {
       "id": "sk_001",
@@ -599,6 +599,16 @@
       "titulo": "Crear FamilyInstance en muro con NewFamilyInstance: parametros y orden correcto",
       "patron_error": "Parametros en orden incorrecto o sin activar el FamilySymbol causa fallo en creacion de puertas y ventanas",
       "solucion": "Usar document.Create.NewFamilyInstance(XYZpos, symbol, muro, nivel, StructuralType.NonStructural) y activar symbol con IsActive antes de crear",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409235247",
+      "categoria": "Familias",
+      "titulo": "Verificar distancia antes de reubicar puertas para evitar colisiones",
+      "patron_error": "Colocar puertas sobre ventanas u otros elementos existentes en muros cercanos",
+      "solucion": "Calcular distancia entre punto medio del muro candidato y posicion de elementos existentes, solo reubicar si distancia > 1.5 metros, usar fallback al primero disponible si todos estan cerca",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
