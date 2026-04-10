@@ -619,6 +619,30 @@ if (menorDist < 2.0/0.3048 && muroEncontrado != null)
 NUNCA filtrar por orientacion del muro antes de calcular distancias.
 NUNCA asumir que el muro es "horizontal" o "vertical" — buscar por proximidad.
 
+■ REGLA 47 — Referencias de Grids para cotas: usar get_Geometry con ComputeReferences:
+gridC.Curve.Reference NO funciona para NewDimension — lanza excepción.
+PATRON CORRECTO:
+
+Options geoOpts = new Options();
+geoOpts.View = vistaActiva;
+geoOpts.ComputeReferences = true;
+
+ReferenceArray refs = new ReferenceArray();
+GeometryElement geoGrid = grid.get_Geometry(geoOpts);
+foreach (GeometryObject obj in geoGrid) {
+    Line l = obj as Line;
+    if (l != null && l.Reference != null) {
+        refs.Append(l.Reference);
+        break;
+    }
+}
+
+Dimension cota = document.Create.NewDimension(vista, lineaCota, refs, dimType);
+
+NUNCA usar grid.Curve.Reference directamente para cotas.
+SIEMPRE usar get_Geometry con ComputeReferences=true.
+La linea de cota debe ser PARALELA al elemento acotado.
+El offset de la linea de cota debe ser positivo para ir "arriba" o "derecha".
 
 
 
