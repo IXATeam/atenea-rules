@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T04:46:56.6324798Z",
-  "total": 57,
+  "updated": "2026-04-10T04:47:35.2600354Z",
+  "total": 58,
   "skills": [
     {
       "id": "sk_001",
@@ -569,6 +569,16 @@
       "titulo": "Filtrar elementos visibles en vista activa con viewId en collector",
       "patron_error": "Confundir ElementIsVisibleFilter (no existe en API) con filtrado por visibilidad",
       "solucion": "Usar FilteredElementCollector(document, uidoc.ActiveView.Id) con OfClass y OfCategory. El segundo argumento viewId filtra automaticamente por visibilidad.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409234735",
+      "categoria": "Parametros",
+      "titulo": "Parametro Width puede retornar 0 si el nombre no coincide exactamente",
+      "patron_error": "Usar LookupParameter(\"Width\") directamente retorna null o 0 si el parametro tiene nombre diferente segun idioma de Revit o familia",
+      "solucion": "Usar BuiltInParameter.DIMENSION_LENGTH o calcular ancho desde el BoundingBox del Symbol para evitar dependencia del nombre del parametro",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
