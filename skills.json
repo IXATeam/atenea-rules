@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T17:31:52.1951541Z",
-  "total": 67,
+  "updated": "2026-04-10T18:20:43.7898679Z",
+  "total": 68,
   "skills": [
     {
       "id": "sk_001",
@@ -669,6 +669,16 @@
       "titulo": "Clasificar grids y obtener intersecciones para seleccionar elementos por zona",
       "patron_error": "Confusion sobre como identificar si un grid es vertical u horizontal y como calcular puntos de interseccion entre rejillas",
       "solucion": "Usar Math.Abs(p1.X - p0.X) < 0.01 para clasificar grids; Grid.Curve.Intersect() con SetComparisonResult para obtener puntos de interseccion exactos entre rejillas",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410132043",
+      "categoria": "General",
+      "titulo": "Verificar elementos disponibles antes de aplicar filtros restrictivos",
+      "patron_error": "FilteredElementCollector con viewId retorna 0 elementos cuando no hay muros visibles en la vista, pero no se sabe si el problema es que no existen o que están filtrados",
+      "solucion": "Buscar muros SIN viewId primero para confirmar que existen en el proyecto, luego filtrar por visibilidad si es necesario",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
