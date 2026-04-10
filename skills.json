@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T04:57:43.8984725Z",
-  "total": 63,
+  "updated": "2026-04-10T04:57:50.9387535Z",
+  "total": 64,
   "skills": [
     {
       "id": "sk_001",
@@ -629,6 +629,16 @@
       "titulo": "Autocorreccion: ok ahora con la puerta seleccionada puedes revisar los parám...",
       "patron_error": "",
       "solucion": "Cambio: ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); → FamilyInstance puerta = document.GetElement(new ElementId(166655L)) as FamilyInstance;\r\nCambio: if (selIds.Count == 0) { → if (puerta == null) {",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409235750",
+      "categoria": "Parametros",
+      "titulo": "Buscar parámetro Sill Height en puertas con fallback en cascada",
+      "patron_error": "Asumir que el parámetro de antepecho se llama exactamente igual en todos los proyectos o familias",
+      "solucion": "Buscar Sill Height → Antepecho → Sill primero en la instancia, luego en el Symbol, usando LookupParameter con múltiples intentos en cascada",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
