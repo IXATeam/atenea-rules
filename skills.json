@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T04:48:50.9586730Z",
-  "total": 59,
+  "updated": "2026-04-10T04:51:25.1333365Z",
+  "total": 60,
   "skills": [
     {
       "id": "sk_001",
@@ -589,6 +589,16 @@
       "titulo": "Cambiar tipo de ventana con ChangeTypeId y Activate",
       "patron_error": "Error común: intentar cambiar tipo de familia sin activar el nuevo FamilySymbol primero",
       "solucion": "Para cambiar tipo de FamilyInstance (ventanas, puertas, etc.): 1) Buscar el nuevo FamilySymbol, 2) Verificar IsActive y llamar Activate() si es necesario, 3) Usar ChangeTypeId(nuevoSymbol.Id)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_20260409235125",
+      "categoria": "Familias",
+      "titulo": "Crear FamilyInstance en muro con NewFamilyInstance: parametros y orden correcto",
+      "patron_error": "Parametros en orden incorrecto o sin activar el FamilySymbol causa fallo en creacion de puertas y ventanas",
+      "solucion": "Usar document.Create.NewFamilyInstance(XYZpos, symbol, muro, nivel, StructuralType.NonStructural) y activar symbol con IsActive antes de crear",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-09"
