@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T06:10:13.3720340Z",
-  "total": 52,
+  "updated": "2026-04-11T06:17:58.5494047Z",
+  "total": 53,
   "skills": [
     {
       "id": "sk_001",
@@ -519,6 +519,16 @@
       "titulo": "Buscar y activar vista de planta por nombre con fallback robusto",
       "patron_error": "Error 'No se encontro ninguna vista de Nivel 2' cuando se busca vista por nombre exacto",
       "solucion": "Usar vp.Name.Contains() para busqueda parcial (Nivel 2 o Level 2) con fallback a primera vista disponible del collector",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-11"
+    },
+    {
+      "id": "sk_20260411011758",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: muestra en pantalla la Sección 1",
+      "patron_error": "",
+      "solucion": "Cambio: if (vs.Name.Contains(\"Sec\") || vs.Name.Contains(\"Section\")) { → if ((vs.Name.Contains(\"Sec\") || vs.Name.Contains(\"Section\")) && !vs.IsTemplate) {",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-11"
