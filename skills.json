@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T22:00:00.000Z",
-  "total": 48,
+  "updated": "2026-04-11T03:06:44.6893402Z",
+  "total": 49,
   "skills": [
     {
       "id": "sk_001",
@@ -481,6 +481,16 @@
       "solucion": "Error no paralelas significa que la linea de cota NO es paralela a las referencias usadas. Para muro diagonal: SIEMPRE usar DetailLines perpendiculares en los extremos — son las unicas referencias confiables. Para muro recto: verificar que la linea de cota corre en la misma direccion que el muro. Si el valor es 0.30m las referencias apuntan a caras laterales no a extremos — reintentar filtrando caras por posicion extrema con GetEdgesAsCurveLoops. NUNCA rendirse en el primer fallo — reintentar con variante de referencia.",
       "exitoso": true,
       "usos": 4,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410220644",
+      "categoria": "General",
+      "titulo": "Patron Maestro de Cotas: 3 casos segun orientacion de muro con reintento",
+      "patron_error": "Muros no acotados por no distinguir entre horizontal, vertical y diagonal. grid.Curve.Reference da error. Caras de solido miden grosor en muros diagonales.",
+      "solucion": "Diagnosticar orientacion con dx/dy, para H/V usar get_Geometry con ComputeReferences=true filtrando por posX/posY, para diagonal crear DetailLines perpendiculares en extremos, incluir try-catch con offset alternativo para reintento.",
+      "exitoso": true,
+      "usos": 1,
       "fecha": "2026-04-10"
     }
   ]
