@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:06:58.8162792Z",
-  "total": 78,
+  "updated": "2026-04-11T00:11:47.8836622Z",
+  "total": 79,
   "skills": [
     {
       "id": "sk_001",
@@ -779,6 +779,16 @@
       "titulo": "Crear cota paralela a muro con offset perpendicular usando vector normalizado",
       "patron_error": "Crear cota con offset en dirección Z fijo en lugar de perpendicular al muro — falla en muros inclinados u orientados arbitrariamente",
       "solucion": "Calcular dirección perpendicular: dx=(p1-p0), dirPerp=(-dx.Y,dx.X,0)/longitud. OffsetP0=p0+dirPerp*offset. Crear Line.CreateBound con puntos offseteados. Usar get_Geometry(ComputeReferences=true) para refs de caras del muro.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410191147",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: guarda este skill",
+      "patron_error": "",
+      "solucion": "Cambio: // ================================================ → // Verificar que el skill ya fue guardado\r\nCambio: // ATENEA SKILL — ANALISIS DE COTAS EN REVIT → string info = \"========================================\\n\";",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
