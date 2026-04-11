@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:03:36.1685646Z",
-  "total": 75,
+  "updated": "2026-04-11T00:04:36.1570690Z",
+  "total": 76,
   "skills": [
     {
       "id": "sk_001",
@@ -749,6 +749,16 @@
       "titulo": "Crear cota de longitud a muro seleccionado con linea paralela",
       "patron_error": "Usar grid.Curve.Reference directamente para cotas causa excepcion — debe usar get_Geometry con ComputeReferences",
       "solucion": "Usar get_Geometry con Options{ComputeReferences=true} para obtener referencias validas del muro, con fallback a curvaMuro.Reference",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410190436",
+      "categoria": "Parametros",
+      "titulo": "Crear cota de longitud en muro seleccionado usando Geometry con ComputeReferences",
+      "patron_error": "Cota no se crea porque no hay muro seleccionado — el usuario asume seleccion previa pero Revit no la tiene",
+      "solucion": "Usar get_Geometry con ComputeReferences=true para obtener referencias de cara del muro, con fallback a curva.Reference si falla. Calcular offset perpendicular automatico para linea de cota paralela al muro.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
