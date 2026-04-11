@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T03:09:16.1004159Z",
-  "total": 51,
+  "updated": "2026-04-11T06:10:13.3720340Z",
+  "total": 52,
   "skills": [
     {
       "id": "sk_001",
@@ -512,6 +512,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260411011013",
+      "categoria": "Vistas",
+      "titulo": "Buscar y activar vista de planta por nombre con fallback robusto",
+      "patron_error": "Error 'No se encontro ninguna vista de Nivel 2' cuando se busca vista por nombre exacto",
+      "solucion": "Usar vp.Name.Contains() para busqueda parcial (Nivel 2 o Level 2) con fallback a primera vista disponible del collector",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-11"
     }
   ]
 }
