@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T06:17:58.5494047Z",
-  "total": 53,
+  "updated": "2026-04-11T06:18:10.3302599Z",
+  "total": 54,
   "skills": [
     {
       "id": "sk_001",
@@ -529,6 +529,16 @@
       "titulo": "Autocorreccion: muestra en pantalla la Sección 1",
       "patron_error": "",
       "solucion": "Cambio: if (vs.Name.Contains(\"Sec\") || vs.Name.Contains(\"Section\")) { → if ((vs.Name.Contains(\"Sec\") || vs.Name.Contains(\"Section\")) && !vs.IsTemplate) {",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-11"
+    },
+    {
+      "id": "sk_20260411011810",
+      "categoria": "Vistas",
+      "titulo": "Buscar y activar Seccion por nombre parcial con fallback",
+      "patron_error": "Buscar seccion por nombre exacto sin fallback causa Error cuando el nombre no coincide exactamente",
+      "solucion": "Usar Contains() para buscar por parte del nombre y fallback de primera seccion no-plantilla disponible",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-11"
