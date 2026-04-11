@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:04:36.1570690Z",
-  "total": 76,
+  "updated": "2026-04-11T00:06:35.9411810Z",
+  "total": 77,
   "skills": [
     {
       "id": "sk_001",
@@ -759,6 +759,16 @@
       "titulo": "Crear cota de longitud en muro seleccionado usando Geometry con ComputeReferences",
       "patron_error": "Cota no se crea porque no hay muro seleccionado — el usuario asume seleccion previa pero Revit no la tiene",
       "solucion": "Usar get_Geometry con ComputeReferences=true para obtener referencias de cara del muro, con fallback a curva.Reference si falla. Calcular offset perpendicular automatico para linea de cota paralela al muro.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410190635",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: si no hay un muro seleccionado, pues entonces solo debes sel...",
+      "patron_error": "",
+      "solucion": "Cambio: XYZ p0 = curvaMuro.GetEndPoint(0); → XYZ p0muro = curvaMuro.GetEndPoint(0);\r\nCambio: XYZ p1 = curvaMuro.GetEndPoint(1); → XYZ p1muro = curvaMuro.GetEndPoint(1);\r\nCambio: XYZ dx = new XYZ(p1.X - p0.X, p1.Y - p0.Y, 0); → XYZ dx = new XYZ(p1muro.X - p0muro.X, p1muro.Y - p0muro.Y, 0);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
