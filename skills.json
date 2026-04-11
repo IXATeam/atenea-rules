@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:01:39.3582298Z",
-  "total": 73,
+  "updated": "2026-04-11T00:03:23.7913350Z",
+  "total": 74,
   "skills": [
     {
       "id": "sk_001",
@@ -729,6 +729,16 @@
       "titulo": "Seleccionar muro entre dos intersecciones de rejillas por proximidad",
       "patron_error": "Asumir que se puede identificar un muro por su nombre o filtrar por orientación sin calcular distancias",
       "solucion": "Calcular punto medio objetivo entre intersecciones C5 y E5, buscar el muro con punto medio más cercano usando DistanceTo con tolerancia de 2 metros",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410190323",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: acota ese muro",
+      "patron_error": "",
+      "solucion": "Cambio: // Verificar seleccion activa → // Usar ID del muro del contexto\r\nCambio: ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); → Wall muroSeleccionado = document.GetElement(new ElementId(165587L)) as Wall;",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
