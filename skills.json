@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T03:06:44.6893402Z",
-  "total": 49,
+  "updated": "2026-04-11T03:06:59.4377738Z",
+  "total": 50,
   "skills": [
     {
       "id": "sk_001",
@@ -489,6 +489,16 @@
       "titulo": "Patron Maestro de Cotas: 3 casos segun orientacion de muro con reintento",
       "patron_error": "Muros no acotados por no distinguir entre horizontal, vertical y diagonal. grid.Curve.Reference da error. Caras de solido miden grosor en muros diagonales.",
       "solucion": "Diagnosticar orientacion con dx/dy, para H/V usar get_Geometry con ComputeReferences=true filtrando por posX/posY, para diagonal crear DetailLines perpendiculares en extremos, incluir try-catch con offset alternativo para reintento.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410220659",
+      "categoria": "Muros",
+      "titulo": "Acotar muro identificado por dos intersecciones de rejilla (D2 a B2)",
+      "patron_error": "Seleccionar muro incorrecto cuando hay multiples muros en la zona o acotar con referencias de caras que dan longitud 0m",
+      "solucion": "Usar punto medio entre las dos intersecciones de grid como objetivo. Buscar el muro cuyo punto medio (midMuro) tenga la menor distancia a midObjetivo. Para muros verticales usar caras filtradas por posicion Y maxima y minima.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
