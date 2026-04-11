@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:01:31.9759882Z",
-  "total": 72,
+  "updated": "2026-04-11T00:01:39.3582298Z",
+  "total": 73,
   "skills": [
     {
       "id": "sk_001",
@@ -719,6 +719,16 @@
       "titulo": "Autocorreccion: selecciona el muro que se encuentra ubicado entre los puntos...",
       "patron_error": "",
       "solucion": "Cambio: // Buscar las rejillas C, E, 5 → Grid gridC = null, gridE = null, grid5 = null;\r\nCambio: Grid gridC = null, gridE = null, grid5 = null; → FilteredElementCollector cg = new FilteredElementCollector(document);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410190139",
+      "categoria": "Seleccion",
+      "titulo": "Seleccionar muro entre dos intersecciones de rejillas por proximidad",
+      "patron_error": "Asumir que se puede identificar un muro por su nombre o filtrar por orientación sin calcular distancias",
+      "solucion": "Calcular punto medio objetivo entre intersecciones C5 y E5, buscar el muro con punto medio más cercano usando DistanceTo con tolerancia de 2 metros",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
