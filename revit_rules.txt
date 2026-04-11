@@ -644,6 +644,191 @@ SIEMPRE usar get_Geometry con ComputeReferences=true.
 La linea de cota debe ser PARALELA al elemento acotado.
 El offset de la linea de cota debe ser positivo para ir "arriba" o "derecha".
 
+■ REGLA 48 — SISTEMA COMPLETO DE COTAS EN REVIT — PATRON MAESTRO:
+
+ATENEA NUNCA se rinde en cotas. Siempre sigue este proceso de decision:
+
+═══════════════════════════════════════════════════════════════
+PASO 1 — DIAGNOSTICO PREVIO OBLIGATORIO
+═══════════════════════════════════════════════════════════════
+Antes de crear cualquier cota, determinar:
+
+LocationCurve lc = muro.Location as LocationCurve;
+XYZ p0 = lc.Curve.GetEndPoint(0);
+XYZ p1 = lc.Curve.GetEndPoint(1);
+double dx = Math.Abs(p1.X - p0.X);
+double dy = Math.Abs(p1.Y - p0.Y);
+double longitud = Math.Sqrt(dx*dx + dy*dy);
+bool esHorizontal = dx > dy && dy < 0.05;  // corre en X
+bool esVertical   = dy > dx && dx < 0.05;  // corre en Y
+bool esDiagonal   = !esHorizontal && !esVertical; // inclinado
+
+// Vector director normalizado (siempre calcularlo)
+XYZ dir  = new XYZ((p1.X-p0.X)/longitud, (p1.Y-p0.Y)/longitud, 0);
+XYZ perp = new XYZ(-dir.Y, dir.X, 0); // perpendicular al muro
+
+// DimensionType disponible
+DimensionType dimType = null;
+foreach (DimensionType dt in new FilteredElementCollector(document)
+    .OfClass(typeof(DimensionType)))
+{
+    dimType = dt; // tomar el primero disponible
+    if (dt.Name.Contains("lineal") || dt.Name.Contains("Lineal")) break;
+}
+
+// Vista activa
+View vista = uidoc.ActiveView;
+
+═══════════════════════════════════════════════════════════════
+PASO 2A — MURO HORIZONTAL (corre en X, dy ≈ 0)
+═══════════════════════════════════════════════════════════════
+// Usar caras del solido filtradas por posicion X
+Options geoOpts = new Options();
+geoOpts.View = vista;
+geoOpts.ComputeReferences = true;
+GeometryElement geo = muro.get_Geometry(geoOpts);
+
+XYZ mid = new XYZ((p0.X+p1.X)/2, (p0.Y+p1.Y)/2, 0);
+double minPosX = double.MaxValue, maxPosX = double.MinValue;
+Reference refMin = null, refMax = null;
+
+foreach (GeometryObject obj in geo) {
+    Solid s = obj as Solid; if (s == null) continue;
+    foreach (Face f in s.Faces) {
+        if (f.Reference == null) continue;
+        double sumX = 0; int n = 0;
+        foreach (CurveLoop cl in f.GetEdgesAsCurveLoops())
+            foreach (Curve c in cl) { sumX += c.GetEndPoint(0).X; n++; }
+        if (n == 0) continue;
+        double posX = sumX / n;
+        if (posX < minPosX) { minPosX = posX; refMin = f.Reference; }
+        if (posX > maxPosX) { maxPosX = posX; refMax = f.Reference; }
+    }
+    break;
+}
+ReferenceArray refs = new ReferenceArray();
+refs.Append(refMin); refs.Append(refMax);
+
+// Linea de cota HORIZONTAL (paralela al muro), offset hacia arriba
+double offsetPies = 1.5 / 0.3048;
+XYZ lp0 = new XYZ(Math.Min(p0.X,p1.X)-0.5, p0.Y + offsetPies, 0);
+XYZ lp1 = new XYZ(Math.Max(p0.X,p1.X)+0.5, p0.Y + offsetPies, 0);
+Line lineaCota = Line.CreateBound(lp0, lp1);
+Dimension cota = document.Create.NewDimension(vista, lineaCota, refs, dimType);
+
+═══════════════════════════════════════════════════════════════
+PASO 2B — MURO VERTICAL (corre en Y, dx ≈ 0)
+═══════════════════════════════════════════════════════════════
+// Igual que horizontal pero filtrar por posicion Y y linea VERTICAL
+double minPosY = double.MaxValue, maxPosY = double.MinValue;
+Reference refMinY = null, refMaxY = null;
+
+foreach (GeometryObject obj in geo) {
+    Solid s = obj as Solid; if (s == null) continue;
+    foreach (Face f in s.Faces) {
+        if (f.Reference == null) continue;
+        double sumY = 0; int n = 0;
+        foreach (CurveLoop cl in f.GetEdgesAsCurveLoops())
+            foreach (Curve c in cl) { sumY += c.GetEndPoint(0).Y; n++; }
+        if (n == 0) continue;
+        double posY = sumY / n;
+        if (posY < minPosY) { minPosY = posY; refMinY = f.Reference; }
+        if (posY > maxPosY) { maxPosY = posY; refMaxY = f.Reference; }
+    }
+    break;
+}
+refs = new ReferenceArray();
+refs.Append(refMinY); refs.Append(refMaxY);
+
+// Linea de cota VERTICAL (paralela al muro), offset hacia la derecha
+XYZ lp0v = new XYZ(p0.X + offsetPies, Math.Min(p0.Y,p1.Y)-0.5, 0);
+XYZ lp1v = new XYZ(p0.X + offsetPies, Math.Max(p0.Y,p1.Y)+0.5, 0);
+Line lineaCotaV = Line.CreateBound(lp0v, lp1v);
+Dimension cotaV = document.Create.NewDimension(vista, lineaCotaV, refs, dimType);
+
+═══════════════════════════════════════════════════════════════
+PASO 2C — MURO DIAGONAL (inclinado, ni 0° ni 90°)
+═══════════════════════════════════════════════════════════════
+// NUNCA usar caras del solido — siempre miden el GROSOR
+// NUNCA usar grid.Curve.Reference — da error "no paralelas"
+// SOLUCION: crear DetailLines perpendiculares en los extremos
+
+double perpExt = 1.5 / 0.3048; // 1.5m de longitud para cada DetailLine
+
+// DetailLine en extremo P0
+Line ld0 = Line.CreateBound(
+    new XYZ(p0.X - perp.X*perpExt, p0.Y - perp.Y*perpExt, 0),
+    new XYZ(p0.X + perp.X*perpExt, p0.Y + perp.Y*perpExt, 0));
+DetailLine dl0 = document.Create.NewDetailCurve(vista, ld0) as DetailLine;
+
+// DetailLine en extremo P1
+Line ld1 = Line.CreateBound(
+    new XYZ(p1.X - perp.X*perpExt, p1.Y - perp.Y*perpExt, 0),
+    new XYZ(p1.X + perp.X*perpExt, p1.Y + perp.Y*perpExt, 0));
+DetailLine dl1 = document.Create.NewDetailCurve(vista, ld1) as DetailLine;
+
+ReferenceArray refsD = new ReferenceArray();
+refsD.Append(dl0.GeometryCurve.Reference);
+refsD.Append(dl1.GeometryCurve.Reference);
+
+// Linea de cota PARALELA al muro diagonal, offset perpendicular
+double ext = 0.3 / 0.3048;
+XYZ lp0d = new XYZ(p0.X - dir.X*ext + perp.X*offsetPies,
+                    p0.Y - dir.Y*ext + perp.Y*offsetPies, 0);
+XYZ lp1d = new XYZ(p1.X + dir.X*ext + perp.X*offsetPies,
+                    p1.Y + dir.Y*ext + perp.Y*offsetPies, 0);
+Line lineaDiag = Line.CreateBound(lp0d, lp1d);
+Dimension cotaDiag = document.Create.NewDimension(vista, lineaDiag, refsD, dimType);
+
+═══════════════════════════════════════════════════════════════
+PASO 3 — MANEJO DE ERRORES Y REINTENTOS
+═══════════════════════════════════════════════════════════════
+// Si NewDimension retorna null o lanza excepcion:
+// INTENTO 1: cambiar el DimensionType
+// INTENTO 2: ampliar la linea de cota (+-1.0 en lugar de +-0.5)
+// INTENTO 3: para diagonal, reducir perpExt a 1.0/0.3048
+// INTENTO 4: invertir el orden de los extremos en refs
+// NUNCA rendirse despues del primer fallo — reintentar con variante
+
+═══════════════════════════════════════════════════════════════
+REGLAS CRITICAS — NUNCA OLVIDAR
+═══════════════════════════════════════════════════════════════
+1. La linea de cota SIEMPRE debe ser PARALELA a las referencias
+2. grid.Curve.Reference NUNCA funciona con NewDimension
+3. get_Geometry SIEMPRE necesita ComputeReferences=true
+4. NUNCA usar ComputeNormal() — puede lanzar excepcion
+5. Para diagonal: DetailLines son las unicas referencias confiables
+6. El grosor del muro es 0.30m — si la cota da ese valor, las refs son incorrectas
+7. Verificar valor de cota: debe ser ~longitud del muro, no el grosor
+8. Si Revit dice "no paralelas" → cambiar tipo de referencia o direccion de linea
+9. NUNCA usar Transaction en scripts — ya esta abierta
+10. Siempre obtener DimensionType antes de NewDimension
+
+═══════════════════════════════════════════════════════════════
+PATRON DE SELECCION DE MURO POR REJILLAS (Regla 46)
+═══════════════════════════════════════════════════════════════
+// Calcular midObjetivo entre las dos intersecciones de grid
+// Buscar el muro con punto medio mas cercano al midObjetivo
+// NUNCA filtrar por orientacion antes de calcular distancias
+
+Grid gA = null, gB = null, gC = null;
+// Buscar los grids por nombre...
+XYZ ptAC = interseccion(gA, gC);
+XYZ ptBC = interseccion(gB, gC);
+XYZ midObj = new XYZ((ptAC.X+ptBC.X)/2, (ptAC.Y+ptBC.Y)/2, 0);
+
+Wall muroEncontrado = null;
+double menorDist = double.MaxValue;
+foreach (Wall w in collector) {
+    LocationCurve lc2 = w.Location as LocationCurve;
+    if (lc2 == null) continue;
+    XYZ p02 = lc2.Curve.GetEndPoint(0);
+    XYZ p12 = lc2.Curve.GetEndPoint(1);
+    XYZ midW = new XYZ((p02.X+p12.X)/2, (p02.Y+p12.Y)/2, 0);
+    double dist = midW.DistanceTo(midObj);
+    if (dist < menorDist) { menorDist = dist; muroEncontrado = w; }
+}
+
 
 
 
