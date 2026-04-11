@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:15:03.6845769Z",
-  "total": 87,
+  "updated": "2026-04-10T22:00:00.000Z",
+  "total": 48,
   "skills": [
     {
       "id": "sk_001",
@@ -36,7 +36,7 @@
     {
       "id": "sk_004",
       "categoria": "Seleccion",
-      "titulo": "ElementIsVisibleFilter no existe — usar FilteredElementCollector con viewId",
+      "titulo": "ElementIsVisibleFilter no existe usar FilteredElementCollector con viewId",
       "patron_error": "ElementIsVisibleFilter no existe en el API de Revit y causa error de compilacion",
       "solucion": "Pasar el viewId directamente al collector: new FilteredElementCollector(document, vista.Id).OfClass(typeof(Wall)). El segundo argumento ya filtra por visibilidad.",
       "exitoso": true,
@@ -46,19 +46,19 @@
     {
       "id": "sk_005",
       "categoria": "Niveles",
-      "titulo": "Nunca hacer cast de View a Level",
-      "patron_error": "View as Level siempre retorna null porque View y Level son tipos incompatibles",
-      "solucion": "Para obtener nivel de vista activa: ViewPlan vp = uidoc.ActiveView as ViewPlan; Level nivel = document.GetElement(vp.LevelId) as Level;",
+      "titulo": "Obtener nivel con fallback robusto nunca asumir vista activa es ViewPlan",
+      "patron_error": "uidoc.ActiveView as ViewPlan retorna null en vista 3D o seccion causa Error no se encontro el nivel",
+      "solucion": "PATRON CON 3 FALLBACKS: Level nivel = null; ViewPlan vp = uidoc.ActiveView as ViewPlan; if (vp != null) nivel = document.GetElement(vp.LevelId) as Level; if (nivel == null) { foreach (Level l in new FilteredElementCollector(document).OfClass(typeof(Level))) { if (l.Name == 'Nivel 1' || l.Name == 'Level 1') { nivel = l; break; } } } if (nivel == null) { foreach (Level l in new FilteredElementCollector(document).OfClass(typeof(Level))) { nivel = l; break; } }",
       "exitoso": true,
       "usos": 9,
-      "fecha": "2026-04-07"
+      "fecha": "2026-04-09"
     },
     {
       "id": "sk_006",
       "categoria": "Seleccion",
       "titulo": "La seleccion de Revit NO persiste entre ejecuciones de scripts",
       "patron_error": "uidoc.Selection.GetElementIds() retorna 0 aunque el script anterior selecciono elementos",
-      "solucion": "NUNCA depender de la seleccion entre scripts. El RevitContextReader inyecta los IDs en el prompt — usar esos IDs directamente. Fallback: FilteredElementCollector en vista activa.",
+      "solucion": "NUNCA depender de la seleccion entre scripts. El RevitContextReader inyecta los IDs en el prompt usar esos IDs directamente. Fallback: FilteredElementCollector en vista activa.",
       "exitoso": true,
       "usos": 8,
       "fecha": "2026-04-08"
@@ -76,7 +76,7 @@
     {
       "id": "sk_008",
       "categoria": "Muros",
-      "titulo": "Cambiar tipo de muro: usar ChangeTypeId, NO eliminar y recrear",
+      "titulo": "Cambiar tipo de muro usar ChangeTypeId NO eliminar y recrear",
       "patron_error": "Wall.Create con altura 0 falla. Eliminar y recrear muros es innecesario y propenso a errores de geometria",
       "solucion": "Usar w.ChangeTypeId(nuevoWallTypeId) directamente cuando sea posible. Si se debe recrear, obtener altura real con WALL_USER_HEIGHT_PARAM y usar fallback de 3.0 * 3.28084 pies si es 0.",
       "exitoso": true,
@@ -96,9 +96,9 @@
     {
       "id": "sk_010",
       "categoria": "Muros",
-      "titulo": "Reemplazar muros por familia especifica: buscar WallType por nombre exacto",
-      "patron_error": "Usar WallKind.Curtain o CreateCurtainWall crea muros cortina genericos, no la familia especifica solicitada",
-      "solucion": "Buscar WallType por nombre exacto: foreach(WallType wt in col) if (wt.Name == \"Muro cortina - vertical\") { tipoBuscado = wt; break; } Luego Wall.Create(document, curva, tipoBuscado.Id, nivelId, altura, 0, false, false)",
+      "titulo": "Reemplazar muros por familia especifica buscar WallType por nombre exacto",
+      "patron_error": "Usar WallKind.Curtain o CreateCurtainWall crea muros cortina genericos no la familia especifica solicitada",
+      "solucion": "Buscar WallType por nombre exacto: foreach(WallType wt in col) if (wt.Name == 'Muro cortina - vertical') { tipoBuscado = wt; break; } Luego Wall.Create(document, curva, tipoBuscado.Id, nivelId, altura, 0, false, false)",
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-08"
@@ -116,8 +116,8 @@
     {
       "id": "sk_012",
       "categoria": "Vistas",
-      "titulo": "ViewSection.CreateSection requiere BoundingBoxXYZ con Transform orientado, NO Line",
-      "patron_error": "Argumento 3: no se puede convertir de Line a BoundingBoxXYZ — error de compilacion",
+      "titulo": "ViewSection.CreateSection requiere BoundingBoxXYZ con Transform orientado NO Line",
+      "patron_error": "Argumento 3: no se puede convertir de Line a BoundingBoxXYZ error de compilacion",
       "solucion": "Usar BoundingBoxXYZ con Transform orientado. PATRON: Transform t = Transform.Identity; t.BasisX=bX; t.BasisY=bY; t.BasisZ=bZ; bb.Transform=t; bb.Min/Max en coordenadas locales de la seccion.",
       "exitoso": true,
       "usos": 4,
@@ -126,9 +126,9 @@
     {
       "id": "sk_013",
       "categoria": "Vistas",
-      "titulo": "ViewSection NO tiene propiedades ViewFamily ni Level — usar Parameters",
-      "patron_error": "ViewSection no contiene definicion para ViewFamily ni Level — error de compilacion",
-      "solucion": "Para familia: seccion.get_Parameter(BuiltInParameter.VIEW_FAMILY).AsString(). Para nivel: no existe en ViewSection. Para parametros: foreach(Parameter p in seccion.Parameters) if (p.HasValue && p.Definition != null). NUNCA usar ParameterFilterProvider con vistas.",
+      "titulo": "ViewSection NO tiene propiedades ViewFamily ni Level usar Parameters",
+      "patron_error": "ViewSection no contiene definicion para ViewFamily ni Level error de compilacion",
+      "solucion": "Para familia: seccion.get_Parameter(BuiltInParameter.VIEW_FAMILY).AsString(). Para nivel: no existe en ViewSection. NUNCA usar ParameterFilterProvider con vistas.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -137,8 +137,8 @@
       "id": "sk_014",
       "categoria": "Vistas",
       "titulo": "Orientacion correcta de Transform para secciones horizontales y verticales",
-      "patron_error": "Seccion creada con Origin en Z negativo o BasisY incorrecto — seccion no visible en vista de planta",
-      "solucion": "Vertical mirando +X: BasisX=(0,1,0) BasisY=(0,0,1) BasisZ=(1,0,0). Vertical mirando -X: BasisZ=(-1,0,0). Horizontal mirando +Y: BasisX=(1,0,0) BasisY=(0,0,1) BasisZ=(0,1,0). BoundingBox SIEMPRE en coordenadas locales.",
+      "patron_error": "Seccion creada con Origin en Z negativo o BasisY incorrecto seccion no visible en vista de planta",
+      "solucion": "Vertical mirando +X: BasisX=(0,1,0) BasisY=(0,0,1) BasisZ=(1,0,0). Horizontal mirando +Y: BasisX=(1,0,0) BasisY=(0,0,1) BasisZ=(0,1,0). BoundingBox SIEMPRE en coordenadas locales.",
       "exitoso": true,
       "usos": 5,
       "fecha": "2026-04-09"
@@ -146,19 +146,19 @@
     {
       "id": "sk_015",
       "categoria": "Vistas",
-      "titulo": "Diagnosticar secciones existentes ANTES de crear nuevas — copiar Transform de referencia",
-      "patron_error": "Sección creada con BasisY=(0,1,0) en lugar de (0,0,1) — seccion mira hacia abajo y no aparece en planta",
-      "solucion": "PASO 1: Leer CropBox.Transform de secciones existentes del mismo tipo. PASO 2: Copiar BasisX/Y/Z exactos de referencia. PASO 3: Crear Transform con CreateTranslation y nuevo origen. NUNCA construir Transform desde cero para secciones.",
+      "titulo": "Diagnosticar secciones existentes ANTES de crear nuevas copiar Transform de referencia",
+      "patron_error": "Seccion creada con BasisY incorrecto no aparece en planta",
+      "solucion": "PASO 1: Leer CropBox.Transform de secciones existentes del mismo tipo. PASO 2: Copiar BasisX/Y/Z exactos. PASO 3: Transform t = Transform.Identity; t.BasisX=tRef.BasisX; t.BasisY=tRef.BasisY; t.BasisZ=tRef.BasisZ; t.Origin=nuevoOrigen; NUNCA construir Transform desde cero.",
       "exitoso": true,
-      "usos": 5,
+      "usos": 6,
       "fecha": "2026-04-09"
     },
     {
       "id": "sk_016",
       "categoria": "General",
-      "titulo": "Transform.Identity es modificable en variable LOCAL — no en propiedad de otro objeto",
-      "patron_error": "sectionBox.Transform.BasisX = valor — lanza excepcion porque es propiedad anidada de solo lectura",
-      "solucion": "Crear variable Transform nueva: Transform t = Transform.Identity; t.BasisX = bX; t.BasisY = bY; t.BasisZ = bZ; (en variable local nueva). Luego: bb.Transform = t; NUNCA modificar BasisX/Y/Z de la propiedad Transform de otro objeto.",
+      "titulo": "Transform.Identity es modificable en variable LOCAL no en propiedad de otro objeto",
+      "patron_error": "sectionBox.Transform.BasisX = valor lanza excepcion porque es propiedad anidada de solo lectura",
+      "solucion": "Crear variable Transform nueva: Transform t = Transform.Identity; t.BasisX = bX; t.BasisY = bY; t.BasisZ = bZ; Luego: bb.Transform = t; NUNCA modificar BasisX/Y/Z de la propiedad Transform de otro objeto.",
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-09"
@@ -166,9 +166,9 @@
     {
       "id": "sk_017",
       "categoria": "General",
-      "titulo": "LINQ completamente prohibido — reemplazar con foreach",
+      "titulo": "LINQ completamente prohibido reemplazar con foreach",
       "patron_error": ".First() .Last() .Select() .Where() .ToList() .ToArray() .Count() causan error de compilacion en scripts de Revit",
-      "solucion": "ids.First() → ElementId primero = null; foreach(ElementId id in ids){ primero = id; break; }. NUNCA usar LINQ. Usar foreach para todo. Para contar usar una variable int contador = 0; contador++;",
+      "solucion": "ids.First() → ElementId primero = null; foreach(ElementId id in ids){ primero = id; break; }. NUNCA usar LINQ. Usar foreach para todo.",
       "exitoso": true,
       "usos": 6,
       "fecha": "2026-04-09"
@@ -176,19 +176,19 @@
     {
       "id": "sk_018",
       "categoria": "Vistas",
-      "titulo": "Crear secciones en 2 pasos: diagnostico primero, creacion con datos reales despues",
-      "patron_error": "Seccion con Origin Z=-7m creada porque se construyo Transform manualmente sin leer datos reales del proyecto",
-      "solucion": "PASO 1 — Script diagnostico: leer Transform exacto de seccion existente (BasisX/Y/Z + Origin + Min/Max). PASO 2 — Crear: Transform t = Transform.CreateTranslation(newOrigin); t.BasisX=tRef.BasisX; t.BasisY=tRef.BasisY; t.BasisZ=tRef.BasisZ; bb.Min=tRef.Min; bb.Max=tRef.Max;",
+      "titulo": "Crear secciones en 2 pasos diagnostico primero creacion con datos reales despues",
+      "patron_error": "Seccion con Origin Z negativo o ancho incorrecto por construir Transform manualmente",
+      "solucion": "PASO 1 diagnostico: leer Transform exacto de seccion existente + bounding box de muros + coordenadas de grids. PASO 2 crear: Transform t = Transform.Identity; t.BasisX=tRef.BasisX; t.BasisY=tRef.BasisY; t.BasisZ=tRef.BasisZ; t.Origin=new XYZ(centroX, midY, tRef.Origin.Z); bb.Min/Max basados en bounding box real de muros.",
       "exitoso": true,
-      "usos": 5,
+      "usos": 6,
       "fecha": "2026-04-09"
     },
     {
       "id": "sk_019",
       "categoria": "Seleccion",
-      "titulo": "Grillas no requieren filtro por vista — usar collector sin viewId",
-      "patron_error": "Filtrar grids por viewId o crear vistas temporales causa que no se encuentren las rejillas",
-      "solucion": "Usar FilteredElementCollector(document).OfClass(typeof(Grid)) SIN segundo argumento viewId. Las grillas existen en todo el proyecto. Para seleccionar: uidoc.Selection.SetElementIds(listaDeIds).",
+      "titulo": "Grillas no requieren filtro por vista usar collector sin viewId",
+      "patron_error": "Filtrar grids por viewId causa que no se encuentren las rejillas",
+      "solucion": "Usar FilteredElementCollector(document).OfClass(typeof(Grid)) SIN segundo argumento viewId. Las grillas existen en todo el proyecto.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -206,8 +206,8 @@
     {
       "id": "sk_021",
       "categoria": "Muros",
-      "titulo": "Wall.Create requiere altura mayor a 0 — usar fallback de 3 metros",
-      "patron_error": "Exception: The given value for height must be greater than 0 — altura 0 invalida",
+      "titulo": "Wall.Create requiere altura mayor a 0 usar fallback de 3 metros",
+      "patron_error": "Exception: The given value for height must be greater than 0",
       "solucion": "double altura = w.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM).AsDouble(); if (altura <= 0) altura = 3.0 * 3.28084; SIEMPRE verificar y aplicar fallback antes de Wall.Create.",
       "exitoso": true,
       "usos": 4,
@@ -216,9 +216,9 @@
     {
       "id": "sk_022",
       "categoria": "Pisos",
-      "titulo": "Floor.Create con CurveLoop — verificar curvas validas antes de crear",
+      "titulo": "Floor.Create con CurveLoop verificar curvas validas antes de crear",
       "patron_error": "Floor.Create falla si el CurveLoop tiene curvas de longitud cero o no forma un contorno cerrado",
-      "solucion": "Verificar cada curva: XYZ p0=curva.GetEndPoint(0); XYZ p1=curva.GetEndPoint(1); if (p0.DistanceTo(p1) < 0.01) continue; Luego: List<CurveLoop> loops = new List<CurveLoop>(); CurveLoop loop = new CurveLoop(); loop.Append(curva); loops.Add(loop); Floor.Create(document, loops, floorTypeId, nivelId);",
+      "solucion": "Verificar cada curva: if (p0.DistanceTo(p1) < 0.01) continue; Luego: List<CurveLoop> loops = new List<CurveLoop>(); CurveLoop loop = new CurveLoop(); loop.Append(curva); loops.Add(loop); Floor.Create(document, loops, floorTypeId, nivelId);",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -226,9 +226,9 @@
     {
       "id": "sk_023",
       "categoria": "Pisos",
-      "titulo": "Offset de contorno hacia afuera: SUMAR vector desde centroide",
+      "titulo": "Offset de contorno hacia afuera SUMAR vector desde centroide",
       "patron_error": "Restar el vector produce offset hacia ADENTRO en lugar de hacia AFUERA",
-      "solucion": "Calcular centroide de todos los puntos. Para cada punto: XYZ dir = (punto - centroide).Normalize(); XYZ puntoOffset = new XYZ(punto.X + dir.X * desfasePies, punto.Y + dir.Y * desfasePies, 0); SUMAR para ir hacia afuera, RESTAR para ir hacia adentro.",
+      "solucion": "Calcular centroide de todos los puntos. Para cada punto: XYZ dir = (punto - centroide).Normalize(); XYZ puntoOffset = new XYZ(punto.X + dir.X * desfasePies, punto.Y + dir.Y * desfasePies, 0); SUMAR para ir hacia afuera.",
       "exitoso": true,
       "usos": 2,
       "fecha": "2026-04-09"
@@ -236,9 +236,9 @@
     {
       "id": "sk_024",
       "categoria": "General",
-      "titulo": "Verificar tipo de elemento antes de cast — evitar NullReferenceException",
+      "titulo": "Verificar tipo de elemento antes de cast evitar NullReferenceException",
       "patron_error": "Cast fallido silencioso: document.GetElement(id) retorna Element pero el cast a tipo especifico da null",
-      "solucion": "Siempre verificar: Wall w = element as Wall; if (w == null) continue; ViewSection vs = element as ViewSection; if (vs == null) continue; NUNCA asumir el tipo sin verificar.",
+      "solucion": "Siempre verificar: Wall w = element as Wall; if (w == null) continue; NUNCA asumir el tipo sin verificar.",
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-09"
@@ -247,8 +247,8 @@
       "id": "sk_025",
       "categoria": "Muros",
       "titulo": "Buscar WallType con Contains cuando el nombre exacto es incierto",
-      "patron_error": "wt.Name == nombre exacto falla si el nombre real tiene prefijo diferente (ej: 'Por defecto - 20 cm' vs 'Muro Por defecto - 20 cm')",
-      "solucion": "Usar Contains para coincidencia parcial: foreach(WallType wt in col) { if (wt.Name.Contains('Por defecto') && wt.Name.Contains('20 cm')) { tipo = wt; break; } } Como ultimo fallback, usar el primer tipo disponible.",
+      "patron_error": "wt.Name == nombre exacto falla si el nombre real tiene prefijo diferente",
+      "solucion": "Usar Contains para coincidencia parcial: if (wt.Name.Contains('Por defecto') && wt.Name.Contains('20 cm')) { tipo = wt; break; } Como ultimo fallback, usar el primer tipo disponible.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -256,7 +256,7 @@
     {
       "id": "sk_026",
       "categoria": "Seleccion",
-      "titulo": "Recopilar IDs durante creacion de elementos — no consultar collector despues",
+      "titulo": "Recopilar IDs durante creacion de elementos no consultar collector despues",
       "patron_error": "FilteredElementCollector despues de crear y eliminar elementos devuelve 0 porque el estado del documento cambio",
       "solucion": "Usar List<ElementId> idsCreados = new List<ElementId>(); durante el bucle de creacion: if (nuevo != null) idsCreados.Add(nuevo.Id); Al final: uidoc.Selection.SetElementIds(idsCreados);",
       "exitoso": true,
@@ -266,9 +266,9 @@
     {
       "id": "sk_027",
       "categoria": "Vistas",
-      "titulo": "Secciones visibles en planta: Origin.Z debe estar dentro del rango del nivel",
-      "patron_error": "Seccion no aparece en vista de Nivel 1 porque Origin.Z = -7m (bajo tierra) en lugar de 0 o positivo",
-      "solucion": "El Origin.Z de la seccion debe coincidir con la elevacion del nivel donde debe ser visible. Nivel 1 = Z=0. Copiar Origin.Z de una seccion de referencia que SI sea visible en ese nivel. NUNCA usar Z negativo como origen de seccion.",
+      "titulo": "Secciones visibles en planta Origin.Z debe estar dentro del rango del nivel",
+      "patron_error": "Seccion no aparece en vista de Nivel 1 porque Origin.Z = -7m bajo tierra",
+      "solucion": "El Origin.Z de la seccion debe coincidir con la elevacion del nivel. Copiar Origin.Z de una seccion de referencia que SI sea visible en ese nivel. NUNCA usar Z negativo como origen.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -276,8 +276,8 @@
     {
       "id": "sk_028",
       "categoria": "General",
-      "titulo": "SubTransaction prohibido — la transaccion ya esta abierta por el sistema",
-      "patron_error": "SubTransaction lanza excepcion porque ya existe una Transaction abierta externamente",
+      "titulo": "SubTransaction y Transaction prohibidos la transaccion ya esta abierta por el sistema",
+      "patron_error": "Transaction no contiene una definicion para Status / SubTransaction lanza excepcion",
       "solucion": "NUNCA usar SubTransaction ni Transaction en scripts de ATENEA. La transaccion ya esta abierta. Todo el codigo se ejecuta dentro de ella automaticamente.",
       "exitoso": true,
       "usos": 5,
@@ -286,19 +286,19 @@
     {
       "id": "sk_029",
       "categoria": "Vistas",
-      "titulo": "Crear secciones: diagnosticar grids y VFT antes de calcular coordenadas",
+      "titulo": "Crear secciones leer coordenadas reales de grids antes de calcular puntos medios",
       "patron_error": "Calcular punto medio entre grids sin leer sus coordenadas reales produce ubicacion incorrecta",
-      "solucion": "SIEMPRE leer coordenadas reales de grids con GetEndPoint(0) y (1) antes de calcular puntos medios. Verificar VFT de seccion con ViewFamily.Section. Script diagnostico primero, creacion despues.",
+      "solucion": "SIEMPRE leer coordenadas reales de grids con GetEndPoint(0) y (1) antes de calcular puntos medios. Script diagnostico primero, creacion despues.",
       "exitoso": true,
-      "usos": 3,
+      "usos": 4,
       "fecha": "2026-04-09"
     },
     {
       "id": "sk_030",
       "categoria": "General",
-      "titulo": "Scripts de mas de 100 lineas causan timeout — dividir en pasos",
-      "patron_error": "Script de 150+ lineas no retorna resultado — timeout de 60 segundos agotado",
-      "solucion": "Dividir scripts largos en 2-3 scripts separados de menos de 80 lineas cada uno. PASO 1: diagnostico y recopilacion de datos. PASO 2: ejecucion con datos del PASO 1. El usuario ejecuta cada paso por separado.",
+      "titulo": "Scripts de mas de 100 lineas causan timeout dividir en pasos",
+      "patron_error": "Script de 150+ lineas no retorna resultado timeout de 60 segundos agotado",
+      "solucion": "Dividir scripts largos en 2-3 scripts separados de menos de 80 lineas cada uno. PASO 1: diagnostico. PASO 2: ejecucion con datos del PASO 1.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -306,9 +306,9 @@
     {
       "id": "sk_031",
       "categoria": "Vistas",
-      "titulo": "ViewFamilyType de seccion: usar ViewFamily.Section en el filtro",
+      "titulo": "ViewFamilyType de seccion usar ViewFamily.Section en el filtro",
       "patron_error": "Buscar ViewFamilyType sin filtrar por ViewFamily.Section devuelve tipos incorrectos",
-      "solucion": "FilteredElementCollector col = new FilteredElementCollector(document).OfClass(typeof(ViewFamilyType)); foreach (ViewFamilyType vft in col) { if (vft.ViewFamily == ViewFamily.Section) { vftSec = vft; break; } }",
+      "solucion": "foreach (ViewFamilyType vft in col) { if (vft.ViewFamily == ViewFamily.Section) { vftSec = vft; break; } }",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -316,9 +316,9 @@
     {
       "id": "sk_032",
       "categoria": "Muros",
-      "titulo": "Contorno cerrado de muros: adyacentes comparten geometria — no eliminar antes de guardar todo",
-      "patron_error": "Al eliminar el primer muro de un contorno, los muros adyacentes pierden sus LocationCurve",
-      "solucion": "Recopilar TODAS las curvas en una lista antes de eliminar cualquier elemento. Verificar que la lista tiene el mismo Count que los muros antes de proceder con eliminaciones.",
+      "titulo": "Contorno cerrado de muros no eliminar antes de guardar todas las curvas",
+      "patron_error": "Al eliminar el primer muro de un contorno los muros adyacentes pierden sus LocationCurve",
+      "solucion": "Recopilar TODAS las curvas en una lista antes de eliminar cualquier elemento. Verificar que la lista tiene el mismo Count que los muros antes de proceder.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -326,9 +326,9 @@
     {
       "id": "sk_033",
       "categoria": "Seleccion",
-      "titulo": "Patron fallback para seleccion: contexto primero, FilteredElementCollector despues",
-      "patron_error": "Script falla con Error: No hay muros seleccionados cuando el usuario uso seleccion manual antes",
-      "solucion": "ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); List<Wall> muros = new List<Wall>(); if (selIds.Count > 0) { foreach(ElementId id in selIds){ Wall w = document.GetElement(id) as Wall; if (w!=null) muros.Add(w); } } if (muros.Count == 0) { FilteredElementCollector col = new FilteredElementCollector(document, uidoc.ActiveView.Id).OfClass(typeof(Wall)); foreach(Wall w in col) muros.Add(w); }",
+      "titulo": "Patron fallback para seleccion contexto primero FilteredElementCollector despues",
+      "patron_error": "Script falla con Error No hay muros seleccionados cuando el usuario uso seleccion manual antes",
+      "solucion": "ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); List<Wall> muros = new List<Wall>(); if (selIds.Count > 0) { foreach(ElementId id in selIds){ Wall w = document.GetElement(id) as Wall; if (w!=null) muros.Add(w); } } if (muros.Count == 0) { foreach(Wall w in new FilteredElementCollector(document, uidoc.ActiveView.Id).OfClass(typeof(Wall))) muros.Add(w); }",
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-09"
@@ -336,19 +336,19 @@
     {
       "id": "sk_034",
       "categoria": "Vistas",
-      "titulo": "Crear seccion basada en existente: copiar todos los parametros del Transform",
-      "patron_error": "Seccion nueva con orientacion diferente a la de referencia porque solo se copio el origen y no los vectores base",
-      "solucion": "Transform tRef = seccionReferencia.CropBox.Transform; Transform tNew = Transform.CreateTranslation(nuevoOrigen); tNew.BasisX = tRef.BasisX; tNew.BasisY = tRef.BasisY; tNew.BasisZ = tRef.BasisZ; BoundingBoxXYZ bb = new BoundingBoxXYZ(); bb.Transform = tNew; bb.Min = seccionReferencia.CropBox.Min; bb.Max = seccionReferencia.CropBox.Max;",
+      "titulo": "Crear seccion basada en existente copiar todos los parametros del Transform",
+      "patron_error": "Seccion nueva con orientacion diferente porque solo se copio el origen",
+      "solucion": "Transform tRef = seccionReferencia.CropBox.Transform; Transform tNew = Transform.Identity; tNew.BasisX = tRef.BasisX; tNew.BasisY = tRef.BasisY; tNew.BasisZ = tRef.BasisZ; tNew.Origin = nuevoOrigen; bb.Min = new XYZ(-anchoMitad,-prof,altoMin); bb.Max = new XYZ(anchoMitad,prof,altoMax);",
       "exitoso": true,
-      "usos": 4,
+      "usos": 5,
       "fecha": "2026-04-09"
     },
     {
       "id": "sk_035",
       "categoria": "General",
-      "titulo": "Diagnostico antes de crear cualquier elemento: leer datos reales del proyecto",
-      "patron_error": "Elemento creado con parametros incorrectos por asumir nombres, IDs o coordenadas sin verificar",
-      "solucion": "SIEMPRE ejecutar script de diagnostico primero cuando no se conocen los datos exactos: IDs de tipos, nombres reales de familias, coordenadas de grids, elevaciones de niveles, transforms de vistas. Usar esos datos en el script de creacion.",
+      "titulo": "Diagnostico antes de crear cualquier elemento leer datos reales del proyecto",
+      "patron_error": "Elemento creado con parametros incorrectos por asumir nombres IDs o coordenadas sin verificar",
+      "solucion": "SIEMPRE ejecutar script de diagnostico primero cuando no se conocen los datos exactos: IDs de tipos, nombres reales de familias, coordenadas de grids, elevaciones de niveles, transforms de vistas.",
       "exitoso": true,
       "usos": 5,
       "fecha": "2026-04-09"
@@ -356,9 +356,9 @@
     {
       "id": "sk_036",
       "categoria": "Muros",
-      "titulo": "WallType por nombre: verificar FamilyName y Name por separado",
-      "patron_error": "wt.Name == 'Muro Por defecto - 20 cm' falla porque el nombre real es 'Por defecto - 20 cm' y la familia es diferente",
-      "solucion": "Buscar con Contains en Name y FamilyName: if (wt.Name.Contains('Por defecto') && wt.Name.Contains('20')) { tipo = wt; break; } O usar el ID exacto si se conoce del contexto.",
+      "titulo": "WallType por nombre usar Contains cuando nombre exacto es incierto",
+      "patron_error": "wt.Name == 'Muro Por defecto - 20 cm' falla porque el nombre real es diferente",
+      "solucion": "Buscar con Contains: if (wt.Name.Contains('Por defecto') && wt.Name.Contains('20')) { tipo = wt; break; } O usar el ID exacto si se conoce del contexto.",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -366,9 +366,9 @@
     {
       "id": "sk_037",
       "categoria": "Vistas",
-      "titulo": "IsSectionBoxActive no existe en ViewSection — solo en View3D",
-      "patron_error": "ViewSection no contiene definicion para IsSectionBoxActive — error de compilacion",
-      "solucion": "IsSectionBoxActive y SetSectionBox() son de View3D, NO de ViewSection. Para ViewSection usar: seccion.CropBoxActive = true; seccion.CropBoxVisible = true;",
+      "titulo": "IsSectionBoxActive no existe en ViewSection solo en View3D",
+      "patron_error": "ViewSection no contiene definicion para IsSectionBoxActive error de compilacion",
+      "solucion": "IsSectionBoxActive y SetSectionBox() son de View3D. Para ViewSection usar: seccion.CropBoxActive = true; seccion.CropBoxVisible = true;",
       "exitoso": true,
       "usos": 3,
       "fecha": "2026-04-09"
@@ -378,7 +378,7 @@
       "categoria": "General",
       "titulo": "Usar IDs exactos del contexto en lugar de buscar por nombre cuando estan disponibles",
       "patron_error": "Buscar WallType por nombre puede fallar si el nombre no coincide exactamente",
-      "solucion": "Cuando el RevitContextReader inyecta IDs en el prompt (ID:16280 | Muro cortina - vertical), usar ese ID directamente: new ElementId(16280L). Es mas rapido y confiable que buscar por nombre.",
+      "solucion": "Cuando el RevitContextReader inyecta IDs en el prompt usar ese ID directamente: new ElementId(16280L). Es mas rapido y confiable que buscar por nombre.",
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-09"
@@ -386,7 +386,7 @@
     {
       "id": "sk_039",
       "categoria": "Vistas",
-      "titulo": "Renombrar ViewSection: usar seccion.Name = nombre, con try-catch",
+      "titulo": "Renombrar ViewSection usar seccion.Name = nombre con try-catch",
       "patron_error": "Algunos nombres de seccion ya existen y el Set lanza excepcion",
       "solucion": "try { seccion.Name = 'Nuevo Nombre'; } catch { } La excepcion ocurre si el nombre ya existe. Envolver en try-catch para que no falle el script completo.",
       "exitoso": true,
@@ -406,471 +406,81 @@
     {
       "id": "sk_041",
       "categoria": "General",
-      "titulo": "Transform.CreateTranslation no permite modificar BasisX/Y/Z — usar Transform.Identity",
-      "patron_error": "t.BasisX asignado despues de CreateTranslation no tiene efecto — la seccion se crea con orientacion incorrecta",
+      "titulo": "Transform.CreateTranslation no permite modificar BasisX/Y/Z usar Transform.Identity",
+      "patron_error": "t.BasisX asignado despues de CreateTranslation no tiene efecto la seccion se crea con orientacion incorrecta",
       "solucion": "Transform t = Transform.Identity; t.BasisX = tRef.BasisX; t.BasisY = tRef.BasisY; t.BasisZ = tRef.BasisZ; t.Origin = new XYZ(x,y,z); SIEMPRE copiar BasisX/Y/Z de seccion de referencia existente. NUNCA usar CreateTranslation para secciones.",
+      "exitoso": true,
+      "usos": 5,
+      "fecha": "2026-04-09"
+    },
+    {
+      "id": "sk_042",
+      "categoria": "Vistas",
+      "titulo": "Ancho de seccion basado en bounding box real de muros no en Min/Max de referencia",
+      "patron_error": "Seccion cubre 36m de ancho dejando los muros en el extremo porque se copio Min/Max de seccion con ancho de todo el proyecto",
+      "solucion": "Calcular centroX y anchoMitad del bounding box real de los muros: foreach(Wall w in col){ XYZ p0=lc.Curve.GetEndPoint(0); if(p0.X<minX)minX=p0.X; if(p0.X>maxX)maxX=p0.X; } centroX=(minX+maxX)/2; anchoMitad=(maxX-minX)/2 + (1.0/0.3048); t.Origin=new XYZ(centroX,midY,z); bb.Min=new XYZ(-anchoMitad,-prof,altoMin); bb.Max=new XYZ(anchoMitad,prof,altoMax);",
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-09"
     },
     {
-      "id": "sk_20260409133113",
+      "id": "sk_043",
       "categoria": "Vistas",
-      "titulo": "Diagnosticar grids y secciones existentes antes de crear sección horizontal",
-      "patron_error": "Asumir coordenadas de grids o construir Transform manualmente sin leer datos reales del proyecto",
-      "solucion": "Leer todos los grids, clasificarlos por orientación (horizontal si Y constante), calcular punto medio entre grids objetivo, y copiar Transform de sección horizontal existente como referencia",
+      "titulo": "Secciones deben cubrir la CONSTRUCCION centrar en bounding box de elementos reales",
+      "patron_error": "Seccion centrada en coordenada del proyecto pero muros estan en otra zona el 90% de la seccion cubre aire vacio",
+      "solucion": "El origen X/Y de la seccion debe coincidir con el centroide geometrico real de los muros/pisos. Calcular: centroX=(minX+maxX)/2 del bounding box de muros. El objetivo de una seccion es CORTAR la construccion no el espacio vacio.",
       "exitoso": true,
-      "usos": 1,
+      "usos": 3,
       "fecha": "2026-04-09"
     },
     {
-      "id": "sk_20260409133114",
+      "id": "sk_044",
       "categoria": "Vistas",
-      "titulo": "Diagnostico previo para secciones: identificar grids y copiar Transform de referencia",
-      "patron_error": "Crear seccion sin leer datos reales del proyecto, asumiendo coordenadas y orientacion incorrectas",
-      "solucion": "Ejecutar diagnostico: 1) Leer grids y clasificarlos horizontales/verticales comparando coordenadas Y/Y de extremos (diff<0.01m), 2) Si existen secciones del mismo tipo, copiar su Transform completo (BasisX/Y/Z + Origin) para la nueva seccion",
+      "titulo": "Crear secciones en 2 scripts separados diagnostico y creacion",
+      "patron_error": "Script de 100+ lineas que mezcla diagnostico y creacion causa timeout o datos incorrectos",
+      "solucion": "Script 1: leer grids, secciones existentes, muros, niveles y retornar datos. Script 2: usar datos exactos del Script 1 para crear seccion con Transform copiado de referencia y bounding box de muros.",
       "exitoso": true,
-      "usos": 1,
+      "usos": 4,
       "fecha": "2026-04-09"
     },
     {
-      "id": "sk_20260409160011",
-      "categoria": "Vistas",
-      "titulo": "Diagnóstico obligatorio antes de crear secciones: leer Transform de referencia",
-      "patron_error": "Crear secciones horizontales sin conocer el Transform exacto de secciones existentes — BasisZ incorrecto genera secciones que no aparecen en planta",
-      "solucion": "Ejecutar diagnóstico que lea Grid.Curve.GetEndPoint() para coordenadas y ViewSection.CropBox.Transform de secciones existentes del mismo tipo, luego copiar BasisX/Y/Z exactos al crear la nueva sección",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409160305",
-      "categoria": "Seleccion",
-      "titulo": "Seleccionar elementos por categoria con SetElementIds",
-      "patron_error": "Confusion sobre como seleccionar elementos programaticamente sin depender de seleccion previa del usuario",
-      "solucion": "FilteredElementCollector.OfClass(typeof(Tipo)).Iterar, acumular IDs en lista, uidoc.Selection.SetElementIds(lista)",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409160504",
-      "categoria": "Vistas",
-      "titulo": "Crear sección horizontal centrada entre dos grids horizontales con dimensión basada en bounding box de muros",
-      "patron_error": "Sección falla con 'No se encontro el nivel de la vista activa' cuando la vista activa no es ViewPlan o no tiene LevelId",
-      "solucion": "Antes de crear sección, verificar que vp != null Y nivel != null; si no hay nivel valido, usar fallback con nivel 0 o primer nivel del proyecto",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409160553",
-      "categoria": "Vistas",
-      "titulo": "Fallback de nivel cuando vista activa no es ViewPlan",
-      "patron_error": "El cast as ViewPlan retorna null cuando la vista activa no es planta, causando NullReferenceException al acceder vp.LevelId",
-      "solucion": "Verificar vp != null antes de vp.LevelId; si es null, buscar el primer nivel disponible con FilteredElementCollector como fallback seguro",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409161022",
-      "categoria": "Vistas",
-      "titulo": "Fallback robusto para obtener nivel de vista activa",
-      "patron_error": "Error: No se encontro el nivel cuando la vista activa no tiene LevelId valido o es null",
-      "solucion": "Despues de vp.LevelId, usar FilteredElementCollector para buscar cualquier nivel disponible como fallback si document.GetElement retorna null",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409161246",
+      "id": "sk_045",
       "categoria": "Niveles",
-      "titulo": "Fallback obligatorio para obtener nivel cuando vp.LevelId retorna null",
-      "patron_error": "Error: No se encontro el nivel - la vista activa tiene vp.LevelId pero document.GetElement() retorna null porque no hay Level asociado",
-      "solucion": "Despues de nivel = document.GetElement(vp.LevelId) as Level; verificar si es null y usar FilteredElementCollector.OfClass(typeof(Level)) con foreach para obtener el primer nivel disponible como fallback",
+      "titulo": "Fallback obligatorio para nivel nunca asumir vista activa es ViewPlan",
+      "patron_error": "Error no se encontro el nivel porque uidoc.ActiveView as ViewPlan retorna null en vista 3D o seccion activa",
+      "solucion": "SIEMPRE usar 3 intentos: 1) ViewPlan vp = uidoc.ActiveView as ViewPlan; if(vp!=null) nivel=doc.GetElement(vp.LevelId) as Level; 2) if(nivel==null) buscar por nombre 'Nivel 1'; 3) if(nivel==null) tomar primer nivel del collector. NUNCA retornar error si el primer intento falla.",
       "exitoso": true,
-      "usos": 1,
+      "usos": 5,
       "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409161545",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: dice:\r Error: no se encontró el nivel (además que tu respues...",
-      "patron_error": "",
-      "solucion": "Cambio: // Obtener Nivel 1 directamente → Level nivel = null;\r\nCambio: Level nivel = null; → FilteredElementCollector colNivel = new FilteredElementCollector(document);\r\nCambio: FilteredElementCollector colNivel = new FilteredElementCollector(document); → colNivel.OfClass(typeof(Level));",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409161557",
-      "categoria": "Niveles",
-      "titulo": "Búsqueda robusta de nivel con fallback por nombre y primer disponible",
-      "patron_error": "Error 'no se encontró el nivel' cuando el nombre del nivel no existe exacto en el proyecto",
-      "solucion": "Buscar por nombre exacto, si null tomar el primer nivel disponible con foreach + break. Fallback obligatorio para evitar null.",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409163403",
-      "categoria": "Seleccion",
-      "titulo": "Seleccionar elementos por categoria en la vista activa usando viewId en FilteredElementCollector",
-      "patron_error": "Intentar usar ElementIsVisibleFilter que no existe, o no saber como filtrar elementos visibles en la vista",
-      "solucion": "Usar FilteredElementCollector(document, uidoc.ActiveView.Id) con OfClass/OfCategory — el segundo argumento viewId filtra automaticamente por visibilidad en esa vista",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409163427",
-      "categoria": "Vistas",
-      "titulo": "Pintar elementos seleccionados de rojo en vista activa",
-      "patron_error": "No saber cómo cambiar colores de visualización de elementos en Revit API",
-      "solucion": "Crear Color(r,g,b) + OverrideGraphicSettings con SetProjectionLineColor y SetCutLineColor + vistaActiva.SetElementOverrides(id, overrides)",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409163543",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: ahora selecciona el suelo y píntalo de verde",
-      "patron_error": "",
-      "solucion": "Cambio: overrides.SetProjectionFillColor(verde); → overrides.SetProjectionLineColor(verde);\r\nCambio: overrides.SetProjectionLineColor(verde); → overrides.SetCutLineColor(verde);\r\nCambio: overrides.SetCutFillColor(verde); →",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409163551",
-      "categoria": "Vistas",
-      "titulo": "Aplicar color de OverrideGraphicSettings a elementos",
-      "patron_error": "Confusion sobre como aplicar colores de visualizationOverrideSettings sin cambiar el tipo real del elemento",
-      "solucion": "Usar OverrideGraphicSettings con SetProjectionFillColor/CutFillColor, luego aplicar con vistaActiva.SetElementOverrides(id, overrides)",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409234555",
-      "categoria": "Familias",
-      "titulo": "Colocar ventana en muro con NewFamilyInstance y punto medio",
-      "patron_error": "NewFamilyInstance en muro requiere pasar el muro como parámetro para que se ancle correctamente",
-      "solucion": "Usar document.Create.NewFamilyInstance(punto, symbol, muro, nivel, StructuralType.NonStructural). Para el punto medio del muro usar puntoMedio = curva.GetEndPoint(0) + (curva.GetEndPoint(1) - curva.GetEndPoint(0)) * 0.5",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409234656",
-      "categoria": "Seleccion",
-      "titulo": "Filtrar elementos visibles en vista activa con viewId en collector",
-      "patron_error": "Confundir ElementIsVisibleFilter (no existe en API) con filtrado por visibilidad",
-      "solucion": "Usar FilteredElementCollector(document, uidoc.ActiveView.Id) con OfClass y OfCategory. El segundo argumento viewId filtra automaticamente por visibilidad.",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409234735",
-      "categoria": "Parametros",
-      "titulo": "Parametro Width puede retornar 0 si el nombre no coincide exactamente",
-      "patron_error": "Usar LookupParameter(\"Width\") directamente retorna null o 0 si el parametro tiene nombre diferente segun idioma de Revit o familia",
-      "solucion": "Usar BuiltInParameter.DIMENSION_LENGTH o calcular ancho desde el BoundingBox del Symbol para evitar dependencia del nombre del parametro",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409234850",
-      "categoria": "Familias",
-      "titulo": "Cambiar tipo de ventana con ChangeTypeId y Activate",
-      "patron_error": "Error común: intentar cambiar tipo de familia sin activar el nuevo FamilySymbol primero",
-      "solucion": "Para cambiar tipo de FamilyInstance (ventanas, puertas, etc.): 1) Buscar el nuevo FamilySymbol, 2) Verificar IsActive y llamar Activate() si es necesario, 3) Usar ChangeTypeId(nuevoSymbol.Id)",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409235125",
-      "categoria": "Familias",
-      "titulo": "Crear FamilyInstance en muro con NewFamilyInstance: parametros y orden correcto",
-      "patron_error": "Parametros en orden incorrecto o sin activar el FamilySymbol causa fallo en creacion de puertas y ventanas",
-      "solucion": "Usar document.Create.NewFamilyInstance(XYZpos, symbol, muro, nivel, StructuralType.NonStructural) y activar symbol con IsActive antes de crear",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409235247",
-      "categoria": "Familias",
-      "titulo": "Verificar distancia antes de reubicar puertas para evitar colisiones",
-      "patron_error": "Colocar puertas sobre ventanas u otros elementos existentes en muros cercanos",
-      "solucion": "Calcular distancia entre punto medio del muro candidato y posicion de elementos existentes, solo reubicar si distancia > 1.5 metros, usar fallback al primero disponible si todos estan cerca",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409235449",
-      "categoria": "Seleccion",
-      "titulo": "Verificar categoria del elemento seleccionado antes de procesarlo",
-      "patron_error": "El script busca puertas (OST_Doors) pero el usuario selecciona una ventana (OST_Windows), resultando en 'No hay puerta seleccionada' sin indicar que se selecciono otro tipo",
-      "solucion": "Validar la categoria del elemento con fi.Category y retornar un mensaje claro indicando que tipo de elemento se esperaba vs cual se encontro",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409235743",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: ok ahora con la puerta seleccionada puedes revisar los parám...",
-      "patron_error": "",
-      "solucion": "Cambio: ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); → FamilyInstance puerta = document.GetElement(new ElementId(166655L)) as FamilyInstance;\r\nCambio: if (selIds.Count == 0) { → if (puerta == null) {",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260409235750",
-      "categoria": "Parametros",
-      "titulo": "Buscar parámetro Sill Height en puertas con fallback en cascada",
-      "patron_error": "Asumir que el parámetro de antepecho se llama exactamente igual en todos los proyectos o familias",
-      "solucion": "Buscar Sill Height → Antepecho → Sill primero en la instancia, luego en el Symbol, usando LookupParameter con múltiples intentos en cascada",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-09"
-    },
-    {
-      "id": "sk_20260410000001",
-      "categoria": "Parametros",
-      "titulo": "Leer y modificar parametros de puertas seleccionadas",
-      "patron_error": "Asumir que el elemento seleccionado es del tipo correcto sin verificar categoria ni existencia del parametro",
-      "solucion": "Verificar Category.Id.Value == OST_Doors antes de castear, usar LookupParameter para buscar parametros de familia, mostrar diagnostico completo antes de modificar valores",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410000129",
-      "categoria": "Familias",
-      "titulo": "Cambiar tipo de puerta con ChangeTypeId preservando ubicacion",
-      "patron_error": "Eliminar y recrear FamilyInstance pierde la ubicacion y requiere recalcular-intersecciones",
-      "solucion": "Usar ChangeTypeId(nuevoFamilySymbol.Id) sobre la FamilyInstance existente, con IsActive/Activate() del simbolo",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410123152",
-      "categoria": "Grillas",
-      "titulo": "Clasificar grids y obtener intersecciones para seleccionar elementos por zona",
-      "patron_error": "Confusion sobre como identificar si un grid es vertical u horizontal y como calcular puntos de interseccion entre rejillas",
-      "solucion": "Usar Math.Abs(p1.X - p0.X) < 0.01 para clasificar grids; Grid.Curve.Intersect() con SetComparisonResult para obtener puntos de interseccion exactos entre rejillas",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410132043",
-      "categoria": "General",
-      "titulo": "Verificar elementos disponibles antes de aplicar filtros restrictivos",
-      "patron_error": "FilteredElementCollector con viewId retorna 0 elementos cuando no hay muros visibles en la vista, pero no se sabe si el problema es que no existen o que están filtrados",
-      "solucion": "Buscar muros SIN viewId primero para confirmar que existen en el proyecto, luego filtrar por visibilidad si es necesario",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
     },
     {
       "id": "sk_046",
       "categoria": "Seleccion",
-      "titulo": "Muro entre intersecciones de rejilla: buscar por punto medio mas cercano",
-      "patron_error": "Filtrar muros por orientacion antes de calcular distancias elimina el muro correcto",
-      "solucion": "Calcular midObjetivo = punto medio entre las dos intersecciones de rejilla. Buscar el muro con punto medio mas cercano a midObjetivo usando DistanceTo(). Tolerancia de 2m. NUNCA filtrar por dy<0.05 ni por orientacion.",
+      "titulo": "Muro entre intersecciones de rejilla buscar por punto medio mas cercano nunca por orientacion",
+      "patron_error": "Filtrar muros por orientacion antes de calcular distancias elimina el muro correcto. Error: No se encontro ningun muro entre las intersecciones",
+      "solucion": "Calcular midObjetivo = punto medio entre las dos intersecciones de rejilla. Buscar el muro con punto medio mas cercano a midObjetivo usando DistanceTo(). Tolerancia de 2m. NUNCA filtrar por dy<0.05 ni por orientacion del muro. XYZ midMuro = new XYZ((p0.X+p1.X)/2,(p0.Y+p1.Y)/2,0); double dist = midMuro.DistanceTo(midObjetivo); if(dist < menorDist){ menorDist=dist; muroSeleccionado=w; }",
       "exitoso": true,
-      "usos": 3,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410184711",
-      "categoria": "Seleccion",
-      "titulo": "Seleccionar muro entre dos intersecciones de rejilla por punto medio",
-      "patron_error": "Seleccionar muro por nombre o filtrar por orientacion (horizontal/vertical) sin considerar la ubicacion real",
-      "solucion": "Calcular intersecciones de rejilla, obtener punto medio del segmento, buscar muro con punto medio mas cercano usando DistanceTo con tolerancia de 2 metros",
-      "exitoso": true,
-      "usos": 1,
+      "usos": 4,
       "fecha": "2026-04-10"
     },
     {
       "id": "sk_047",
       "categoria": "Cotas",
-      "titulo": "Referencias de Grids para NewDimension via get_Geometry con ComputeReferences=true",
-      "patron_error": "gridC.Curve.Reference lanza excepcion en NewDimension — InvocationException",
-      "solucion": "Options geoOpts = new Options(); geoOpts.View = vista; geoOpts.ComputeReferences = true; GeometryElement geo = grid.get_Geometry(geoOpts); foreach(GeometryObject obj in geo){ Line l = obj as Line; if(l!=null && l.Reference!=null){ refs.Append(l.Reference); break; } }",
+      "titulo": "PATRON MAESTRO cotas: diagnosticar orientacion del muro ANTES de acotar — 3 casos",
+      "patron_error": "grid.Curve.Reference da error no paralelas. Caras del solido de muro diagonal miden el GROSOR (0.30m) no la longitud. ComputeNormal lanza excepcion interna.",
+      "solucion": "PASO 1 diagnostico: double dx=Math.Abs(p1.X-p0.X); double dy=Math.Abs(p1.Y-p0.Y); bool esHorizontal=dx>dy&&dy<0.05; bool esVertical=dy>dx&&dx<0.05; bool esDiagonal=!esHorizontal&&!esVertical; PASO 2A horizontal: get_Geometry con ComputeReferences=true, filtrar caras por posicion X minima y maxima usando GetEdgesAsCurveLoops para calcular centroX de cada cara. PASO 2B vertical: igual pero filtrar por posicion Y. PASO 2C diagonal: crear DetailLines perpendiculares al muro en p0 y p1 usando vector perp=(-dir.Y,dir.X,0) y usar dl.GeometryCurve.Reference. Linea de cota SIEMPRE paralela al muro. Verificar que valor de cota es ~longitud del muro no el grosor (0.30m).",
       "exitoso": true,
-      "usos": 3,
+      "usos": 5,
       "fecha": "2026-04-10"
     },
     {
-      "id": "sk_20260410190131",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: selecciona el muro que se encuentra ubicado entre los puntos...",
-      "patron_error": "",
-      "solucion": "Cambio: // Buscar las rejillas C, E, 5 → Grid gridC = null, gridE = null, grid5 = null;\r\nCambio: Grid gridC = null, gridE = null, grid5 = null; → FilteredElementCollector cg = new FilteredElementCollector(document);",
+      "id": "sk_048",
+      "categoria": "Cotas",
+      "titulo": "Error no paralelas y valor igual al grosor: cambiar referencias o usar DetailLines",
+      "patron_error": "Revit error: las referencias de la cota resaltada han dejado de ser paralelas. O cota mide 0.30m (grosor) en lugar de la longitud del muro.",
+      "solucion": "Error no paralelas significa que la linea de cota NO es paralela a las referencias usadas. Para muro diagonal: SIEMPRE usar DetailLines perpendiculares en los extremos — son las unicas referencias confiables. Para muro recto: verificar que la linea de cota corre en la misma direccion que el muro. Si el valor es 0.30m las referencias apuntan a caras laterales no a extremos — reintentar filtrando caras por posicion extrema con GetEdgesAsCurveLoops. NUNCA rendirse en el primer fallo — reintentar con variante de referencia.",
       "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410190139",
-      "categoria": "Seleccion",
-      "titulo": "Seleccionar muro entre dos intersecciones de rejillas por proximidad",
-      "patron_error": "Asumir que se puede identificar un muro por su nombre o filtrar por orientación sin calcular distancias",
-      "solucion": "Calcular punto medio objetivo entre intersecciones C5 y E5, buscar el muro con punto medio más cercano usando DistanceTo con tolerancia de 2 metros",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410190323",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: acota ese muro",
-      "patron_error": "",
-      "solucion": "Cambio: // Verificar seleccion activa → // Usar ID del muro del contexto\r\nCambio: ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); → Wall muroSeleccionado = document.GetElement(new ElementId(165587L)) as Wall;",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410190336",
-      "categoria": "Muros",
-      "titulo": "Crear cota de longitud a muro seleccionado con linea paralela",
-      "patron_error": "Usar grid.Curve.Reference directamente para cotas causa excepcion — debe usar get_Geometry con ComputeReferences",
-      "solucion": "Usar get_Geometry con Options{ComputeReferences=true} para obtener referencias validas del muro, con fallback a curvaMuro.Reference",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410190436",
-      "categoria": "Parametros",
-      "titulo": "Crear cota de longitud en muro seleccionado usando Geometry con ComputeReferences",
-      "patron_error": "Cota no se crea porque no hay muro seleccionado — el usuario asume seleccion previa pero Revit no la tiene",
-      "solucion": "Usar get_Geometry con ComputeReferences=true para obtener referencias de cara del muro, con fallback a curva.Reference si falla. Calcular offset perpendicular automatico para linea de cota paralela al muro.",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410190635",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: si no hay un muro seleccionado, pues entonces solo debes sel...",
-      "patron_error": "",
-      "solucion": "Cambio: XYZ p0 = curvaMuro.GetEndPoint(0); → XYZ p0muro = curvaMuro.GetEndPoint(0);\r\nCambio: XYZ p1 = curvaMuro.GetEndPoint(1); → XYZ p1muro = curvaMuro.GetEndPoint(1);\r\nCambio: XYZ dx = new XYZ(p1.X - p0.X, p1.Y - p0.Y, 0); → XYZ dx = new XYZ(p1muro.X - p0muro.X, p1muro.Y - p0muro.Y, 0);",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410190658",
-      "categoria": "General",
-      "titulo": "Crear cota paralela a muro con offset perpendicular usando vector normalizado",
-      "patron_error": "Crear cota con offset en dirección Z fijo en lugar de perpendicular al muro — falla en muros inclinados u orientados arbitrariamente",
-      "solucion": "Calcular dirección perpendicular: dx=(p1-p0), dirPerp=(-dx.Y,dx.X,0)/longitud. OffsetP0=p0+dirPerp*offset. Crear Line.CreateBound con puntos offseteados. Usar get_Geometry(ComputeReferences=true) para refs de caras del muro.",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410191147",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: guarda este skill",
-      "patron_error": "",
-      "solucion": "Cambio: // ================================================ → // Verificar que el skill ya fue guardado\r\nCambio: // ATENEA SKILL — ANALISIS DE COTAS EN REVIT → string info = \"========================================\\n\";",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410191153",
-      "categoria": "Parametros",
-      "titulo": "Analizar Dimension seleccionada en Revit",
-      "patron_error": "No poder acceder a propiedades de cotas porque el elemento no se castea correctamente o se asume que toda cota tiene valor directo",
-      "solucion": "Usar cast as Dimension, obtener DimensionTypeId para estilo, References para elementos acotados, y BuiltInParameter.DIMENSION_VALUE para el valor numerico",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410191226",
-      "categoria": "General",
-      "titulo": "Acotar muros: Invalid number of references indica referencias invalidas",
-      "patron_error": "NewDimension falla con Invalid number of references porque usa refs de caras o geometria interna del muro",
-      "solucion": "Para acotar muros, usar referencias de grids que intersecan el muro, NO refs de get_Geometry del muro. NewDimension requiere refs de rejillas o Line.Curve.Reference",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410191240",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: en función de lo que ya conoces, ahora selecciona todos los ...",
-      "patron_error": "",
-      "solucion": "Cambio: ======================================== → // Seleccionar todos los muros de la vista activa\r\nCambio: COTAS CREADAS PARA TODOS LOS MUROS → List<Wall> muros = new List<Wall>();\r\nCambio: ======================================== → FilteredElementCollector cw = new FilteredElementCollector(document, uidoc.ActiveView.Id);",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410191256",
-      "categoria": "General",
-      "titulo": "Acotar muros requiere Grid References, no Geometry References",
-      "patron_error": "Invalid number of references al usar get_Geometry() para acotar muros con NewDimension",
-      "solucion": "Para acotar muros usar Grid.Curve.Reference con ComputeReferences=true, NO referencias de caras de solidos. NewDimension requiere referencias de curva validas.",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410191435",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: las cotas no han sido creadas, una vez más, selecciona todos...",
-      "patron_error": "",
-      "solucion": "Cambio: info += \"  Tipo muro: \" + w.WallType.Name + \"\\n\"; → info += \"  Tipo muro: \" + w.WallType.Name + \"\\n\\n\";\r\nCambio: info += \"  Nivel: \" + w.LevelId.Value + \"\\n\\n\"; → }\r\nCambio: } → \r\nCambio:  → // PASO 2: Seleccionar todos los muros",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410191448",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: las cotas no han sido creadas, una vez más, selecciona todos...",
-      "patron_error": "",
-      "solucion": "Cambio: DIAGNOSTICO DE MUROS → // Seleccionar muros del contexto\r\nCambio: ==================== → long[] murosIds = new long[] { 165585L, 165586L, 165587L, 165588L, 165589L, 165590L, 165591L };\r\nCambio: Muros encontrados: 8 → List<ElementId> idsMuros = new List<ElementId>();",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410191456",
-      "categoria": "General",
-      "titulo": "Cotas de muros requieren referencias de geometria validas con ComputeReferences=true",
-      "patron_error": "Invalid number of references al crear NewDimension para muros - las referencias de geometria no son validas para acotar muros",
-      "solucion": "Para acotar muros: 1) Usar Options con ComputeReferences=true y View activa. 2) Obtener Reference del muro con get_Geometry y usar las referencias de caras del solido o referencias de bordes validas. 3) Alternativa: usar Referencias de Grids para acotar distancia entre muros.",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410191503",
-      "categoria": "Muros",
-      "titulo": "Cotas de muros: usar referencia simple de curva, no ReferenceArray",
-      "patron_error": "Invalid number of references al intentar crear cotas con ReferenceArray de caras de muro",
-      "solucion": "Para acotar muros usar refs.Append(curvaMuro.Reference) con UNA sola referencia, nunca array de caras. El muro se acota con su LocationCurve.Reference directamente.",
-      "exitoso": true,
-      "usos": 1,
+      "usos": 4,
       "fecha": "2026-04-10"
     }
   ]
