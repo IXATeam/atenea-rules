@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:11:53.7539240Z",
-  "total": 80,
+  "updated": "2026-04-11T00:12:26.3780360Z",
+  "total": 81,
   "skills": [
     {
       "id": "sk_001",
@@ -799,6 +799,16 @@
       "titulo": "Analizar Dimension seleccionada en Revit",
       "patron_error": "No poder acceder a propiedades de cotas porque el elemento no se castea correctamente o se asume que toda cota tiene valor directo",
       "solucion": "Usar cast as Dimension, obtener DimensionTypeId para estilo, References para elementos acotados, y BuiltInParameter.DIMENSION_VALUE para el valor numerico",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410191226",
+      "categoria": "General",
+      "titulo": "Acotar muros: Invalid number of references indica referencias invalidas",
+      "patron_error": "NewDimension falla con Invalid number of references porque usa refs de caras o geometria interna del muro",
+      "solucion": "Para acotar muros, usar referencias de grids que intersecan el muro, NO refs de get_Geometry del muro. NewDimension requiere refs de rejillas o Line.Curve.Reference",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
