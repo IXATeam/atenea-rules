@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:03:23.7913350Z",
-  "total": 74,
+  "updated": "2026-04-11T00:03:36.1685646Z",
+  "total": 75,
   "skills": [
     {
       "id": "sk_001",
@@ -739,6 +739,16 @@
       "titulo": "Autocorreccion: acota ese muro",
       "patron_error": "",
       "solucion": "Cambio: // Verificar seleccion activa → // Usar ID del muro del contexto\r\nCambio: ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); → Wall muroSeleccionado = document.GetElement(new ElementId(165587L)) as Wall;",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410190336",
+      "categoria": "Muros",
+      "titulo": "Crear cota de longitud a muro seleccionado con linea paralela",
+      "patron_error": "Usar grid.Curve.Reference directamente para cotas causa excepcion — debe usar get_Geometry con ComputeReferences",
+      "solucion": "Usar get_Geometry con Options{ComputeReferences=true} para obtener referencias validas del muro, con fallback a curvaMuro.Reference",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
