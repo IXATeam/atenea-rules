@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:12:26.3780360Z",
-  "total": 81,
+  "updated": "2026-04-11T00:12:40.3802460Z",
+  "total": 82,
   "skills": [
     {
       "id": "sk_001",
@@ -809,6 +809,16 @@
       "titulo": "Acotar muros: Invalid number of references indica referencias invalidas",
       "patron_error": "NewDimension falla con Invalid number of references porque usa refs de caras o geometria interna del muro",
       "solucion": "Para acotar muros, usar referencias de grids que intersecan el muro, NO refs de get_Geometry del muro. NewDimension requiere refs de rejillas o Line.Curve.Reference",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410191240",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: en función de lo que ya conoces, ahora selecciona todos los ...",
+      "patron_error": "",
+      "solucion": "Cambio: ======================================== → // Seleccionar todos los muros de la vista activa\r\nCambio: COTAS CREADAS PARA TODOS LOS MUROS → List<Wall> muros = new List<Wall>();\r\nCambio: ======================================== → FilteredElementCollector cw = new FilteredElementCollector(document, uidoc.ActiveView.Id);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
