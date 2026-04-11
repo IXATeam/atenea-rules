@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:11:47.8836622Z",
-  "total": 79,
+  "updated": "2026-04-11T00:11:53.7539240Z",
+  "total": 80,
   "skills": [
     {
       "id": "sk_001",
@@ -789,6 +789,16 @@
       "titulo": "Autocorreccion: guarda este skill",
       "patron_error": "",
       "solucion": "Cambio: // ================================================ → // Verificar que el skill ya fue guardado\r\nCambio: // ATENEA SKILL — ANALISIS DE COTAS EN REVIT → string info = \"========================================\\n\";",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410191153",
+      "categoria": "Parametros",
+      "titulo": "Analizar Dimension seleccionada en Revit",
+      "patron_error": "No poder acceder a propiedades de cotas porque el elemento no se castea correctamente o se asume que toda cota tiene valor directo",
+      "solucion": "Usar cast as Dimension, obtener DimensionTypeId para estilo, References para elementos acotados, y BuiltInParameter.DIMENSION_VALUE para el valor numerico",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
