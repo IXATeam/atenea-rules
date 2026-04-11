@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:12:40.3802460Z",
-  "total": 82,
+  "updated": "2026-04-11T00:12:56.8928292Z",
+  "total": 83,
   "skills": [
     {
       "id": "sk_001",
@@ -819,6 +819,16 @@
       "titulo": "Autocorreccion: en función de lo que ya conoces, ahora selecciona todos los ...",
       "patron_error": "",
       "solucion": "Cambio: ======================================== → // Seleccionar todos los muros de la vista activa\r\nCambio: COTAS CREADAS PARA TODOS LOS MUROS → List<Wall> muros = new List<Wall>();\r\nCambio: ======================================== → FilteredElementCollector cw = new FilteredElementCollector(document, uidoc.ActiveView.Id);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410191256",
+      "categoria": "General",
+      "titulo": "Acotar muros requiere Grid References, no Geometry References",
+      "patron_error": "Invalid number of references al usar get_Geometry() para acotar muros con NewDimension",
+      "solucion": "Para acotar muros usar Grid.Curve.Reference con ComputeReferences=true, NO referencias de caras de solidos. NewDimension requiere referencias de curva validas.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
