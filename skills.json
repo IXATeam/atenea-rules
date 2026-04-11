@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:14:35.5991014Z",
-  "total": 84,
+  "updated": "2026-04-11T00:14:48.0269745Z",
+  "total": 85,
   "skills": [
     {
       "id": "sk_001",
@@ -839,6 +839,16 @@
       "titulo": "Autocorreccion: las cotas no han sido creadas, una vez más, selecciona todos...",
       "patron_error": "",
       "solucion": "Cambio: info += \"  Tipo muro: \" + w.WallType.Name + \"\\n\"; → info += \"  Tipo muro: \" + w.WallType.Name + \"\\n\\n\";\r\nCambio: info += \"  Nivel: \" + w.LevelId.Value + \"\\n\\n\"; → }\r\nCambio: } → \r\nCambio:  → // PASO 2: Seleccionar todos los muros",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410191448",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: las cotas no han sido creadas, una vez más, selecciona todos...",
+      "patron_error": "",
+      "solucion": "Cambio: DIAGNOSTICO DE MUROS → // Seleccionar muros del contexto\r\nCambio: ==================== → long[] murosIds = new long[] { 165585L, 165586L, 165587L, 165588L, 165589L, 165590L, 165591L };\r\nCambio: Muros encontrados: 8 → List<ElementId> idsMuros = new List<ElementId>();",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
