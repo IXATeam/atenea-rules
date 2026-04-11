@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:12:56.8928292Z",
-  "total": 83,
+  "updated": "2026-04-11T00:14:35.5991014Z",
+  "total": 84,
   "skills": [
     {
       "id": "sk_001",
@@ -829,6 +829,16 @@
       "titulo": "Acotar muros requiere Grid References, no Geometry References",
       "patron_error": "Invalid number of references al usar get_Geometry() para acotar muros con NewDimension",
       "solucion": "Para acotar muros usar Grid.Curve.Reference con ComputeReferences=true, NO referencias de caras de solidos. NewDimension requiere referencias de curva validas.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410191435",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: las cotas no han sido creadas, una vez más, selecciona todos...",
+      "patron_error": "",
+      "solucion": "Cambio: info += \"  Tipo muro: \" + w.WallType.Name + \"\\n\"; → info += \"  Tipo muro: \" + w.WallType.Name + \"\\n\\n\";\r\nCambio: info += \"  Nivel: \" + w.LevelId.Value + \"\\n\\n\"; → }\r\nCambio: } → \r\nCambio:  → // PASO 2: Seleccionar todos los muros",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
