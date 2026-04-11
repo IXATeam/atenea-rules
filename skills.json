@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T00:14:56.4762588Z",
-  "total": 86,
+  "updated": "2026-04-11T00:15:03.6845769Z",
+  "total": 87,
   "skills": [
     {
       "id": "sk_001",
@@ -859,6 +859,16 @@
       "titulo": "Cotas de muros requieren referencias de geometria validas con ComputeReferences=true",
       "patron_error": "Invalid number of references al crear NewDimension para muros - las referencias de geometria no son validas para acotar muros",
       "solucion": "Para acotar muros: 1) Usar Options con ComputeReferences=true y View activa. 2) Obtener Reference del muro con get_Geometry y usar las referencias de caras del solido o referencias de bordes validas. 3) Alternativa: usar Referencias de Grids para acotar distancia entre muros.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-10"
+    },
+    {
+      "id": "sk_20260410191503",
+      "categoria": "Muros",
+      "titulo": "Cotas de muros: usar referencia simple de curva, no ReferenceArray",
+      "patron_error": "Invalid number of references al intentar crear cotas con ReferenceArray de caras de muro",
+      "solucion": "Para acotar muros usar refs.Append(curvaMuro.Reference) con UNA sola referencia, nunca array de caras. El muro se acota con su LocationCurve.Reference directamente.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
