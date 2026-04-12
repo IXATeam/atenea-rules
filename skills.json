@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-12T05:57:06.4911928Z",
-  "total": 66,
+  "updated": "2026-04-12T05:57:58.7381606Z",
+  "total": 67,
   "skills": [
     {
       "id": "sk_001",
@@ -659,6 +659,16 @@
       "titulo": "Seleccionar elementos de vista especifica por nombre con fallback flexible",
       "patron_error": "Asumir que el nombre de la vista es exacto o que la vista activa es la correcta. No saber buscar elementos visibles en una vista sin usar ElementIsVisibleFilter",
       "solucion": "Buscar vista por nombre exacto, fallback con Contains('L1'), usar FilteredElementCollector(document, vista.Id) para obtener elementos de esa vista, seleccionar y luego ACTIVATEVIEW para activar la vista encontrada",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-12"
+    },
+    {
+      "id": "sk_20260412005758",
+      "categoria": "Muros",
+      "titulo": "Verificar existencia antes de eliminar muros batch — evitar errores de elementos no encontrados",
+      "patron_error": "Error 'Element elementId not found in this Document' al eliminar muros batch — paneless de muro cortina vinculados al muro padre desaparecen y causan excepciones al intentar eliminarlos nuevamente",
+      "solucion": "Antes de document.Delete(id), verificar: if (document.GetElement(id) != null) { document.Delete(id); } — así se saltan los elementos ya eliminados o sin referencia",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
