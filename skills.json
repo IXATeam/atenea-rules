@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-12T05:53:32.9693242Z",
-  "total": 63,
+  "updated": "2026-04-12T05:53:51.6796806Z",
+  "total": 64,
   "skills": [
     {
       "id": "sk_001",
@@ -629,6 +629,16 @@
       "titulo": "Autocorreccion: dame la información total de todos los elementos que hay en ...",
       "patron_error": "",
       "solucion": "Cambio: info += \"Vista: \" + uidoc.ActiveView.Name + \"\\n\\n\"; → info = info + \"Vista: \" + uidoc.ActiveView.Name + \"\\n\\n\";\r\nCambio: info += \"--- \" + tipo + \" ---\\n\"; → info = info + \"--- \" + tipo + \" ---\\n\";",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-12"
+    },
+    {
+      "id": "sk_20260412005351",
+      "categoria": "Seleccion",
+      "titulo": "Inventario completo de elementos en vista activa por categoria",
+      "patron_error": "No existe ElementIsVisibleFilter — filtrar por visibilidad requiere pasar viewId al collector",
+      "solucion": "FilteredElementCollector con viewId como segundo argumento + coleccion categorizada: Wall, Grid, Floor, FamilyInstance OST_Doors/Windows/StructuralColumns/StructuralFraming/OST_Rooms, CeilingAndRoof, Stairs, Dimension",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
