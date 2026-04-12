@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-12T04:14:12.1281530Z",
-  "total": 56,
+  "updated": "2026-04-12T04:33:25.2134459Z",
+  "total": 57,
   "skills": [
     {
       "id": "sk_001",
@@ -559,6 +559,16 @@
       "titulo": "Activar vista 3D existente filtrando plantillas",
       "patron_error": "Buscar vista 3D sin filtrar IsTemplate puede retornar una plantilla que no es una vista navegable",
       "solucion": "FilteredElementCollector de View3D con foreach, verificar !v.IsTemplate antes de tomar la vista, luego uidoc.ActiveView = vista3d y retornar ACTIVATEVIEW con el Id",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-11"
+    },
+    {
+      "id": "sk_20260411233325",
+      "categoria": "Vistas",
+      "titulo": "Activar vista 3D del proyecto filtrando plantillas",
+      "patron_error": "Intentar usar una vista de plantilla como vista activa genera errores",
+      "solucion": "FilteredElementCollector de View3D con filtro !v.IsTemplate, luego uidoc.ActiveView = vista3d",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-11"
