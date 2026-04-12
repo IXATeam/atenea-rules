@@ -550,7 +550,7 @@
       "patron_error": "Usar FilteredElementCollector sin viewId o usar LINQ para iterar",
       "solucion": "FilteredElementCollector(document, uidoc.ActiveView.Id).OfClass(typeof(Wall)) con foreach para iterar, luego SetElementIds",
       "exitoso": true,
-      "usos": 1,
+      "usos": 2,
       "fecha": "2026-04-11"
     },
     {
