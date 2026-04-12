@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-12T05:46:07.4267075Z",
-  "total": 62,
+  "updated": "2026-04-12T05:53:32.9693242Z",
+  "total": 63,
   "skills": [
     {
       "id": "sk_001",
@@ -619,6 +619,16 @@
       "titulo": "Autocorreccion: si",
       "patron_error": "",
       "solucion": "Cambio: string[] archivos = System.IO.Directory.GetFiles(downloadsPath, \"*.pdf\"); → try {\r\nCambio: foreach (string archivo in archivos) { → string[] archivos = System.IO.Directory.GetFiles(downloadsPath, \"*.pdf\");",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-12"
+    },
+    {
+      "id": "sk_20260412005332",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: dame la información total de todos los elementos que hay en ...",
+      "patron_error": "",
+      "solucion": "Cambio: info += \"Vista: \" + uidoc.ActiveView.Name + \"\\n\\n\"; → info = info + \"Vista: \" + uidoc.ActiveView.Name + \"\\n\\n\";\r\nCambio: info += \"--- \" + tipo + \" ---\\n\"; → info = info + \"--- \" + tipo + \" ---\\n\";",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
