@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-12T05:53:51.6796806Z",
-  "total": 64,
+  "updated": "2026-04-12T05:56:24.4024741Z",
+  "total": 65,
   "skills": [
     {
       "id": "sk_001",
@@ -639,6 +639,16 @@
       "titulo": "Inventario completo de elementos en vista activa por categoria",
       "patron_error": "No existe ElementIsVisibleFilter — filtrar por visibilidad requiere pasar viewId al collector",
       "solucion": "FilteredElementCollector con viewId como segundo argumento + coleccion categorizada: Wall, Grid, Floor, FamilyInstance OST_Doors/Windows/StructuralColumns/StructuralFraming/OST_Rooms, CeilingAndRoof, Stairs, Dimension",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-12"
+    },
+    {
+      "id": "sk_20260412005624",
+      "categoria": "Vistas",
+      "titulo": "Activar plano de planta con fallback de busqueda por nombre",
+      "patron_error": "Buscar solo por nombre exacto sin variaciones - causa 'vista no encontrada' cuando Revit usa nombres localizados o con prefijos diferentes",
+      "solucion": "Primero buscar nombre exacto, luego buscar con Contains() para variaciones (L1/Level 1/PLANTA 1), si no se encuentra listar todas las vistas disponibles. Usar return ACTIVATEVIEW:id:nombre para activar.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
