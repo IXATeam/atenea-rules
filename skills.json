@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-12T03:57:48.9104796Z",
-  "total": 55,
+  "updated": "2026-04-12T04:14:12.1281530Z",
+  "total": 56,
   "skills": [
     {
       "id": "sk_001",
@@ -549,6 +549,16 @@
       "titulo": "Seleccionar muros visibles en la vista activa",
       "patron_error": "Usar FilteredElementCollector sin viewId o usar LINQ para iterar",
       "solucion": "FilteredElementCollector(document, uidoc.ActiveView.Id).OfClass(typeof(Wall)) con foreach para iterar, luego SetElementIds",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-11"
+    },
+    {
+      "id": "sk_20260411231412",
+      "categoria": "Vistas",
+      "titulo": "Activar vista 3D existente filtrando plantillas",
+      "patron_error": "Buscar vista 3D sin filtrar IsTemplate puede retornar una plantilla que no es una vista navegable",
+      "solucion": "FilteredElementCollector de View3D con foreach, verificar !v.IsTemplate antes de tomar la vista, luego uidoc.ActiveView = vista3d y retornar ACTIVATEVIEW con el Id",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-11"
