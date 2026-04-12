@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-12T05:44:03.7263470Z",
-  "total": 60,
+  "updated": "2026-04-12T05:44:16.1415509Z",
+  "total": 61,
   "skills": [
     {
       "id": "sk_001",
@@ -599,6 +599,16 @@
       "titulo": "Autocorreccion: exporta el resultado a pdf",
       "patron_error": "",
       "solucion": "Cambio: // Crear secciones para el PDF → // Generar reporte completo\r\nCambio: Dictionary<string, List<string>> secciones = new Dictionary<string, List<string>>(); → string reporte = \"========================================\\n\";",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-12"
+    },
+    {
+      "id": "sk_20260412004416",
+      "categoria": "Familias",
+      "titulo": "Leer dimensiones de ventanas y puertas requiere FamilySymbol no FamilyInstance",
+      "patron_error": "LookupParameter(Width/Height) en FamilyInstance devuelve 0 porque las dimensiones son parametros del tipo, no de la instancia",
+      "solucion": "Obtener el FamilySymbol del FamilyInstance con.get_Symbol() y leer Width/Height de ahi: FamilySymbol fs = ventana.Symbol; fs.LookupParameter(Width).AsDouble()",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
