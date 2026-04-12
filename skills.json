@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-12T05:42:25.8276198Z",
-  "total": 58,
+  "updated": "2026-04-12T05:43:17.6803242Z",
+  "total": 59,
   "skills": [
     {
       "id": "sk_001",
@@ -579,6 +579,16 @@
       "titulo": "Activar o crear vista 3D isométrica con fallback a creación",
       "patron_error": "Crear vista 3D sin verificar si ya existe causa duplicados innecesarios",
       "solucion": "Buscar View3D existente con FilteredElementCollector excluyendo IsTemplate, usar View3D.CreateIsometric con ViewFamilyType ThreeDimensional si no existe",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-12"
+    },
+    {
+      "id": "sk_20260412004317",
+      "categoria": "Parametros",
+      "titulo": "Parametros Width/Height devuelven 0 para puertas y ventanas",
+      "patron_error": "LookupParameter(\"Width\") y LookupParameter(\"Height\") devuelven 0.00m aunque la puerta/ventana tenga dimensiones. Esto ocurre porque las familias de Revit almacenan las dimensiones en el tipo (FamilySymbol), no directamente en la instancia.",
+      "solucion": "Usar ventana.Symbol.LookupParameter(\"Width\") y puerta.Symbol.LookupParameter(\"Width\") en lugar de la instancia directamente. Alternativa: BuiltInParameter.ALL_MODEL_WIDTH / ALL_MODEL_HEIGHT sobre la instancia.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
