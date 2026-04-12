@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-12T04:33:25.2134459Z",
-  "total": 57,
+  "updated": "2026-04-12T05:42:25.8276198Z",
+  "total": 58,
   "skills": [
     {
       "id": "sk_001",
@@ -572,6 +572,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-11"
+    },
+    {
+      "id": "sk_20260412004225",
+      "categoria": "Vistas",
+      "titulo": "Activar o crear vista 3D isométrica con fallback a creación",
+      "patron_error": "Crear vista 3D sin verificar si ya existe causa duplicados innecesarios",
+      "solucion": "Buscar View3D existente con FilteredElementCollector excluyendo IsTemplate, usar View3D.CreateIsometric con ViewFamilyType ThreeDimensional si no existe",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-12"
     }
   ]
 }
