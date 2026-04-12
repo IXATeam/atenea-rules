@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-12T05:56:24.4024741Z",
-  "total": 65,
+  "updated": "2026-04-12T05:57:06.4911928Z",
+  "total": 66,
   "skills": [
     {
       "id": "sk_001",
@@ -649,6 +649,16 @@
       "titulo": "Activar plano de planta con fallback de busqueda por nombre",
       "patron_error": "Buscar solo por nombre exacto sin variaciones - causa 'vista no encontrada' cuando Revit usa nombres localizados o con prefijos diferentes",
       "solucion": "Primero buscar nombre exacto, luego buscar con Contains() para variaciones (L1/Level 1/PLANTA 1), si no se encuentra listar todas las vistas disponibles. Usar return ACTIVATEVIEW:id:nombre para activar.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-12"
+    },
+    {
+      "id": "sk_20260412005706",
+      "categoria": "Vistas",
+      "titulo": "Seleccionar elementos de vista especifica por nombre con fallback flexible",
+      "patron_error": "Asumir que el nombre de la vista es exacto o que la vista activa es la correcta. No saber buscar elementos visibles en una vista sin usar ElementIsVisibleFilter",
+      "solucion": "Buscar vista por nombre exacto, fallback con Contains('L1'), usar FilteredElementCollector(document, vista.Id) para obtener elementos de esa vista, seleccionar y luego ACTIVATEVIEW para activar la vista encontrada",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
