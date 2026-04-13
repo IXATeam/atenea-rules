@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-13T19:50:39.0210745Z",
-  "total": 69,
+  "updated": "2026-04-13T19:52:04.6359076Z",
+  "total": 70,
   "skills": [
     {
       "id": "sk_001",
@@ -689,6 +689,16 @@
       "titulo": "Seleccionar muros con fallback y extraer caracteristicas completas",
       "patron_error": "Asumir que siempre hay muros seleccionados o no saber que BuiltInParameter.WALL_HEIGHT_TYPE es el unico modo de obtener el nivel superior del muro",
       "solucion": "Usar patron con fallback: verificar seleccion activa, si vacia tomar muros de vista activa. Para cada muro: tipo, grosor (Width*304.8mm), nivel base (LevelId), nivel superior (WALL_HEIGHT_TYPE), altura (WALL_USER_HEIGHT_PARAM*0.3048m), longitud (Curve.Length*0.3048m), area (HOST_AREA_COMPUTED*0.092903m²), volumen (HOST_VOLUME_COMPUTED*0.0283168m³), estructural (WALL_STRUCTURAL_SIGNIFICANT)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-13"
+    },
+    {
+      "id": "sk_20260413145204",
+      "categoria": "General",
+      "titulo": "Exportar datos a Word usando HTML con estilo CSS y patron SAVEFILE",
+      "patron_error": "Error al guardar archivo por hardcodear rutas fijas o no dar opcion al usuario de elegir destino",
+      "solucion": "Generar HTML con CSS para formato visual, guardar en carpeta temporal con timestamp usando Path.GetTempPath(), y retornar patron SAVEFILE para que el usuario elija donde guardar. Word abre archivos HTML con extension .doc directamente.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-13"
