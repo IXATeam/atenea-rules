@@ -829,69 +829,58 @@ foreach (Wall w in collector) {
     if (dist < menorDist) { menorDist = dist; muroEncontrado = w; }
 }
 
-■ REGLA 50 — EXPORTACION DE ARCHIVOS: usar patron SAVEFILE para que el usuario elija donde guardar:
+■ REGLA 50 (ACTUALIZADA) — EXPORTACION DE ARCHIVOS: usar ruta fija ATENEA25\exports
 
-Cuando el usuario pida exportar resultados a Excel, PDF o Word, ATENEA debe:
-1. Generar el archivo en una carpeta TEMPORAL (C:\Temp\ o Path.GetTempPath())
-2. Retornar el patron SAVEFILE para que ATENEA abra el SaveFileDialog de Windows
-3. NUNCA guardar directamente en una ruta fija sin preguntar al usuario
+PROBLEMA CON Path.GetTempPath() EN REVIT:
+Revit ejecuta los scripts en un contexto aislado donde Path.GetTempPath() devuelve
+una subcarpeta con GUID único: C:\Users\...\AppData\Local\Temp\92ef03b9-a655-...\
+Esta subcarpeta NO es la carpeta Temp estándar de Windows.
+ChatWindow.xaml.cs no puede predecir ni encontrar este GUID.
 
-PATRON OBLIGATORIO DE RETORNO:
-return "SAVEFILE:" + rutaTemporal + "|" + nombreSugerido + "|" + filtro;
+SOLUCION: SIEMPRE usar la carpeta fija de ATENEA para exportaciones:
+string atenDir = System.IO.Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+    "ATENEA25", "exports");
+System.IO.Directory.CreateDirectory(atenDir);
+
+PATRON OBLIGATORIO CORRECTO:
+string atenDir = System.IO.Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+    "ATENEA25", "exports");
+System.IO.Directory.CreateDirectory(atenDir);
+string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+string tempFile = System.IO.Path.Combine(atenDir, "NombreArchivo_" + timestamp + ".ext");
+
+// ... generar el archivo en tempFile ...
+
+return "SAVEFILE:" + tempFile + "|Nombre Sugerido|Tipo (*.ext)|*.ext";
 
 EJEMPLOS CORRECTOS:
 
-// EXPORTAR A EXCEL:
-string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Reporte_Muros.xlsx");
-// ... generar el archivo Excel en tempPath ...
-return "SAVEFILE:" + tempPath + "|Reporte de Muros|Excel Files (*.xlsx)|*.xlsx";
+// EXCEL / CSV:
+string atenDir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ATENEA25", "exports");
+System.IO.Directory.CreateDirectory(atenDir);
+string tempFile = System.IO.Path.Combine(atenDir, "Reporte_Muros_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv");
+System.IO.File.WriteAllText(tempFile, contenidoCSV, System.Text.Encoding.UTF8);
+return "SAVEFILE:" + tempFile + "|Reporte de Muros|Excel y CSV (*.csv)|*.csv";
 
-// EXPORTAR A PDF:
-string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Planos_Proyecto.pdf");
-// ... generar el PDF en tempPath ...
-return "SAVEFILE:" + tempPath + "|Planos del Proyecto|PDF Files (*.pdf)|*.pdf";
+// WORD (HTML que Word puede abrir):
+string atenDir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ATENEA25", "exports");
+System.IO.Directory.CreateDirectory(atenDir);
+string tempFile = System.IO.Path.Combine(atenDir, "Informe_Muros_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".doc");
+System.IO.File.WriteAllText(tempFile, contenidoHTML, System.Text.Encoding.UTF8);
+return "SAVEFILE:" + tempFile + "|Informe de Muros|Word (*.doc)|*.doc";
 
-// EXPORTAR A WORD:
-string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Informe_BIM.docx");
-// ... generar el Word en tempPath ...
-return "SAVEFILE:" + tempPath + "|Informe BIM|Word Files (*.docx)|*.docx";
+NUNCA USAR:
+- System.IO.Path.GetTempPath()  ← genera subcarpeta GUID en Revit
+- rutas hardcoded como C:\Users\IXA\...  ← no funciona en otros equipos
+- rutas relativas  ← comportamiento impredecible
 
-// EXPORTAR A CSV:
-string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Datos_Elementos.csv");
-// ... generar el CSV en tempPath ...
-return "SAVEFILE:" + tempPath + "|Datos de Elementos|CSV Files (*.csv)|*.csv";
-
-FORMATO EXACTO DEL PATRON:
-"SAVEFILE:<rutaArchivoTemporal>|<nombreSugerido>|<descripcion> (*.<ext>)|*.<ext>"
-
-REGLAS:
-- La ruta temporal SIEMPRE usa System.IO.Path.GetTempPath() para ser compatible con cualquier PC
-- El nombre sugerido NO incluye extension (la extension viene del filtro)
-- El filtro sigue el formato estandar de Windows: "Descripcion (*.ext)|*.ext"
-- Si el usuario cancela el dialogo, ATENEA muestra un aviso de cancelacion sin error
-- NUNCA hardcodear rutas como C:\Users\IXA\... — usar GetTempPath() siempre
-- El archivo temporal se elimina automaticamente despues de copiarlo al destino elegido
-
-SCRIPT COMPLETO DE EJEMPLO — EXPORTAR TABLA DE MUROS A EXCEL:
-string tempDir  = System.IO.Path.GetTempPath();
-string tempFile = System.IO.Path.Combine(tempDir, "Muros_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx");
-
-// Construir contenido CSV simple (compatible con Excel)
-System.Text.StringBuilder sb = new System.Text.StringBuilder();
-sb.AppendLine("ID,Tipo,Longitud (m),Altura (m),Nivel");
-
-FilteredElementCollector col = new FilteredElementCollector(document).OfClass(typeof(Wall));
-foreach (Wall w in col) {
-    LocationCurve lc = w.Location as LocationCurve;
-    if (lc == null) continue;
-    double longitud = lc.Curve.Length * 0.3048;
-    double altura   = w.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM).AsDouble() * 0.3048;
-    sb.AppendLine(w.Id.Value + "," + w.WallType.Name + "," +
-                  Math.Round(longitud,2) + "," + Math.Round(altura,2));
-}
-
-System.IO.File.WriteAllText(tempFile, sb.ToString(), System.Text.Encoding.UTF8);
-return "SAVEFILE:" + tempFile + "|Tabla de Muros|Excel y CSV (*.csv;*.xlsx)|*.csv;*.xlsx";
+LA RUTA FIJA CORRECTA ES SIEMPRE:
+Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\ATENEA25\exports\"
+→ Equivale a: C:\Users\{usuario}\AppData\Roaming\ATENEA25\exports\
+→ Esta carpeta SIEMPRE existe o se crea con Directory.CreateDirectory()
+→ ChatWindow.xaml.cs la conoce y puede buscar archivos allí
 
 ■ REGLA 51 — Wall.TopConstraint NO EXISTE — usar BuiltInParameter.WALL_HEIGHT_TYPE:
 El nivel superior de un muro NO se obtiene con w.TopConstraint.
