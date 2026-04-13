@@ -672,6 +672,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
-    }
+    },
+    {
+      "id": "sk_049",
+      "categoria": "Exportacion",
+      "titulo": "Exportar archivos: usar patron SAVEFILE para SaveFileDialog de Windows",
+      "patron_error": "Guardar archivo en ruta fija sin preguntar al usuario donde guardarlo",
+      "solucion": "Generar archivo en Path.GetTempPath(), retornar 'SAVEFILE:' + rutaTemp + '|' + nombre + '|' + filtro. ATENEA abre SaveFileDialog automaticamente. NUNCA hardcodear rutas de usuario.",
+      "exitoso": true,
+      "usos": 3,
+      "fecha": "2026-04-12"
+     }
   ]
 }
