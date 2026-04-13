@@ -829,6 +829,70 @@ foreach (Wall w in collector) {
     if (dist < menorDist) { menorDist = dist; muroEncontrado = w; }
 }
 
+■ REGLA 50 — EXPORTACION DE ARCHIVOS: usar patron SAVEFILE para que el usuario elija donde guardar:
+
+Cuando el usuario pida exportar resultados a Excel, PDF o Word, ATENEA debe:
+1. Generar el archivo en una carpeta TEMPORAL (C:\Temp\ o Path.GetTempPath())
+2. Retornar el patron SAVEFILE para que ATENEA abra el SaveFileDialog de Windows
+3. NUNCA guardar directamente en una ruta fija sin preguntar al usuario
+
+PATRON OBLIGATORIO DE RETORNO:
+return "SAVEFILE:" + rutaTemporal + "|" + nombreSugerido + "|" + filtro;
+
+EJEMPLOS CORRECTOS:
+
+// EXPORTAR A EXCEL:
+string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Reporte_Muros.xlsx");
+// ... generar el archivo Excel en tempPath ...
+return "SAVEFILE:" + tempPath + "|Reporte de Muros|Excel Files (*.xlsx)|*.xlsx";
+
+// EXPORTAR A PDF:
+string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Planos_Proyecto.pdf");
+// ... generar el PDF en tempPath ...
+return "SAVEFILE:" + tempPath + "|Planos del Proyecto|PDF Files (*.pdf)|*.pdf";
+
+// EXPORTAR A WORD:
+string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Informe_BIM.docx");
+// ... generar el Word en tempPath ...
+return "SAVEFILE:" + tempPath + "|Informe BIM|Word Files (*.docx)|*.docx";
+
+// EXPORTAR A CSV:
+string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Datos_Elementos.csv");
+// ... generar el CSV en tempPath ...
+return "SAVEFILE:" + tempPath + "|Datos de Elementos|CSV Files (*.csv)|*.csv";
+
+FORMATO EXACTO DEL PATRON:
+"SAVEFILE:<rutaArchivoTemporal>|<nombreSugerido>|<descripcion> (*.<ext>)|*.<ext>"
+
+REGLAS:
+- La ruta temporal SIEMPRE usa System.IO.Path.GetTempPath() para ser compatible con cualquier PC
+- El nombre sugerido NO incluye extension (la extension viene del filtro)
+- El filtro sigue el formato estandar de Windows: "Descripcion (*.ext)|*.ext"
+- Si el usuario cancela el dialogo, ATENEA muestra un aviso de cancelacion sin error
+- NUNCA hardcodear rutas como C:\Users\IXA\... — usar GetTempPath() siempre
+- El archivo temporal se elimina automaticamente despues de copiarlo al destino elegido
+
+SCRIPT COMPLETO DE EJEMPLO — EXPORTAR TABLA DE MUROS A EXCEL:
+string tempDir  = System.IO.Path.GetTempPath();
+string tempFile = System.IO.Path.Combine(tempDir, "Muros_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx");
+
+// Construir contenido CSV simple (compatible con Excel)
+System.Text.StringBuilder sb = new System.Text.StringBuilder();
+sb.AppendLine("ID,Tipo,Longitud (m),Altura (m),Nivel");
+
+FilteredElementCollector col = new FilteredElementCollector(document).OfClass(typeof(Wall));
+foreach (Wall w in col) {
+    LocationCurve lc = w.Location as LocationCurve;
+    if (lc == null) continue;
+    double longitud = lc.Curve.Length * 0.3048;
+    double altura   = w.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM).AsDouble() * 0.3048;
+    sb.AppendLine(w.Id.Value + "," + w.WallType.Name + "," +
+                  Math.Round(longitud,2) + "," + Math.Round(altura,2));
+}
+
+System.IO.File.WriteAllText(tempFile, sb.ToString(), System.Text.Encoding.UTF8);
+return "SAVEFILE:" + tempFile + "|Tabla de Muros|Excel y CSV (*.csv;*.xlsx)|*.csv;*.xlsx";
+
 
 
 
