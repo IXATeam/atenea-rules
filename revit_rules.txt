@@ -829,58 +829,64 @@ foreach (Wall w in collector) {
     if (dist < menorDist) { menorDist = dist; muroEncontrado = w; }
 }
 
-■ REGLA 50 (ACTUALIZADA) — EXPORTACION DE ARCHIVOS: usar ruta fija ATENEA25\exports
+■ REGLA 50 (DEFINITIVA) — EXPORTACION DE ARCHIVOS A WORD/EXCEL/PDF/CSV
 
-PROBLEMA CON Path.GetTempPath() EN REVIT:
-Revit ejecuta los scripts en un contexto aislado donde Path.GetTempPath() devuelve
-una subcarpeta con GUID único: C:\Users\...\AppData\Local\Temp\92ef03b9-a655-...\
-Esta subcarpeta NO es la carpeta Temp estándar de Windows.
-ChatWindow.xaml.cs no puede predecir ni encontrar este GUID.
-
-SOLUCION: SIEMPRE usar la carpeta fija de ATENEA para exportaciones:
+RUTA OBLIGATORIA — SIEMPRE usar AppData\Roaming\ATENEA25\exports:
 string atenDir = System.IO.Path.Combine(
     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
     "ATENEA25", "exports");
 System.IO.Directory.CreateDirectory(atenDir);
-
-PATRON OBLIGATORIO CORRECTO:
-string atenDir = System.IO.Path.Combine(
-    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-    "ATENEA25", "exports");
-System.IO.Directory.CreateDirectory(atenDir);
-string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-string tempFile = System.IO.Path.Combine(atenDir, "NombreArchivo_" + timestamp + ".ext");
-
-// ... generar el archivo en tempFile ...
-
-return "SAVEFILE:" + tempFile + "|Nombre Sugerido|Tipo (*.ext)|*.ext";
-
-EJEMPLOS CORRECTOS:
-
-// EXCEL / CSV:
-string atenDir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ATENEA25", "exports");
-System.IO.Directory.CreateDirectory(atenDir);
-string tempFile = System.IO.Path.Combine(atenDir, "Reporte_Muros_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv");
-System.IO.File.WriteAllText(tempFile, contenidoCSV, System.Text.Encoding.UTF8);
-return "SAVEFILE:" + tempFile + "|Reporte de Muros|Excel y CSV (*.csv)|*.csv";
-
-// WORD (HTML que Word puede abrir):
-string atenDir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ATENEA25", "exports");
-System.IO.Directory.CreateDirectory(atenDir);
-string tempFile = System.IO.Path.Combine(atenDir, "Informe_Muros_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".doc");
-System.IO.File.WriteAllText(tempFile, contenidoHTML, System.Text.Encoding.UTF8);
-return "SAVEFILE:" + tempFile + "|Informe de Muros|Word (*.doc)|*.doc";
+string tempFile = System.IO.Path.Combine(atenDir, "NombreArchivo_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".doc");
 
 NUNCA USAR:
-- System.IO.Path.GetTempPath()  ← genera subcarpeta GUID en Revit
-- rutas hardcoded como C:\Users\IXA\...  ← no funciona en otros equipos
-- rutas relativas  ← comportamiento impredecible
+- System.IO.Path.GetTempPath() — genera subcarpeta GUID en Revit que ChatWindow no puede encontrar
+- rutas con uidoc.ActiveView.Name en la parte de exportacion — uidoc puede no estar disponible
 
-LA RUTA FIJA CORRECTA ES SIEMPRE:
-Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\ATENEA25\exports\"
-→ Equivale a: C:\Users\{usuario}\AppData\Roaming\ATENEA25\exports\
-→ Esta carpeta SIEMPRE existe o se crea con Directory.CreateDirectory()
-→ ChatWindow.xaml.cs la conoce y puede buscar archivos allí
+PATRON COMPLETO CORRECTO PARA EXPORTAR MUROS A WORD:
+
+string atenDir = System.IO.Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+    "ATENEA25", "exports");
+System.IO.Directory.CreateDirectory(atenDir);
+string tempFile = System.IO.Path.Combine(atenDir, "Muros_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".doc");
+
+List<Wall> muros = new List<Wall>();
+FilteredElementCollector col = new FilteredElementCollector(document);
+col.OfClass(typeof(Wall));
+foreach (Wall w in col) muros.Add(w);
+
+System.Text.StringBuilder html = new System.Text.StringBuilder();
+html.AppendLine("<!DOCTYPE html><html><head><meta charset='utf-8'>");
+html.AppendLine("<style>body{font-family:Arial;margin:20px}table{width:100%;border-collapse:collapse}");
+html.AppendLine("th{background:#3498db;color:white;padding:8px}td{padding:8px;border:1px solid #ddd}</style>");
+html.AppendLine("</head><body><h2>Informe de Muros — " + DateTime.Now.ToString("dd/MM/yyyy") + "</h2>");
+html.AppendLine("<table><tr><th>ID</th><th>Tipo</th><th>Longitud (m)</th><th>Altura (m)</th><th>Grosor (mm)</th><th>Nivel</th><th>Area (m2)</th></tr>");
+
+foreach (Wall w in muros) {
+    LocationCurve lc = w.Location as LocationCurve;
+    double lon = lc != null ? Math.Round(lc.Curve.Length * 0.3048, 2) : 0;
+    Parameter pAlt = w.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM);
+    double alt = pAlt != null ? Math.Round(pAlt.AsDouble() * 0.3048, 2) : 0;
+    double gros = Math.Round(w.WallType.Width * 304.8, 0);
+    Level niv = document.GetElement(w.LevelId) as Level;
+    string nivel = niv != null ? niv.Name : "N/A";
+    Parameter pArea = w.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED);
+    double area = pArea != null ? Math.Round(pArea.AsDouble() * 0.092903, 2) : 0;
+    html.AppendLine("<tr><td>" + w.Id.Value + "</td><td>" + w.WallType.Name +
+        "</td><td>" + lon + "</td><td>" + alt + "</td><td>" + gros +
+        "</td><td>" + nivel + "</td><td>" + area + "</td></tr>");
+}
+html.AppendLine("</table></body></html>");
+
+System.IO.File.WriteAllText(tempFile, html.ToString(), System.Text.Encoding.UTF8);
+return "SAVEFILE:" + tempFile + "|Informe de Muros|Word Documents (*.doc)|*.doc";
+
+REGLAS CRITICAS:
+1. La ruta SIEMPRE es AppData\Roaming\ATENEA25\exports — nunca GetTempPath()
+2. NUNCA usar uidoc en la parte de exportacion del script — usar solo document
+3. El retorno SIEMPRE es exactamente: return "SAVEFILE:" + tempFile + "|Nombre|Filtro (*.ext)|*.ext";
+4. Directory.CreateDirectory(atenDir) SIEMPRE antes de escribir el archivo
+5. Para filtros: Word=*.doc, Excel=*.xlsx, CSV=*.csv, PDF=*.pdf, Texto=*.txt
 
 ■ REGLA 51 — Wall.TopConstraint NO EXISTE — usar BuiltInParameter.WALL_HEIGHT_TYPE:
 El nivel superior de un muro NO se obtiene con w.TopConstraint.
