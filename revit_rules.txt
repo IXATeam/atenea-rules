@@ -893,7 +893,27 @@ foreach (Wall w in col) {
 System.IO.File.WriteAllText(tempFile, sb.ToString(), System.Text.Encoding.UTF8);
 return "SAVEFILE:" + tempFile + "|Tabla de Muros|Excel y CSV (*.csv;*.xlsx)|*.csv;*.xlsx";
 
+■ REGLA 51 — Wall.TopConstraint NO EXISTE — usar BuiltInParameter.WALL_HEIGHT_TYPE:
+El nivel superior de un muro NO se obtiene con w.TopConstraint.
+TopConstraint no es una propiedad de Wall en la API de Revit.
 
+PATRON CORRECTO:
+Parameter pNivSup = w.get_Parameter(BuiltInParameter.WALL_HEIGHT_TYPE);
+if (pNivSup != null) {
+    Level nSup = document.GetElement(pNivSup.AsElementId()) as Level;
+    string nombre = nSup != null ? nSup.Name : "Sin restriccion";
+}
+
+PARAMETROS CORRECTOS DE MURO:
+- Altura:          BuiltInParameter.WALL_USER_HEIGHT_PARAM
+- Nivel superior:  BuiltInParameter.WALL_HEIGHT_TYPE  (.AsElementId() → Level)
+- Area:            BuiltInParameter.HOST_AREA_COMPUTED
+- Volumen:         BuiltInParameter.HOST_VOLUME_COMPUTED
+- Estructural:     BuiltInParameter.WALL_STRUCTURAL_SIGNIFICANT (.AsInteger())
+- Grosor tipo:     w.WallType.Width (en pies → x304.8 para mm)
+- Nivel base:      document.GetElement(w.LevelId) as Level
+
+NUNCA usar: w.TopConstraint, w.TopOffset directo sin verificar.
 
 
 ═══════════════════════════════════════════════════════════
