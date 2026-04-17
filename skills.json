@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-17T21:23:47.6956660Z",
-  "total": 73,
+  "updated": "2026-04-17T21:23:55.7166825Z",
+  "total": 74,
   "skills": [
     {
       "id": "sk_001",
@@ -729,6 +729,16 @@
       "titulo": "Autocorreccion: Muéstrame la vista 3D",
       "patron_error": "",
       "solucion": "Cambio: if (vista3d != null) → if (vista3d == null)\r\nCambio: uidoc.ActiveView = vista3d; → ViewFamilyType tipoVista3D = null;\r\nCambio: uidoc.RefreshActiveView(); → FilteredElementCollector colTipo = new FilteredElementCollector(document);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-17"
+    },
+    {
+      "id": "sk_20260417162355",
+      "categoria": "Vistas",
+      "titulo": "Obtener o crear vista 3D isometrica y activarla",
+      "patron_error": "No saber como obtener una vista 3D existente o crearla si no existe",
+      "solucion": "Usar FilteredElementCollector de View3D, si no existe usar View3D.CreateIsometric con ViewFamilyType. Activar con uidoc.ActiveView y uidoc.RefreshActiveView().",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-17"
