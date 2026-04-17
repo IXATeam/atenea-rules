@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-15T21:03:24.8413871Z",
-  "total": 72,
+  "updated": "2026-04-17T21:23:47.6956660Z",
+  "total": 73,
   "skills": [
     {
       "id": "sk_001",
@@ -722,6 +722,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-15"
+    },
+    {
+      "id": "sk_20260417162347",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: Muéstrame la vista 3D",
+      "patron_error": "",
+      "solucion": "Cambio: if (vista3d != null) → if (vista3d == null)\r\nCambio: uidoc.ActiveView = vista3d; → ViewFamilyType tipoVista3D = null;\r\nCambio: uidoc.RefreshActiveView(); → FilteredElementCollector colTipo = new FilteredElementCollector(document);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-17"
     }
   ]
 }
