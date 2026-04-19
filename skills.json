@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-17T21:23:55.7166825Z",
-  "total": 74,
+  "updated": "2026-04-19T02:02:09.1149066Z",
+  "total": 75,
   "skills": [
     {
       "id": "sk_001",
@@ -742,6 +742,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-17"
+    },
+    {
+      "id": "sk_20260418210209",
+      "categoria": "Section Box",
+      "titulo": "Section Box a la mitad del modelo usando bounding box unificado de muros",
+      "patron_error": "Aplicar section box sin calcular primero el bounding box real de los elementos y perder la mitad del volumen",
+      "solucion": "Iterar todos los muros, expandir un BoundingBoxXYZ acumulativo con min/min y max/max, luego dividir en X con (min.X+max.X)/2 y aplicar con SetSectionBox + IsSectionBoxActive",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-18"
     }
   ]
 }
