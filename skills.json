@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-19T02:03:13.9052468Z",
-  "total": 76,
+  "updated": "2026-04-19T02:03:30.7414788Z",
+  "total": 77,
   "skills": [
     {
       "id": "sk_001",
@@ -759,6 +759,16 @@
       "titulo": "Autocorreccion: el section box que has aplicado es demasiado grande, redúcel...",
       "patron_error": "",
       "solucion": "Cambio: // Obtener muros implantados con geometría real → // Obtener muros implantados\r\nCambio: List<Wall> muros = new List<Wall>(); → FilteredElementCollector col = new FilteredElementCollector(document);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-18"
+    },
+    {
+      "id": "sk_20260418210330",
+      "categoria": "Section Box",
+      "titulo": "Ajustar section box al bounding box real de muros implantados",
+      "patron_error": "Section box por defecto cubre todo el proyecto siendo demasiado grande y mostrando volumen vacío",
+      "solucion": "Iterar geometría de muros calculando min/max X/Y/Z de cada BoundingBox, crear BoundingBoxXYZ centrado y aplicar con SetSectionBox() + IsSectionBoxActive = true",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-18"
