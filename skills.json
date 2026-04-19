@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-19T02:02:09.1149066Z",
-  "total": 75,
+  "updated": "2026-04-19T02:03:13.9052468Z",
+  "total": 76,
   "skills": [
     {
       "id": "sk_001",
@@ -749,6 +749,16 @@
       "titulo": "Section Box a la mitad del modelo usando bounding box unificado de muros",
       "patron_error": "Aplicar section box sin calcular primero el bounding box real de los elementos y perder la mitad del volumen",
       "solucion": "Iterar todos los muros, expandir un BoundingBoxXYZ acumulativo con min/min y max/max, luego dividir en X con (min.X+max.X)/2 y aplicar con SetSectionBox + IsSectionBoxActive",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-18"
+    },
+    {
+      "id": "sk_20260418210313",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: el section box que has aplicado es demasiado grande, redúcel...",
+      "patron_error": "",
+      "solucion": "Cambio: // Obtener muros implantados con geometría real → // Obtener muros implantados\r\nCambio: List<Wall> muros = new List<Wall>(); → FilteredElementCollector col = new FilteredElementCollector(document);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-18"
