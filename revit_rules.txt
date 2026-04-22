@@ -1,6 +1,6 @@
 ═══════════════════════════════════════════════════════════
 ATENEA — REGLAS API REVIT
-Versión: 2.0 | Actualizado: 2026-03-31
+Versión: 2.1 | Actualizado: 2026-04-21
 Repositorio: https://github.com/IXATeam/atenea-rules
 ═══════════════════════════════════════════════════════════
 
@@ -910,6 +910,73 @@ PARAMETROS CORRECTOS DE MURO:
 
 NUNCA usar: w.TopConstraint, w.TopOffset directo sin verificar.
 
+■ REGLA 52 — PINTURA EN MUROS: API CORRECTA PARA LEER Y ELIMINAR:
+WallUtils.GetWallPaintMaterialIds() NO EXISTE — nunca la uses.
+WallUtils.RemoveWallPaint() NO EXISTE — nunca la uses.
+
+METODOS CORRECTOS del documento para pintura:
+- Detectar si una cara tiene pintura: document.IsPainted(elementId, face)
+- Obtener material pintado en una cara: document.GetPaintedMaterial(elementId, face)
+- Eliminar pintura de una cara: document.RemovePaint(elementId, face)
+
+PATRON CORRECTO PARA ELIMINAR PINTURA DE UN MURO:
+var opts = new Autodesk.Revit.DB.Options();
+var geomElem = wall.get_Geometry(opts);
+int carasLimpiadas = 0;
+using (var st = new Autodesk.Revit.DB.SubTransaction(document))
+{
+    st.Start();
+    foreach (Autodesk.Revit.DB.GeometryObject geomObj in geomElem)
+    {
+        var solid = geomObj as Autodesk.Revit.DB.Solid;
+        if (solid == null) continue;
+        foreach (Autodesk.Revit.DB.Face face in solid.Faces)
+        {
+            if (document.IsPainted(wall.Id, face))
+            {
+                document.RemovePaint(wall.Id, face);
+                carasLimpiadas++;
+            }
+        }
+    }
+    st.Commit();
+}
+return "Pintura eliminada. Caras limpiadas: " + carasLimpiadas;
+
+PATRON CORRECTO PARA DETECTAR QUE MUROS TIENEN PINTURA:
+var opts = new Autodesk.Revit.DB.Options();
+foreach (Wall wall in collector)
+{
+    var geomElem = wall.get_Geometry(opts);
+    if (geomElem == null) continue;
+    foreach (Autodesk.Revit.DB.GeometryObject geomObj in geomElem)
+    {
+        var solid = geomObj as Autodesk.Revit.DB.Solid;
+        if (solid == null) continue;
+        foreach (Autodesk.Revit.DB.Face face in solid.Faces)
+        {
+            Autodesk.Revit.DB.ElementId matId = document.GetPaintedMaterial(wall.Id, face);
+            if (matId != null && matId != Autodesk.Revit.DB.ElementId.InvalidElementId)
+            {
+                var mat = document.GetElement(matId) as Autodesk.Revit.DB.Material;
+                string matName = mat != null ? mat.Name : "ID=" + matId.Value;
+                info += "Muro ID:" + wall.Id.Value + " Pintura:" + matName + "\n";
+            }
+        }
+    }
+}
+
+PATRON PARA OBTENER EL MURO SELECCIONADO EN MCP (uidoc no disponible directamente):
+var uiDoc2 = new Autodesk.Revit.UI.UIApplication(document.Application).ActiveUIDocument;
+var selectedIds = uiDoc2.Selection.GetElementIds();
+// Luego procesar selectedIds normalmente
+
+REGLAS CRITICAS:
+1. NUNCA usar WallUtils para pintura — esos metodos no existen
+2. SIEMPRE iterar sobre las caras del solido de la geometria del muro
+3. document.IsPainted() y document.RemovePaint() son los metodos correctos
+4. Usar SubTransaction para encapsular las operaciones de RemovePaint
+5. Para obtener seleccion activa en MCP usar UIApplication(document.Application).ActiveUIDocument
 
 ═══════════════════════════════════════════════════════════
 FIN DE REGLAS
