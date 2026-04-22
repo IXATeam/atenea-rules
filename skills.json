@@ -1,7 +1,7 @@
 {
-  "version": "1.0",
-  "updated": "2026-04-19T02:03:30.7414788Z",
-  "total": 77,
+  "version": "1.1",
+  "updated": "2026-04-21T00:00:00.0000000Z",
+  "total": 78,
   "skills": [
     {
       "id": "sk_001",
@@ -276,12 +276,12 @@
     {
       "id": "sk_028",
       "categoria": "General",
-      "titulo": "SubTransaction y Transaction prohibidos la transaccion ya esta abierta por el sistema",
-      "patron_error": "Transaction no contiene una definicion para Status / SubTransaction lanza excepcion",
-      "solucion": "NUNCA usar SubTransaction ni Transaction en scripts de ATENEA. La transaccion ya esta abierta. Todo el codigo se ejecuta dentro de ella automaticamente.",
+      "titulo": "SubTransaction SÍ está permitida en scripts MCP — Transaction directa NO",
+      "patron_error": "Confundir SubTransaction con Transaction. Transaction directa lanza excepcion porque la transaccion del host ya esta abierta.",
+      "solucion": "CORRECTO: usar SubTransaction para encapsular modificaciones: using (var st = new SubTransaction(document)) { st.Start(); /* modificaciones */ st.Commit(); }. PROHIBIDO: new Transaction(document, 'nombre') — la transaccion del host ya esta abierta y esto lanza excepcion. SubTransaction es obligatoria para operaciones como RemovePaint, ChangeTypeId y otras modificaciones del modelo.",
       "exitoso": true,
       "usos": 5,
-      "fecha": "2026-04-09"
+      "fecha": "2026-04-21"
     },
     {
       "id": "sk_029",
@@ -458,7 +458,7 @@
       "categoria": "Seleccion",
       "titulo": "Muro entre intersecciones de rejilla buscar por punto medio mas cercano nunca por orientacion",
       "patron_error": "Filtrar muros por orientacion antes de calcular distancias elimina el muro correcto. Error: No se encontro ningun muro entre las intersecciones",
-      "solucion": "Calcular midObjetivo = punto medio entre las dos intersecciones de rejilla. Buscar el muro con punto medio mas cercano a midObjetivo usando DistanceTo(). Tolerancia de 2m. NUNCA filtrar por dy<0.05 ni por orientacion del muro. XYZ midMuro = new XYZ((p0.X+p1.X)/2,(p0.Y+p1.Y)/2,0); double dist = midMuro.DistanceTo(midObjetivo); if(dist < menorDist){ menorDist=dist; muroSeleccionado=w; }",
+      "solucion": "Calcular midObjetivo = punto medio entre las dos intersecciones de rejilla. Buscar el muro con punto medio mas cercano a midObjetivo usando DistanceTo(). Tolerancia de 2m. NUNCA filtrar por dy<0.05 ni por orientacion del muro.",
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-10"
@@ -468,7 +468,7 @@
       "categoria": "Cotas",
       "titulo": "PATRON MAESTRO cotas: diagnosticar orientacion del muro ANTES de acotar — 3 casos",
       "patron_error": "grid.Curve.Reference da error no paralelas. Caras del solido de muro diagonal miden el GROSOR (0.30m) no la longitud. ComputeNormal lanza excepcion interna.",
-      "solucion": "PASO 1 diagnostico: double dx=Math.Abs(p1.X-p0.X); double dy=Math.Abs(p1.Y-p0.Y); bool esHorizontal=dx>dy&&dy<0.05; bool esVertical=dy>dx&&dx<0.05; bool esDiagonal=!esHorizontal&&!esVertical; PASO 2A horizontal: get_Geometry con ComputeReferences=true, filtrar caras por posicion X minima y maxima usando GetEdgesAsCurveLoops para calcular centroX de cada cara. PASO 2B vertical: igual pero filtrar por posicion Y. PASO 2C diagonal: crear DetailLines perpendiculares al muro en p0 y p1 usando vector perp=(-dir.Y,dir.X,0) y usar dl.GeometryCurve.Reference. Linea de cota SIEMPRE paralela al muro. Verificar que valor de cota es ~longitud del muro no el grosor (0.30m).",
+      "solucion": "PASO 1 diagnostico: double dx=Math.Abs(p1.X-p0.X); double dy=Math.Abs(p1.Y-p0.Y); bool esHorizontal=dx>dy&&dy<0.05; bool esVertical=dy>dx&&dx<0.05; bool esDiagonal=!esHorizontal&&!esVertical; PASO 2A horizontal: get_Geometry con ComputeReferences=true, filtrar caras por posicion X. PASO 2B vertical: filtrar por posicion Y. PASO 2C diagonal: crear DetailLines perpendiculares usando vector perp=(-dir.Y,dir.X,0).",
       "exitoso": true,
       "usos": 5,
       "fecha": "2026-04-10"
@@ -478,16 +478,26 @@
       "categoria": "Cotas",
       "titulo": "Error no paralelas y valor igual al grosor: cambiar referencias o usar DetailLines",
       "patron_error": "Revit error: las referencias de la cota resaltada han dejado de ser paralelas. O cota mide 0.30m (grosor) en lugar de la longitud del muro.",
-      "solucion": "Error no paralelas significa que la linea de cota NO es paralela a las referencias usadas. Para muro diagonal: SIEMPRE usar DetailLines perpendiculares en los extremos — son las unicas referencias confiables. Para muro recto: verificar que la linea de cota corre en la misma direccion que el muro. Si el valor es 0.30m las referencias apuntan a caras laterales no a extremos — reintentar filtrando caras por posicion extrema con GetEdgesAsCurveLoops. NUNCA rendirse en el primer fallo — reintentar con variante de referencia.",
+      "solucion": "Error no paralelas significa que la linea de cota NO es paralela a las referencias. Para muro diagonal: SIEMPRE usar DetailLines perpendiculares en los extremos. Para muro recto: verificar que la linea de cota corre en la misma direccion que el muro. NUNCA rendirse en el primer fallo.",
       "exitoso": true,
       "usos": 4,
       "fecha": "2026-04-10"
     },
     {
+      "id": "sk_049",
+      "categoria": "Exportacion",
+      "titulo": "Exportar archivos: usar ruta fija ATENEA25\\exports NO GetTempPath()",
+      "patron_error": "Path.GetTempPath() dentro de Revit genera subcarpeta GUID que ChatWindow no puede encontrar. Guardar en ruta fija sin usar el patron SAVEFILE.",
+      "solucion": "SIEMPRE usar: string atenDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 'ATENEA25', 'exports'); Directory.CreateDirectory(atenDir); string tempFile = Path.Combine(atenDir, 'Nombre_' + DateTime.Now.ToString('yyyyMMdd_HHmmss') + '.ext'); Retornar: return 'SAVEFILE:' + tempFile + '|NombreArchivo|Filtro (*.ext)|*.ext'; NUNCA usar Path.GetTempPath() ni rutas hardcodeadas de usuario.",
+      "exitoso": true,
+      "usos": 3,
+      "fecha": "2026-04-21"
+    },
+    {
       "id": "sk_20260410220644",
       "categoria": "General",
       "titulo": "Patron Maestro de Cotas: 3 casos segun orientacion de muro con reintento",
-      "patron_error": "Muros no acotados por no distinguir entre horizontal, vertical y diagonal. grid.Curve.Reference da error. Caras de solido miden grosor en muros diagonales.",
+      "patron_error": "Muros no acotados por no distinguir entre horizontal, vertical y diagonal.",
       "solucion": "Diagnosticar orientacion con dx/dy, para H/V usar get_Geometry con ComputeReferences=true filtrando por posX/posY, para diagonal crear DetailLines perpendiculares en extremos, incluir try-catch con offset alternativo para reintento.",
       "exitoso": true,
       "usos": 1,
@@ -496,19 +506,9 @@
     {
       "id": "sk_20260410220659",
       "categoria": "Muros",
-      "titulo": "Acotar muro identificado por dos intersecciones de rejilla (D2 a B2)",
+      "titulo": "Acotar muro identificado por dos intersecciones de rejilla",
       "patron_error": "Seleccionar muro incorrecto cuando hay multiples muros en la zona o acotar con referencias de caras que dan longitud 0m",
-      "solucion": "Usar punto medio entre las dos intersecciones de grid como objetivo. Buscar el muro cuyo punto medio (midMuro) tenga la menor distancia a midObjetivo. Para muros verticales usar caras filtradas por posicion Y maxima y minima.",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-10"
-    },
-    {
-      "id": "sk_20260410220916",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: ahora acotalo",
-      "patron_error": "",
-      "solucion": "Cambio: // Verificar muro seleccionado → // Verificar muro seleccionado usando IDs del contexto\r\nCambio: ICollection<ElementId> selIds = uidoc.Selection.GetElementIds(); → Wall muro = document.GetElement(new ElementId(165591L)) as Wall;",
+      "solucion": "Usar punto medio entre las dos intersecciones de grid como objetivo. Buscar el muro cuyo punto medio tenga la menor distancia a midObjetivo. Para muros verticales usar caras filtradas por posicion Y maxima y minima.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-10"
@@ -525,20 +525,10 @@
     },
     {
       "id": "sk_20260411011758",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: muestra en pantalla la Sección 1",
-      "patron_error": "",
-      "solucion": "Cambio: if (vs.Name.Contains(\"Sec\") || vs.Name.Contains(\"Section\")) { → if ((vs.Name.Contains(\"Sec\") || vs.Name.Contains(\"Section\")) && !vs.IsTemplate) {",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-11"
-    },
-    {
-      "id": "sk_20260411011810",
       "categoria": "Vistas",
-      "titulo": "Buscar y activar Seccion por nombre parcial con fallback",
-      "patron_error": "Buscar seccion por nombre exacto sin fallback causa Error cuando el nombre no coincide exactamente",
-      "solucion": "Usar Contains() para buscar por parte del nombre y fallback de primera seccion no-plantilla disponible",
+      "titulo": "Buscar vista/seccion por nombre parcial excluyendo plantillas",
+      "patron_error": "Buscar seccion por nombre exacto sin excluir IsTemplate retorna plantilla no navegable",
+      "solucion": "Usar Contains() para buscar por parte del nombre y verificar !vs.IsTemplate antes de usar la vista. Fallback de primera seccion no-plantilla disponible.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-11"
@@ -560,23 +550,13 @@
       "patron_error": "Buscar vista 3D sin filtrar IsTemplate puede retornar una plantilla que no es una vista navegable",
       "solucion": "FilteredElementCollector de View3D con foreach, verificar !v.IsTemplate antes de tomar la vista, luego uidoc.ActiveView = vista3d y retornar ACTIVATEVIEW con el Id",
       "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-11"
-    },
-    {
-      "id": "sk_20260411233325",
-      "categoria": "Vistas",
-      "titulo": "Activar vista 3D del proyecto filtrando plantillas",
-      "patron_error": "Intentar usar una vista de plantilla como vista activa genera errores",
-      "solucion": "FilteredElementCollector de View3D con filtro !v.IsTemplate, luego uidoc.ActiveView = vista3d",
-      "exitoso": true,
-      "usos": 1,
+      "usos": 2,
       "fecha": "2026-04-11"
     },
     {
       "id": "sk_20260412004225",
       "categoria": "Vistas",
-      "titulo": "Activar o crear vista 3D isométrica con fallback a creación",
+      "titulo": "Activar o crear vista 3D isometrica con fallback a creacion",
       "patron_error": "Crear vista 3D sin verificar si ya existe causa duplicados innecesarios",
       "solucion": "Buscar View3D existente con FilteredElementCollector excluyendo IsTemplate, usar View3D.CreateIsometric con ViewFamilyType ThreeDimensional si no existe",
       "exitoso": true,
@@ -585,50 +565,10 @@
     },
     {
       "id": "sk_20260412004317",
-      "categoria": "Parametros",
-      "titulo": "Parametros Width/Height devuelven 0 para puertas y ventanas",
-      "patron_error": "LookupParameter(\"Width\") y LookupParameter(\"Height\") devuelven 0.00m aunque la puerta/ventana tenga dimensiones. Esto ocurre porque las familias de Revit almacenan las dimensiones en el tipo (FamilySymbol), no directamente en la instancia.",
-      "solucion": "Usar ventana.Symbol.LookupParameter(\"Width\") y puerta.Symbol.LookupParameter(\"Width\") en lugar de la instancia directamente. Alternativa: BuiltInParameter.ALL_MODEL_WIDTH / ALL_MODEL_HEIGHT sobre la instancia.",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-12"
-    },
-    {
-      "id": "sk_20260412004403",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: exporta el resultado a pdf",
-      "patron_error": "",
-      "solucion": "Cambio: // Crear secciones para el PDF → // Generar reporte completo\r\nCambio: Dictionary<string, List<string>> secciones = new Dictionary<string, List<string>>(); → string reporte = \"========================================\\n\";",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-12"
-    },
-    {
-      "id": "sk_20260412004416",
       "categoria": "Familias",
-      "titulo": "Leer dimensiones de ventanas y puertas requiere FamilySymbol no FamilyInstance",
-      "patron_error": "LookupParameter(Width/Height) en FamilyInstance devuelve 0 porque las dimensiones son parametros del tipo, no de la instancia",
-      "solucion": "Obtener el FamilySymbol del FamilyInstance con.get_Symbol() y leer Width/Height de ahi: FamilySymbol fs = ventana.Symbol; fs.LookupParameter(Width).AsDouble()",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-12"
-    },
-    {
-      "id": "sk_20260412004607",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: si",
-      "patron_error": "",
-      "solucion": "Cambio: string[] archivos = System.IO.Directory.GetFiles(downloadsPath, \"*.pdf\"); → try {\r\nCambio: foreach (string archivo in archivos) { → string[] archivos = System.IO.Directory.GetFiles(downloadsPath, \"*.pdf\");",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-12"
-    },
-    {
-      "id": "sk_20260412005332",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: dame la información total de todos los elementos que hay en ...",
-      "patron_error": "",
-      "solucion": "Cambio: info += \"Vista: \" + uidoc.ActiveView.Name + \"\\n\\n\"; → info = info + \"Vista: \" + uidoc.ActiveView.Name + \"\\n\\n\";\r\nCambio: info += \"--- \" + tipo + \" ---\\n\"; → info = info + \"--- \" + tipo + \" ---\\n\";",
+      "titulo": "Parametros Width/Height de puertas y ventanas leer desde FamilySymbol no desde instancia",
+      "patron_error": "LookupParameter('Width') y LookupParameter('Height') devuelven 0 en la instancia porque las dimensiones estan en el tipo FamilySymbol",
+      "solucion": "Usar ventana.Symbol.LookupParameter('Width') y puerta.Symbol.LookupParameter('Width'). Alternativa: BuiltInParameter.ALL_MODEL_WIDTH / ALL_MODEL_HEIGHT sobre la instancia.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
@@ -647,18 +587,8 @@
       "id": "sk_20260412005624",
       "categoria": "Vistas",
       "titulo": "Activar plano de planta con fallback de busqueda por nombre",
-      "patron_error": "Buscar solo por nombre exacto sin variaciones - causa 'vista no encontrada' cuando Revit usa nombres localizados o con prefijos diferentes",
+      "patron_error": "Buscar solo por nombre exacto sin variaciones causa 'vista no encontrada' cuando Revit usa nombres localizados",
       "solucion": "Primero buscar nombre exacto, luego buscar con Contains() para variaciones (L1/Level 1/PLANTA 1), si no se encuentra listar todas las vistas disponibles. Usar return ACTIVATEVIEW:id:nombre para activar.",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-12"
-    },
-    {
-      "id": "sk_20260412005706",
-      "categoria": "Vistas",
-      "titulo": "Seleccionar elementos de vista especifica por nombre con fallback flexible",
-      "patron_error": "Asumir que el nombre de la vista es exacto o que la vista activa es la correcta. No saber buscar elementos visibles en una vista sin usar ElementIsVisibleFilter",
-      "solucion": "Buscar vista por nombre exacto, fallback con Contains('L1'), usar FilteredElementCollector(document, vista.Id) para obtener elementos de esa vista, seleccionar y luego ACTIVATEVIEW para activar la vista encontrada",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
@@ -666,29 +596,19 @@
     {
       "id": "sk_20260412005758",
       "categoria": "Muros",
-      "titulo": "Verificar existencia antes de eliminar muros batch — evitar errores de elementos no encontrados",
-      "patron_error": "Error 'Element elementId not found in this Document' al eliminar muros batch — paneless de muro cortina vinculados al muro padre desaparecen y causan excepciones al intentar eliminarlos nuevamente",
-      "solucion": "Antes de document.Delete(id), verificar: if (document.GetElement(id) != null) { document.Delete(id); } — así se saltan los elementos ya eliminados o sin referencia",
+      "titulo": "Verificar existencia antes de eliminar muros batch",
+      "patron_error": "Error 'Element elementId not found in this Document' al eliminar muros batch — paneles de muro cortina vinculados al muro padre desaparecen",
+      "solucion": "Antes de document.Delete(id), verificar: if (document.GetElement(id) != null) { document.Delete(id); } — asi se saltan los elementos ya eliminados o sin referencia",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-12"
     },
     {
-      "id": "sk_049",
-      "categoria": "Exportacion",
-      "titulo": "Exportar archivos: usar patron SAVEFILE para SaveFileDialog de Windows",
-      "patron_error": "Guardar archivo en ruta fija sin preguntar al usuario donde guardarlo",
-      "solucion": "Generar archivo en Path.GetTempPath(), retornar 'SAVEFILE:' + rutaTemp + '|' + nombre + '|' + filtro. ATENEA abre SaveFileDialog automaticamente. NUNCA hardcodear rutas de usuario.",
-      "exitoso": true,
-      "usos": 3,
-      "fecha": "2026-04-12"
-    },
-    {
       "id": "sk_20260413145039",
       "categoria": "Muros",
-      "titulo": "Seleccionar muros con fallback y extraer caracteristicas completas",
-      "patron_error": "Asumir que siempre hay muros seleccionados o no saber que BuiltInParameter.WALL_HEIGHT_TYPE es el unico modo de obtener el nivel superior del muro",
-      "solucion": "Usar patron con fallback: verificar seleccion activa, si vacia tomar muros de vista activa. Para cada muro: tipo, grosor (Width*304.8mm), nivel base (LevelId), nivel superior (WALL_HEIGHT_TYPE), altura (WALL_USER_HEIGHT_PARAM*0.3048m), longitud (Curve.Length*0.3048m), area (HOST_AREA_COMPUTED*0.092903m²), volumen (HOST_VOLUME_COMPUTED*0.0283168m³), estructural (WALL_STRUCTURAL_SIGNIFICANT)",
+      "titulo": "Extraer caracteristicas completas de muros con fallback de seleccion",
+      "patron_error": "Asumir que siempre hay muros seleccionados o no saber obtener el nivel superior del muro",
+      "solucion": "Usar patron con fallback: verificar seleccion activa, si vacia tomar muros de vista activa. Para nivel superior usar WALL_HEIGHT_TYPE.AsElementId(). Para altura: WALL_USER_HEIGHT_PARAM*0.3048m. Para area: HOST_AREA_COMPUTED*0.092903m2.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-13"
@@ -698,80 +618,30 @@
       "categoria": "General",
       "titulo": "Exportar datos a Word usando HTML con estilo CSS y patron SAVEFILE",
       "patron_error": "Error al guardar archivo por hardcodear rutas fijas o no dar opcion al usuario de elegir destino",
-      "solucion": "Generar HTML con CSS para formato visual, guardar en carpeta temporal con timestamp usando Path.GetTempPath(), y retornar patron SAVEFILE para que el usuario elija donde guardar. Word abre archivos HTML con extension .doc directamente.",
+      "solucion": "Generar HTML con CSS para formato visual, guardar en ATENEA25\\exports con timestamp, retornar patron SAVEFILE para que el usuario elija donde guardar. Word abre archivos HTML con extension .doc directamente.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-13"
-    },
-    {
-      "id": "sk_20260413150809",
-      "categoria": "Muros",
-      "titulo": "Extraer parámetros completos de muros y exportar a archivo con SAVEFILE",
-      "patron_error": "Código repetitivo para leer parámetros individuales de cada muro sin consolidación de totales",
-      "solucion": "Usar FilteredElementCollector con viewId para muros visibles, recopilar todos los parámetros (tipo, grosor, longitud, altura, área, volumen, nivel base/superior, estructural, marca) en un StringBuilder con formato legible, calcular totales con un segundo foreach, y retornar SAVEFILE para exportar a archivo temporal",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-13"
-    },
-    {
-      "id": "sk_20260415160324",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: exporta el mismo resultado a exel",
-      "patron_error": "",
-      "solucion": "Cambio: // Calcular totales → // Preparar datos para exportar\r\nCambio: double longitudTotal = 0; → System.Text.StringBuilder csv = new System.Text.StringBuilder();\r\nCambio: double areaTotal = 0; → \r\nCambio:  → // Headers",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-15"
-    },
-    {
-      "id": "sk_20260417162347",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: Muéstrame la vista 3D",
-      "patron_error": "",
-      "solucion": "Cambio: if (vista3d != null) → if (vista3d == null)\r\nCambio: uidoc.ActiveView = vista3d; → ViewFamilyType tipoVista3D = null;\r\nCambio: uidoc.RefreshActiveView(); → FilteredElementCollector colTipo = new FilteredElementCollector(document);",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-17"
-    },
-    {
-      "id": "sk_20260417162355",
-      "categoria": "Vistas",
-      "titulo": "Obtener o crear vista 3D isometrica y activarla",
-      "patron_error": "No saber como obtener una vista 3D existente o crearla si no existe",
-      "solucion": "Usar FilteredElementCollector de View3D, si no existe usar View3D.CreateIsometric con ViewFamilyType. Activar con uidoc.ActiveView y uidoc.RefreshActiveView().",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-17"
     },
     {
       "id": "sk_20260418210209",
       "categoria": "Section Box",
-      "titulo": "Section Box a la mitad del modelo usando bounding box unificado de muros",
-      "patron_error": "Aplicar section box sin calcular primero el bounding box real de los elementos y perder la mitad del volumen",
-      "solucion": "Iterar todos los muros, expandir un BoundingBoxXYZ acumulativo con min/min y max/max, luego dividir en X con (min.X+max.X)/2 y aplicar con SetSectionBox + IsSectionBoxActive",
+      "titulo": "Section Box ajustado al bounding box real de muros",
+      "patron_error": "Aplicar section box sin calcular primero el bounding box real de los elementos",
+      "solucion": "Iterar todos los muros expandiendo un BoundingBoxXYZ acumulativo con min/max, luego aplicar con SetSectionBox + IsSectionBoxActive=true en View3D.",
       "exitoso": true,
-      "usos": 1,
+      "usos": 2,
       "fecha": "2026-04-18"
     },
     {
-      "id": "sk_20260418210313",
-      "categoria": "Autocorreccion",
-      "titulo": "Autocorreccion: el section box que has aplicado es demasiado grande, redúcel...",
-      "patron_error": "",
-      "solucion": "Cambio: // Obtener muros implantados con geometría real → // Obtener muros implantados\r\nCambio: List<Wall> muros = new List<Wall>(); → FilteredElementCollector col = new FilteredElementCollector(document);",
+      "id": "sk_20260421000001",
+      "categoria": "Muros",
+      "titulo": "Pintura en muros: metodos correctos document.IsPainted y document.RemovePaint",
+      "patron_error": "WallUtils.GetWallPaintMaterialIds() y WallUtils.RemoveWallPaint() no existen en el API de Revit y causan error de compilacion",
+      "solucion": "METODOS CORRECTOS: document.IsPainted(elementId, face) para detectar pintura. document.GetPaintedMaterial(elementId, face) para leer el material. document.RemovePaint(elementId, face) para eliminar pintura. PATRON COMPLETO: Options opts = new Options(); var geomElem = wall.get_Geometry(opts); using (var st = new SubTransaction(document)) { st.Start(); foreach (GeometryObject geomObj in geomElem) { Solid solid = geomObj as Solid; if (solid == null) continue; foreach (Face face in solid.Faces) { if (document.IsPainted(wall.Id, face)) { document.RemovePaint(wall.Id, face); } } } st.Commit(); } Para obtener seleccion activa en MCP: var uiDoc2 = new UIApplication(document.Application).ActiveUIDocument; var selectedIds = uiDoc2.Selection.GetElementIds();",
       "exitoso": true,
       "usos": 1,
-      "fecha": "2026-04-18"
-    },
-    {
-      "id": "sk_20260418210330",
-      "categoria": "Section Box",
-      "titulo": "Ajustar section box al bounding box real de muros implantados",
-      "patron_error": "Section box por defecto cubre todo el proyecto siendo demasiado grande y mostrando volumen vacío",
-      "solucion": "Iterar geometría de muros calculando min/max X/Y/Z de cada BoundingBox, crear BoundingBoxXYZ centrado y aplicar con SetSectionBox() + IsSectionBoxActive = true",
-      "exitoso": true,
-      "usos": 1,
-      "fecha": "2026-04-18"
+      "fecha": "2026-04-21"
     }
   ]
 }
