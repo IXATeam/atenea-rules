@@ -1,7 +1,7 @@
 {
   "version": "1.1",
   "updated": "2026-04-21T00:00:00.0000000Z",
-  "total": 78,
+  "total": 79,
   "skills": [
     {
       "id": "sk_001",
@@ -642,6 +642,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-21"
-    }
+     },
+     {
+      "id": "sk_20260421000002",
+      "categoria": "Parametros",
+      "titulo": "Crear parametro de proyecto tipo Number via SharedParameter API",
+      "patron_error": "Escribir grupos y params directamente en el archivo .txt de parametros compartidos — Revit no los parsea aunque el formato parezca correcto. Groups.Size retorna 0.",
+      "solucion": "PASO 1: Crear archivo vacío solo con cabeceras en UTF-16 LE sin BOM: new UnicodeEncoding(false, false). PASO 2: Abrir con OpenSharedParameterFile() y crear grupo/definicion via API: defFile.Groups.Create('ATENEA_Params'); grp.Definitions.Create(exOpts). PASO 3: Vincular con InstanceBinding + SubTransaction: document.ParameterBindings.Insert(extDef, binding, GroupTypeId.Data). NUNCA escribir grupos en el archivo manualmente. NUNCA usar ParameterType — usar SpecTypeId.Number, SpecTypeId.String, etc.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-21"
+      }
   ]
 }
