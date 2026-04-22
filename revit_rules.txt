@@ -978,6 +978,72 @@ REGLAS CRITICAS:
 4. Usar SubTransaction para encapsular las operaciones de RemovePaint
 5. Para obtener seleccion activa en MCP usar UIApplication(document.Application).ActiveUIDocument
 
+■ REGLA 53 — CREAR PARAMETRO DE PROYECTO (SHARED PARAMETER VIA API):
+NUNCA escribir el archivo .txt de parametros compartidos manualmente con contenido completo —
+Revit no parsea grupos escritos manualmente aunque el formato parezca correcto.
+PATRON CORRECTO en 3 pasos:
+
+PASO 1 — Crear archivo vacío (solo cabeceras, sin grupos ni params):
+string t = "\t"; string r = "\r\n";
+string contenido =
+    "# This is a Revit shared parameter file." + r +
+    "# Do not edit manually." + r +
+    "META" + t + "VERSION" + t + "2" + t + "MINVERSION" + t + "1" + r +
+    "GROUP" + t + "ID" + t + "NAME" + r +
+    "PARAM" + t + "GUID" + t + "NAME" + t + "DATATYPE" + t + "DATACATEGORY" + t +
+    "GROUP" + t + "VISIBILITY" + t + "DESCRIPTION" + t + "USERMODIFIABLE" + t + "HIDDENITEM" + r;
+var enc = new System.Text.UnicodeEncoding(false, false); // UTF-16 LE sin BOM
+string tempShared = System.IO.Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+    "ATENEA25", "shared_params_atenea.txt");
+System.IO.File.WriteAllText(tempShared, contenido, enc);
+
+PASO 2 — Crear grupo y definicion via API (NO escribir en el archivo):
+document.Application.SharedParametersFilename = tempShared;
+Autodesk.Revit.DB.DefinitionFile defFile = document.Application.OpenSharedParameterFile();
+Autodesk.Revit.DB.DefinitionGroup grp = defFile.Groups.Create("ATENEA_Params");
+Autodesk.Revit.DB.ExternalDefinitionCreationOptions exOpts =
+    new Autodesk.Revit.DB.ExternalDefinitionCreationOptions("NombreParametro", Autodesk.Revit.DB.SpecTypeId.Number);
+exOpts.Visible = true;
+Autodesk.Revit.DB.ExternalDefinition extDef = grp.Definitions.Create(exOpts) as Autodesk.Revit.DB.ExternalDefinition;
+
+PASO 3 — Vincular al proyecto con SubTransaction:
+Autodesk.Revit.DB.CategorySet catSet = new Autodesk.Revit.DB.CategorySet();
+catSet.Insert(document.Settings.Categories.get_Item(Autodesk.Revit.DB.BuiltInCategory.OST_Walls));
+// agregar más categorias según necesidad
+Autodesk.Revit.DB.InstanceBinding binding = document.Application.Create.NewInstanceBinding(catSet);
+using (var st = new Autodesk.Revit.DB.SubTransaction(document))
+{
+    st.Start();
+    bool ok = document.ParameterBindings.Insert(extDef, binding, Autodesk.Revit.DB.GroupTypeId.Data);
+    if (ok) { st.Commit(); return "Parametro creado."; }
+    else { st.RollBack(); return "Insert retorno false."; }
+}
+
+TIPOS DISPONIBLES (SpecTypeId):
+- Number:    SpecTypeId.Number
+- Texto:     SpecTypeId.String
+- Longitud:  SpecTypeId.Length
+- Area:      SpecTypeId.Area
+- Volumen:   SpecTypeId.Volume
+- Angulo:    SpecTypeId.Angle
+- Moneda:    SpecTypeId.Currency
+
+GRUPOS DE PARAMETRO (GroupTypeId):
+- Datos:         GroupTypeId.Data
+- Dimensiones:   GroupTypeId.Geometry
+- Restricciones: GroupTypeId.Constraints
+- Identidad:     GroupTypeId.IdentityData
+
+REGLAS CRITICAS:
+1. El archivo SIEMPRE en UTF-16 LE sin BOM: new UnicodeEncoding(false, false)
+2. NUNCA escribir grupos o params en el archivo — crearlos via API con Groups.Create() y Definitions.Create()
+3. SIEMPRE usar SubTransaction para el Insert final
+4. El archivo se guarda en ATENEA25\shared_params_atenea.txt — ruta fija conocida
+5. Si el parametro ya existe en el proyecto, Insert retorna false sin lanzar excepcion
+6. Para tipo texto usar SpecTypeId.String, NO ParameterType.Text (deprecado en 2025+)
+
+
 ═══════════════════════════════════════════════════════════
 FIN DE REGLAS
 Para reportar errores o sugerir mejoras:
