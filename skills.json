@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-21T00:00:00.0000000Z",
-  "total": 79,
+  "updated": "2026-04-23T05:56:42.0541523Z",
+  "total": 66,
   "skills": [
     {
       "id": "sk_001",
@@ -642,8 +642,8 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-21"
-     },
-     {
+    },
+    {
       "id": "sk_20260421000002",
       "categoria": "Parametros",
       "titulo": "Crear parametro de proyecto tipo Number via SharedParameter API",
@@ -652,6 +652,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-21"
-      }
+    },
+    {
+      "id": "sk_20260423005642",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: créame un avista de planta nivel 1",
+      "patron_error": "",
+      "solucion": "Cambio: // Buscar el nivel \"Nivel 1\" o \"Level 1\" → Transaction t = new Transaction(document, \"Crear Vista Planta Nivel 1\");\r\nCambio: Level nivel = null; → t.Start();\r\nCambio: FilteredElementCollector colNivel = new FilteredElementCollector(document); →",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-23"
+    }
   ]
 }
