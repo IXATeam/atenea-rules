@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-23T06:17:46.4919974Z",
-  "total": 69,
+  "updated": "2026-04-23T06:19:14.8189532Z",
+  "total": 70,
   "skills": [
     {
       "id": "sk_001",
@@ -689,6 +689,16 @@
       "titulo": "Crear parametro compartido vinculado a categoria de elemento",
       "patron_error": "Escribir grupos y parametros manualmente en archivo .txt - Revit no parsea contenido escrito manualmente aunque el formato parezca correcto",
       "solucion": "Crear archivo vacio con cabeceras UTF-16 LE, luego crear grupo y definicion via API: Groups.Create() + Definitions.Create() + ParameterBindings.Insert() con SubTransaction",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-23"
+    },
+    {
+      "id": "sk_20260423011914",
+      "categoria": "Parametros",
+      "titulo": "Crear múltiples parámetros compartidos con array y loop foreach",
+      "patron_error": "Crear cada parámetro manualmente copiando código — genera código repetitivo y difícil de mantener",
+      "solucion": "Usar string[] nombres con foreach para crear múltiples parámetros en un solo loop. Cada iteración crea ExternalDefinition, InstanceBinding y ParameterBindings.Insert",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-23"
