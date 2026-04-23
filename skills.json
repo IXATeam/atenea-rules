@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-23T05:57:03.8649750Z",
-  "total": 67,
+  "updated": "2026-04-23T06:00:12.5249676Z",
+  "total": 68,
   "skills": [
     {
       "id": "sk_001",
@@ -669,6 +669,16 @@
       "titulo": "Crear vista de planta con nivel automatico",
       "patron_error": "Crear vista sin buscar el nivel existente o usar nivel incorrecto causa vista vacia o error",
       "solucion": "Buscar nivel por nombre con fallback al primer disponible, obtener ViewFamilyType de FloorPlan, usar ViewPlan.Create(doc, vftId, nivelId), retornar ACTIVATEVIEW con el ID",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-23"
+    },
+    {
+      "id": "sk_20260423010012",
+      "categoria": "Familias",
+      "titulo": "Crear etiquetas de muro con IndependentTag.Create",
+      "patron_error": "Error: No se encontro ningun simbolo de etiqueta de muro. El codigo asume que existe un simbolo OST_WallTags en el proyecto sin verificar primero si hay alguno disponible.",
+      "solucion": "Buscar FamilySymbol con OfCategory(BuiltInCategory.OST_WallTags). Si el collector esta vacio, informar al usuario que no hay simbolos de etiqueta disponibles en el proyecto. Alternative: usar BuiltInCategory.OST_GenericTags como fallback generico.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-23"
