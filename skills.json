@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-23T06:19:14.8189532Z",
-  "total": 70,
+  "updated": "2026-04-24T06:32:27.3068891Z",
+  "total": 71,
   "skills": [
     {
       "id": "sk_001",
@@ -702,6 +702,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-23"
+    },
+    {
+      "id": "sk_20260424013227",
+      "categoria": "General",
+      "titulo": "Verificar GetElement retorno null antes de usar elemento",
+      "patron_error": "Intentar usar un elemento obtenido por ID sin verificar si existe — GetElement retorna null cuando el ID es invalido, inexistente o el elemento fue eliminado",
+      "solucion": "Siempre verificar null despues de GetElement: WallType tipo = document.GetElement(id) as WallType; if (tipo == null) return \"Error: tipo no existe\";",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-24"
     }
   ]
 }
