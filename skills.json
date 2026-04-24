@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-24T06:32:27.3068891Z",
-  "total": 71,
+  "updated": "2026-04-24T06:32:33.3398941Z",
+  "total": 72,
   "skills": [
     {
       "id": "sk_001",
@@ -709,6 +709,16 @@
       "titulo": "Verificar GetElement retorno null antes de usar elemento",
       "patron_error": "Intentar usar un elemento obtenido por ID sin verificar si existe — GetElement retorna null cuando el ID es invalido, inexistente o el elemento fue eliminado",
       "solucion": "Siempre verificar null despues de GetElement: WallType tipo = document.GetElement(id) as WallType; if (tipo == null) return \"Error: tipo no existe\";",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-24"
+    },
+    {
+      "id": "sk_20260424013233",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: jecuta este código en Revit: crea un muro usando WallType co...",
+      "patron_error": "",
+      "solucion": "Cambio: Error: El WallType con ID 999999999 NO existe en el proyecto. → // Codigo correcto: intenta crear muro con WallType ID 999999999 (no existe)\r\nCambio: No se puede crear el muro porque el tipo de muro es inexistente. → ElementId tipoId = new ElementId(999999999L);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-24"
