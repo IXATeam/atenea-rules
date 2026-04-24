@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-24T06:56:46.0985740Z",
-  "total": 74,
+  "updated": "2026-04-24T07:06:46.9189701Z",
+  "total": 75,
   "skills": [
     {
       "id": "sk_001",
@@ -739,6 +739,16 @@
       "titulo": "Buscar tipo de elemento por nombre con fallback al primero disponible",
       "patron_error": "Buscar un WallType (o cualquier tipo de familia) por nombre exacto que no existe y obtener null, causando NullReferenceException o Wall.Create con tipo null",
       "solucion": "Dos pasadas: 1) foreach buscando por nombre exacto, 2) si no encontro, foreach again tomando el primer elemento del collector como fallback. Nunca retornar error por nombre no encontrado.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-24"
+    },
+    {
+      "id": "sk_20260424020646",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: ejecuta este código exactamente como está: Wall.Create(docum...",
+      "patron_error": "",
+      "solucion": "Cambio: Wall.Create(Document, Curve, ElementId, ElementId, double, double, bool, bool) → // Obtener el primer WallType disponible",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-24"
