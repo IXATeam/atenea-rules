@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-24T07:26:58.6203924Z",
-  "total": 77,
+  "updated": "2026-04-24T07:27:25.3952811Z",
+  "total": 78,
   "skills": [
     {
       "id": "sk_001",
@@ -769,6 +769,16 @@
       "titulo": "Autocorreccion: \"ejecuta este código exactamente como está: Wall.Create(docu...",
       "patron_error": "",
       "solucion": "Cambio: Wall.Create(Document, Curve, WallTypeId, LevelId, height, offset, flip, structural) → Level nivel = null;",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-24"
+    },
+    {
+      "id": "sk_20260424022725",
+      "categoria": "Muros",
+      "titulo": "Firma correcta de Wall.Create con todos sus parametros obligatorios",
+      "patron_error": "Confusion sobre que parametros son nulos o se pueden omitir - Curve, WallTypeId y LevelId nunca pueden ser null en Wall.Create",
+      "solucion": "Wall.Create(document, curve, wallTypeId, levelId, height, offset, flip, structural) - todos los parametros son obligatorios. Height en pies (3.0 * 3.28084 para 3 metros).",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-24"
