@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-24T07:06:46.9189701Z",
-  "total": 75,
+  "updated": "2026-04-24T07:18:35.7163208Z",
+  "total": 76,
   "skills": [
     {
       "id": "sk_001",
@@ -749,6 +749,16 @@
       "titulo": "Autocorreccion: ejecuta este código exactamente como está: Wall.Create(docum...",
       "patron_error": "",
       "solucion": "Cambio: Wall.Create(Document, Curve, ElementId, ElementId, double, double, bool, bool) → // Obtener el primer WallType disponible",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-24"
+    },
+    {
+      "id": "sk_20260424021835",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: \"ejecuta este código exactamente como está: Wall.Create(docu...",
+      "patron_error": "",
+      "solucion": "Cambio: Wall.Create(document, null, null, null, 3.0, 0, false, false); → // Buscar primer nivel disponible\r\nCambio: //                     ↑    ↑    ↑ → Level nivel = null;\r\nCambio: //              curve=null  wallTypeId=null  levelId=null → FilteredElementCollector cl = new FilteredElementCollector(document);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-24"
