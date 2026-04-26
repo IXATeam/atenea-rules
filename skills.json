@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-26T03:03:11.3111064Z",
-  "total": 88,
+  "updated": "2026-04-26T03:17:40.1879664Z",
+  "total": 89,
   "skills": [
     {
       "id": "sk_001",
@@ -879,6 +879,16 @@
       "titulo": "Listar parametros de elemento con conversion correcta de unidades",
       "patron_error": "Asumir que todos los valores son strings o mostrar valores en pies sin convertir a metros",
       "solucion": "Iterar Parameters verificando Definition!=null, usar switch por StorageType: String/Integer/Double/ElementId, convertir Double a metros multiplicando por 0.3048",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-25"
+    },
+    {
+      "id": "sk_20260425221740",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: lista todos los parámetros del muro con ID 999999999",
+      "patron_error": "",
+      "solucion": "Cambio: return \"Error: No existe ningún elemento con ID 999999999 en el proyecto.\"; → return \"Error: No existe ningun elemento con ID 999999999 en el proyecto.\";\r\nCambio: info += \"PARAMETROS INTEGRADOS:\\n\"; → info += \"PARAMETROS DEL MURO (INSTANCIA):\\n\";",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-25"
