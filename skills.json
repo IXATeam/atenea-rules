@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-26T03:46:14.8798215Z",
-  "total": 91,
+  "updated": "2026-04-26T04:02:49.4190547Z",
+  "total": 92,
   "skills": [
     {
       "id": "sk_001",
@@ -909,6 +909,16 @@
       "titulo": "Autocorreccion: lista todos los parámetros del muro con ID 999999999",
       "patron_error": "",
       "solucion": "Cambio: Parameter pNombre = w.get_Parameter(BuiltInParameter.WALL_ATTR_DESCRIPTION); → Parameter pNombre = w.get_Parameter(BuiltInParameter.ALL_MODEL_MARK);\r\nCambio: if (pNombre != null) info += \"Nombre/Descripcion: \" + pNombre.AsString() + \"\\n\"; → if (pNombre != null) {",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-25"
+    },
+    {
+      "id": "sk_20260425230249",
+      "categoria": "Parametros",
+      "titulo": "Leer parametros de muro con conversion de tipos y manejo de ElementId invalidos",
+      "patron_error": "ElementId en parametros retorna IDs de elementos que pueden no existir en el proyecto",
+      "solucion": "Usar document.GetElement(eidVal) con verificacion null antes de acceder .Name, fallback a 'ID='+eidVal.Value",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-25"
