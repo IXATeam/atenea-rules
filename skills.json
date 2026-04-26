@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-26T02:51:40.6322600Z",
-  "total": 87,
+  "updated": "2026-04-26T03:03:11.3111064Z",
+  "total": 88,
   "skills": [
     {
       "id": "sk_001",
@@ -869,6 +869,16 @@
       "titulo": "Autocorreccion: lista todos los parámetros del muro con ID 999999999",
       "patron_error": "",
       "solucion": "Cambio: if (p.Definition != null && p.Definition.ParameterType == ParameterType.YesNo) { → // Verificar si es parametro Yes/No por el nombre\r\nCambio: valor = p.AsInteger() == 1 ? \"Si\" : \"No\"; → if (nombre.Contains(\"YesNo\") || nombre.Contains(\"yesno\") || nombre.ToLower().Contains(\"activo\") || nombre.ToLower().Contains(\"active\")) {",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-25"
+    },
+    {
+      "id": "sk_20260425220311",
+      "categoria": "Parametros",
+      "titulo": "Listar parametros de elemento con conversion correcta de unidades",
+      "patron_error": "Asumir que todos los valores son strings o mostrar valores en pies sin convertir a metros",
+      "solucion": "Iterar Parameters verificando Definition!=null, usar switch por StorageType: String/Integer/Double/ElementId, convertir Double a metros multiplicando por 0.3048",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-25"
