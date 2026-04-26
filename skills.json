@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-26T03:17:46.5624555Z",
-  "total": 90,
+  "updated": "2026-04-26T03:46:14.8798215Z",
+  "total": 91,
   "skills": [
     {
       "id": "sk_001",
@@ -899,6 +899,16 @@
       "titulo": "Leer todos los parametros de un muro con conversion de unidades",
       "patron_error": "Intentar leer un elemento por ID fijo sin verificar que existe primero genera error confuso",
       "solucion": "Usar document.GetElement(id) con verificacion de null, luego verificar tipo con 'is Wall', iterar Parameters con HasValue y StorageType, convertir unidades (pies*0.3048=m, pies2*0.0929=m2), leer BuiltInParameters dedicados como WALL_USER_HEIGHT_PARAM y WALL_HEIGHT_TYPE",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-25"
+    },
+    {
+      "id": "sk_20260425224614",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: lista todos los parámetros del muro con ID 999999999",
+      "patron_error": "",
+      "solucion": "Cambio: Parameter pNombre = w.get_Parameter(BuiltInParameter.WALL_ATTR_DESCRIPTION); → Parameter pNombre = w.get_Parameter(BuiltInParameter.ALL_MODEL_MARK);\r\nCambio: if (pNombre != null) info += \"Nombre/Descripcion: \" + pNombre.AsString() + \"\\n\"; → if (pNombre != null) {",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-25"
