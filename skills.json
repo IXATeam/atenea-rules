@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-24T08:01:25.2530186Z",
-  "total": 79,
+  "updated": "2026-04-26T01:48:02.2714996Z",
+  "total": 80,
   "skills": [
     {
       "id": "sk_001",
@@ -792,6 +792,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-24"
+    },
+    {
+      "id": "sk_20260425204802",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: Wall.Create(document, null, null, null, 3.0, 0, false, false...",
+      "patron_error": "",
+      "solucion": "Cambio: Wall.Create(document, null, null, null, 3.0, 0, false, false); → // Obtener primer WallType disponible\r\nCambio: //                  ↑    ↑    ↑ → WallType tipoMuro = null;\r\nCambio: //              null    null  null  → EXCEPCIÓN → FilteredElementCollector cwt = new FilteredElementCollector(document);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-25"
     }
   ]
 }
