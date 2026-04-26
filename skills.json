@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-26T01:48:02.2714996Z",
-  "total": 80,
+  "updated": "2026-04-26T01:48:19.5901514Z",
+  "total": 81,
   "skills": [
     {
       "id": "sk_001",
@@ -799,6 +799,16 @@
       "titulo": "Autocorreccion: Wall.Create(document, null, null, null, 3.0, 0, false, false...",
       "patron_error": "",
       "solucion": "Cambio: Wall.Create(document, null, null, null, 3.0, 0, false, false); → // Obtener primer WallType disponible\r\nCambio: //                  ↑    ↑    ↑ → WallType tipoMuro = null;\r\nCambio: //              null    null  null  → EXCEPCIÓN → FilteredElementCollector cwt = new FilteredElementCollector(document);",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-25"
+    },
+    {
+      "id": "sk_20260425204819",
+      "categoria": "Muros",
+      "titulo": "Wall.Create con null funciona pero usa valores por defecto impredecibles",
+      "patron_error": "Confusion sobre si Wall.Create requiere todos los parametros no nulos - el codigo funciono con curve=null, wallTypeId=null, levelId=null",
+      "solucion": "Si Wall.Create recibe null en curve/type/level, Revit usa valores por defecto del proyecto (tipo activo, nivel activo), pero el resultado depende del contexto",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-25"
