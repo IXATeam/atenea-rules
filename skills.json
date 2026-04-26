@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-26T02:13:20.7413187Z",
-  "total": 85,
+  "updated": "2026-04-26T02:13:36.2857232Z",
+  "total": 86,
   "skills": [
     {
       "id": "sk_001",
@@ -849,6 +849,16 @@
       "titulo": "Autocorreccion: lista todos los parámetros del muro con ID 999999999",
       "patron_error": "",
       "solucion": "Cambio: return \"Error: No existe ningún elemento con ID 999999999 en el proyecto.\"; → return \"Error: No existe ningun elemento con ID 999999999 en el proyecto.\";\r\nCambio: // Obtener todos los parámetros → // Obtener todos los parametros",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-25"
+    },
+    {
+      "id": "sk_20260425211336",
+      "categoria": "General",
+      "titulo": "Verificar existencia de elemento por ID antes de procesarlo",
+      "patron_error": "Asumir que un ID fijo existe en el proyecto sin verificar, causando error 'No existe ningun elemento'",
+      "solucion": "Despues de GetElement, siempre verificar si el resultado es null antes de hacer cast o acceder a propiedades. Si el elemento no existe, usar FilteredElementCollector para buscar por categoria.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-25"
