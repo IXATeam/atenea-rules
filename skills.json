@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-26T02:04:58.6671646Z",
-  "total": 82,
+  "updated": "2026-04-26T02:05:15.0657993Z",
+  "total": 83,
   "skills": [
     {
       "id": "sk_001",
@@ -819,6 +819,16 @@
       "titulo": "Autocorreccion: Wall.Create(document, null, null, null, 3.0, 0, false, false...",
       "patron_error": "",
       "solucion": "Cambio: Wall.Create(document, null, null, null, 3.0, 0, false, false); → // Obtener WallType (primer disponible en el proyecto)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-25"
+    },
+    {
+      "id": "sk_20260425210515",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: Wall.Create(document, null, null, null, 3.0, 0, false, false...",
+      "patron_error": "",
+      "solucion": "Cambio: XYZ p2 = new XYZ(5, 0, 0);  // 5 metros de longitud → XYZ p2 = new XYZ(5, 0, 0);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-25"
