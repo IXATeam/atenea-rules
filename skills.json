@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-26T02:13:36.2857232Z",
-  "total": 86,
+  "updated": "2026-04-26T02:51:40.6322600Z",
+  "total": 87,
   "skills": [
     {
       "id": "sk_001",
@@ -859,6 +859,16 @@
       "titulo": "Verificar existencia de elemento por ID antes de procesarlo",
       "patron_error": "Asumir que un ID fijo existe en el proyecto sin verificar, causando error 'No existe ningun elemento'",
       "solucion": "Despues de GetElement, siempre verificar si el resultado es null antes de hacer cast o acceder a propiedades. Si el elemento no existe, usar FilteredElementCollector para buscar por categoria.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-25"
+    },
+    {
+      "id": "sk_20260425215140",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: lista todos los parámetros del muro con ID 999999999",
+      "patron_error": "",
+      "solucion": "Cambio: if (p.Definition != null && p.Definition.ParameterType == ParameterType.YesNo) { → // Verificar si es parametro Yes/No por el nombre\r\nCambio: valor = p.AsInteger() == 1 ? \"Si\" : \"No\"; → if (nombre.Contains(\"YesNo\") || nombre.Contains(\"yesno\") || nombre.ToLower().Contains(\"activo\") || nombre.ToLower().Contains(\"active\")) {",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-25"
