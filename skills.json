@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-26T02:05:34.7843655Z",
-  "total": 84,
+  "updated": "2026-04-26T02:13:20.7413187Z",
+  "total": 85,
   "skills": [
     {
       "id": "sk_001",
@@ -839,6 +839,16 @@
       "titulo": "Autocorreccion: Wall.Create(document, null, null, null, 3.0, 0, false, false...",
       "patron_error": "",
       "solucion": "Cambio: Wall.Create(Document, Curve, ElementId wallTypeId, ElementId levelId, → // Obtener WallType (primer disponible del proyecto)\r\nCambio: double height, double offset, bool flip, bool structural) → WallType tipoMuro = null;",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-25"
+    },
+    {
+      "id": "sk_20260425211320",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: lista todos los parámetros del muro con ID 999999999",
+      "patron_error": "",
+      "solucion": "Cambio: return \"Error: No existe ningún elemento con ID 999999999 en el proyecto.\"; → return \"Error: No existe ningun elemento con ID 999999999 en el proyecto.\";\r\nCambio: // Obtener todos los parámetros → // Obtener todos los parametros",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-25"
