@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-27T23:31:30.2238958Z",
-  "total": 35,
+  "updated": "2026-04-27T23:42:30.9388741Z",
+  "total": 36,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -349,6 +349,16 @@
       "titulo": "Crear piso que sigue perimetro real de muros usando convex hull",
       "patron_error": "Crear piso con contorno rectangular simple basado solo en bounding box de muros, ignorando la geometria real del perimetro",
       "solucion": "Recolectar puntos de curvas de muros, filtrar por distancia al centro para obtener vertices externos, aplicar algoritmo convex hull para ordenarlos, usar CurveLoop resultante con Floor.Create()",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-27"
+    },
+    {
+      "id": "sk_20260427184230",
+      "categoria": "Vistas",
+      "titulo": "Crear sección transversal centrada automáticamente en la construcción",
+      "patron_error": "Sección creada sin Transform de referencia o con orientación incorrecta. Sin copiar BasisX/Y/Z de sección existente, la orientación de la sección puede ser arbitraria e incorrecta.",
+      "solucion": "Calcular centroX/centroY del bounding box de muros. Buscar sección existente para copiar su Transform (BasisX/Y/Z). Asignar Basis al Transform.Identity y usar centro como Origin. BoundingBoxXYZ con Min=(-ancho,0,0) y Max=(ancho,altura,profundidad).",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-27"
