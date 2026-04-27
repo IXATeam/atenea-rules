@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-27T03:22:42.8463039Z",
-  "total": 98,
+  "updated": "2026-04-27T03:22:55.5208032Z",
+  "total": 99,
   "skills": [
     {
       "id": "sk_001",
@@ -979,6 +979,16 @@
       "titulo": "Autocorreccion: coloca etiquetas en los muros de la vista activa",
       "patron_error": "",
       "solucion": "Cambio: // PASO 1: Diagnosticar tipos de etiqueta disponibles y muros en la vista → // Etiquetar muros en la vista activa\r\nCambio: string info = \"=== DIAGNOSTICO DE ETIQUETAS Y MUROS ===\\n\"; → View vista = uidoc.ActiveView;",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-26"
+    },
+    {
+      "id": "sk_20260426222255",
+      "categoria": "Muros",
+      "titulo": "Crear etiquetas en muros usando OST_GenericTags con IndependentTag.Create",
+      "patron_error": "Buscar etiqueta de muro con OST_WallTags o WallTagType — esas categorias no existen en Revit API",
+      "solucion": "Usar OST_GenericTags para obtener el simbolo de etiqueta, activar con symbol.Activate() en SubTransaction, luego IndependentTag.Create(doc, symbolId, viewId, ref, addLeader, TagOrientation.Horizontal, pos)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-26"
