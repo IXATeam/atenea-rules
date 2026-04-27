@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-27T03:22:55.5208032Z",
-  "total": 99,
+  "updated": "2026-04-27T03:23:59.6982129Z",
+  "total": 100,
   "skills": [
     {
       "id": "sk_001",
@@ -989,6 +989,16 @@
       "titulo": "Crear etiquetas en muros usando OST_GenericTags con IndependentTag.Create",
       "patron_error": "Buscar etiqueta de muro con OST_WallTags o WallTagType — esas categorias no existen en Revit API",
       "solucion": "Usar OST_GenericTags para obtener el simbolo de etiqueta, activar con symbol.Activate() en SubTransaction, luego IndependentTag.Create(doc, symbolId, viewId, ref, addLeader, TagOrientation.Horizontal, pos)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-26"
+    },
+    {
+      "id": "sk_20260426222359",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: coloca etiquetas en los muros de la vista activa",
+      "patron_error": "",
+      "solucion": "Cambio: === DIAGNOSTICO DE ETIQUETAS Y MUROS === → // Etiquetas de muros usando símbolos existentes del proyecto\r\nCambio: Tipo Dimension: COORDINATE:  (ID:2584) → // Usar las etiquetas multicategoría disponibles (ID:46807 y 46809)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-26"
