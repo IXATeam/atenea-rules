@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-27T03:24:17.3073160Z",
-  "total": 101,
+  "updated": "2026-04-27T03:24:51.0407606Z",
+  "total": 102,
   "skills": [
     {
       "id": "sk_001",
@@ -1009,6 +1009,16 @@
       "titulo": "Colocar etiquetas en elementos con IndependentTag.Create",
       "patron_error": "Crear etiquetas usando referencias de cara de solido o referencias incorrectas causa error ArgumentException en IndependentTag.Create",
       "solucion": "Usar new Reference(element) para obtener la referencia del elemento completo, luego IndependentTag.Create(doc, symbolId, viewId, ref, true, TagOrientation.Horizontal, pos). Diagnosticar tipos con OST_GenericTags antes de crear.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-26"
+    },
+    {
+      "id": "sk_20260426222451",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: coloca etiquetas en los muros de la vista activa",
+      "patron_error": "",
+      "solucion": "Cambio: // PASO 2: Etiquetar muros en todo el proyecto con marcadores visuales → // Etiquetar muros usando IndependentTag (API correcta Revit 2025)\r\nCambio: FilteredElementCollector colMuros = new FilteredElementCollector(document); → FilteredElementCollector colMuros = new FilteredElementCollector(document, uidoc.ActiveView.Id);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-26"
