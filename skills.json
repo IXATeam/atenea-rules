@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-27T23:42:30.9388741Z",
-  "total": 36,
+  "updated": "2026-04-27T23:43:06.3049912Z",
+  "total": 37,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -359,6 +359,16 @@
       "titulo": "Crear sección transversal centrada automáticamente en la construcción",
       "patron_error": "Sección creada sin Transform de referencia o con orientación incorrecta. Sin copiar BasisX/Y/Z de sección existente, la orientación de la sección puede ser arbitraria e incorrecta.",
       "solucion": "Calcular centroX/centroY del bounding box de muros. Buscar sección existente para copiar su Transform (BasisX/Y/Z). Asignar Basis al Transform.Identity y usar centro como Origin. BoundingBoxXYZ con Min=(-ancho,0,0) y Max=(ancho,altura,profundidad).",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-27"
+    },
+    {
+      "id": "sk_20260427184306",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: abre la vista de la sección que acabas de crear",
+      "patron_error": "",
+      "solucion": "Cambio: if (nuevaSeccion != null) { → FilteredElementCollector colSec = new FilteredElementCollector(document);\r\nCambio: return \"ACTIVATEVIEW:\" + nuevaSeccion.Id.Value.ToString() + \":\" + nuevaSeccion.Name; → colSec.OfClass(typeof(ViewSection));",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-27"
