@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-27T23:23:21.2520977Z",
-  "total": 33,
+  "updated": "2026-04-27T23:24:33.0390831Z",
+  "total": 34,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -329,6 +329,16 @@
       "titulo": "Crear piso rectangular desde bounding box de muros en vista activa",
       "patron_error": "Intentar crear piso copiando geometria de muros existentes o usar Area-based Mass para calcular area entre muros",
       "solucion": "Obtener muros de la vista activa con FilteredElementCollector(document, uidoc.ActiveView.Id), calcular bounding box de sus LocationCurves, crear CurveLoop rectangular con margen de 0.3m y usar Floor.Create(document, loops, tipoPiso.Id, nivelId)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-27"
+    },
+    {
+      "id": "sk_20260427182433",
+      "categoria": "Pisos",
+      "titulo": "Crear piso envolvente desde muros de la vista activa",
+      "patron_error": "No filtrar muros por visibilidad de la vista — obtener todos los muros del proyecto en lugar de solo los visibles",
+      "solucion": "Usar FilteredElementCollector(document, uidoc.ActiveView.Id).OfClass(typeof(Wall)) para obtener muros visibles, calcular bounding box de curvas, crear CurveLoop rectangular y usar Floor.Create(document, loops, tipoPiso.Id, nivelId)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-27"
