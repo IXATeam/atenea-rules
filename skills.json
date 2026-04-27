@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-27T02:27:45.1071738Z",
-  "total": 94,
+  "updated": "2026-04-27T02:31:20.2396685Z",
+  "total": 95,
   "skills": [
     {
       "id": "sk_001",
@@ -939,6 +939,16 @@
       "titulo": "Obtener area de pisos en m2 con nivel asociado",
       "patron_error": "Confusión entre pies² y m² al reportar áreas. Asumir que el área ya viene en m².",
       "solucion": "Usar BuiltInParameter.HOST_AREA_COMPUTED que devuelve pies², luego convertir multiplicando por 0.092903. Obtener nivel con piso.LevelId y document.GetElement().",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-26"
+    },
+    {
+      "id": "sk_20260426213120",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: coloca una etiqueta de muro en todos los muros de la vista a...",
+      "patron_error": "",
+      "solucion": "Cambio: // Obtener vista activa → // Verificar que el simbolo de etiqueta existe\r\nCambio: View vistaActiva = uidoc.ActiveView; → ElementId tagSymbolId = new ElementId(1225328L);\r\nCambio: ElementId vistaId = vistaActiva.Id; → Element elemTag = document.GetElement(tagSymbolId);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-26"
