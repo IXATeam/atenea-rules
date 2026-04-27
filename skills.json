@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-27T03:23:59.6982129Z",
-  "total": 100,
+  "updated": "2026-04-27T03:24:17.3073160Z",
+  "total": 101,
   "skills": [
     {
       "id": "sk_001",
@@ -999,6 +999,16 @@
       "titulo": "Autocorreccion: coloca etiquetas en los muros de la vista activa",
       "patron_error": "",
       "solucion": "Cambio: === DIAGNOSTICO DE ETIQUETAS Y MUROS === → // Etiquetas de muros usando símbolos existentes del proyecto\r\nCambio: Tipo Dimension: COORDINATE:  (ID:2584) → // Usar las etiquetas multicategoría disponibles (ID:46807 y 46809)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-26"
+    },
+    {
+      "id": "sk_20260426222417",
+      "categoria": "General",
+      "titulo": "Colocar etiquetas en elementos con IndependentTag.Create",
+      "patron_error": "Crear etiquetas usando referencias de cara de solido o referencias incorrectas causa error ArgumentException en IndependentTag.Create",
+      "solucion": "Usar new Reference(element) para obtener la referencia del elemento completo, luego IndependentTag.Create(doc, symbolId, viewId, ref, true, TagOrientation.Horizontal, pos). Diagnosticar tipos con OST_GenericTags antes de crear.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-26"
