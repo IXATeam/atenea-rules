@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-27T23:08:08.0037464Z",
-  "total": 29,
+  "updated": "2026-04-27T23:08:54.7484573Z",
+  "total": 30,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -289,6 +289,16 @@
       "titulo": "Listar muros de la vista activa con tipo y longitud en metros",
       "patron_error": "Usar uidoc.Selection.GetElementIds() para obtener muros ya que no persiste entre ejecuciones de scripts",
       "solucion": "Usar FilteredElementCollector(document, uidoc.ActiveView.Id).OfClass(typeof(Wall)) para obtener muros de la vista activa directamente. Longitud: lc.Curve.Length * 0.3048 metros.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-27"
+    },
+    {
+      "id": "sk_20260427180854",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: has una tabla Excel con esa información",
+      "patron_error": "",
+      "solucion": "Cambio: string tempFile = System.IO.Path.Combine(atenDir, \"Muros_\" + DateTime.Now.ToString(\"yyyyMMdd_HHmmss\") + \".xlsx\"); → string tempFile = System.IO.Path.Combine(atenDir, \"Muros_\" + DateTime.Now.ToString(\"yyyyMMdd_HHmmss\") + \".csv\");",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-27"
