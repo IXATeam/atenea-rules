@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-26T04:02:49.4190547Z",
-  "total": 92,
+  "updated": "2026-04-27T02:24:01.0338179Z",
+  "total": 93,
   "skills": [
     {
       "id": "sk_001",
@@ -922,6 +922,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-25"
+    },
+    {
+      "id": "sk_20260426212401",
+      "categoria": "Muros",
+      "titulo": "Buscar tipo de muro con fallback flexible y crear muro de longitud específica",
+      "patron_error": "Si no se encuentra el tipo de muro solicitado, el script falla sin alternativa. Si se usa nombre fijo sin fallback, el script puede no encontrar el tipo en proyectos con nomenclatura diferente.",
+      "solucion": "Buscar tipo por nombre en español e inglés, con fallback al primer tipo disponible. Crear muro con coordenadas en pies (metros * 3.28084), curva con Z=0, altura en pies, nivel más bajo por elevación mínima.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-26"
     }
   ]
 }
