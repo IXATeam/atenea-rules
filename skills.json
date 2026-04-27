@@ -320,7 +320,7 @@
       "patron_error": "",
       "solucion": "Cambio: XYZ p0 = lc.Curve.GetEndPoint(0); → XYZ punto0 = lc.Curve.GetEndPoint(0);\r\nCambio: XYZ p1 = lc.Curve.GetEndPoint(1); → XYZ punto1 = lc.Curve.GetEndPoint(1);\r\nCambio: if (p0.X < minX) minX = p0.X; → if (punto0.X < minX) minX = punto0.X;",
       "exitoso": true,
-      "usos": 1,
+      "usos": 2,
       "fecha": "2026-04-27"
     },
     {
