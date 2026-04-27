@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-27T23:09:04.5415916Z",
-  "total": 31,
+  "updated": "2026-04-27T23:23:16.2703989Z",
+  "total": 32,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -309,6 +309,16 @@
       "titulo": "Exportar datos de elementos Revit a Excel con ATENEAFileService",
       "patron_error": "Usar rutas temporales o metodos de archivo incorrectos para exportar",
       "solucion": "Usar ATENEAFileService.SaveExcelSimple con headers List<string> y rows List<List<object>>, ruta AppData\\ATENEA25\\exports",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-27"
+    },
+    {
+      "id": "sk_20260427182316",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: crea un piso en el nivel 1 que cubra el área entre los muros...",
+      "patron_error": "",
+      "solucion": "Cambio: XYZ p0 = lc.Curve.GetEndPoint(0); → XYZ punto0 = lc.Curve.GetEndPoint(0);\r\nCambio: XYZ p1 = lc.Curve.GetEndPoint(1); → XYZ punto1 = lc.Curve.GetEndPoint(1);\r\nCambio: if (p0.X < minX) minX = p0.X; → if (punto0.X < minX) minX = punto0.X;",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-27"
