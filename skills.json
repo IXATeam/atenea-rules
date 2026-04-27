@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-27T23:43:06.3049912Z",
-  "total": 37,
+  "updated": "2026-04-27T23:43:20.8766965Z",
+  "total": 38,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -369,6 +369,16 @@
       "titulo": "Autocorreccion: abre la vista de la sección que acabas de crear",
       "patron_error": "",
       "solucion": "Cambio: if (nuevaSeccion != null) { → FilteredElementCollector colSec = new FilteredElementCollector(document);\r\nCambio: return \"ACTIVATEVIEW:\" + nuevaSeccion.Id.Value.ToString() + \":\" + nuevaSeccion.Name; → colSec.OfClass(typeof(ViewSection));",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-27"
+    },
+    {
+      "id": "sk_20260427184320",
+      "categoria": "Vistas",
+      "titulo": "Activar vista de sección recién creada",
+      "patron_error": "El usuario pide abrir una vista recién creada pero no hay forma de hacerlo via API sin salir del script",
+      "solucion": "Retornar 'ACTIVATEVIEW:' + view.Id.Value.ToString() + ':' + view.Name — ATENEA intercepta este prefijo y activa la vista automáticamente",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-27"
