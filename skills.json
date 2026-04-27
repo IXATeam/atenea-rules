@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-27T03:25:05.9559252Z",
-  "total": 103,
+  "updated": "2026-04-27T03:25:17.1603395Z",
+  "total": 104,
   "skills": [
     {
       "id": "sk_001",
@@ -1029,6 +1029,16 @@
       "titulo": "Detectar tipos de etiquetas disponibles antes de crear IndependentTag",
       "patron_error": "Error comun: intentar crear etiquetas sin verificar que existen tipos disponibles en el proyecto, o usar categoria de etiqueta incorrecta",
       "solucion": "Usar FilteredElementCollector de Symbol con OST_GenericTags para detectar etiquetas. Si no hay, buscar DimensionType como fallback. Siempre diagnosticar antes de crear.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-26"
+    },
+    {
+      "id": "sk_20260426222517",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: coloca etiquetas en los muros de la vista activa",
+      "patron_error": "",
+      "solucion": "Cambio: Etiquetas creadas: → // Obtener los muros de la vista activa\r\nCambio: - Basic Wall (4.27m) en (12.7,0.3)m → FilteredElementCollector colMuros = new FilteredElementCollector(document, uidoc.ActiveView.Id);",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-26"
