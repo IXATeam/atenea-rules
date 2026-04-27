@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-27T22:43:53.6528813Z",
-  "total": 28,
+  "updated": "2026-04-27T23:08:08.0037464Z",
+  "total": 29,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -279,6 +279,16 @@
       "titulo": "Etiquetas muros: OST_MultiCategoryTags + new Reference(w) verificado",
       "patron_error": "OST_WallTags no existe en Revit 2025 | face.Reference causa 'The reference can not be tagged' | TagOrientation.LeftFacing no existe",
       "solucion": "Buscar simbolo con OST_MultiCategoryTags. Crear con IndependentTag.Create(doc, sym.Id, vista.Id, new Reference(w), false, TagOrientation.Horizontal, midXY). try-catch vacío para ignorar muros sin éxito.",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-27"
+    },
+    {
+      "id": "sk_20260427180808",
+      "categoria": "Muros",
+      "titulo": "Listar muros de la vista activa con tipo y longitud en metros",
+      "patron_error": "Usar uidoc.Selection.GetElementIds() para obtener muros ya que no persiste entre ejecuciones de scripts",
+      "solucion": "Usar FilteredElementCollector(document, uidoc.ActiveView.Id).OfClass(typeof(Wall)) para obtener muros de la vista activa directamente. Longitud: lc.Curve.Length * 0.3048 metros.",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-27"
