@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-27T22:33:25.0000000Z",
-  "total": 27,
+  "updated": "2026-04-27T22:43:53.6528813Z",
+  "total": 28,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -271,6 +271,16 @@
       "solucion": "SIEMPRE generar UN SOLO bloque ```csharp que resuelva la tarea completa. El sistema ATENEA ya ejecuta el diagnostico del modelo ANTES de generar el codigo y lo inyecta en el contexto. NO es necesario hacer diagnostico adicional en un bloque separado. Si necesitas datos del modelo, usa los que ya estan en el contexto recibido.",
       "exitoso": true,
       "usos": 10,
+      "fecha": "2026-04-27"
+    },
+    {
+      "id": "sk_20260427174353",
+      "categoria": "Familias",
+      "titulo": "Etiquetas muros: OST_MultiCategoryTags + new Reference(w) verificado",
+      "patron_error": "OST_WallTags no existe en Revit 2025 | face.Reference causa 'The reference can not be tagged' | TagOrientation.LeftFacing no existe",
+      "solucion": "Buscar simbolo con OST_MultiCategoryTags. Crear con IndependentTag.Create(doc, sym.Id, vista.Id, new Reference(w), false, TagOrientation.Horizontal, midXY). try-catch vacío para ignorar muros sin éxito.",
+      "exitoso": true,
+      "usos": 1,
       "fecha": "2026-04-27"
     }
   ]
