@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-27T23:24:33.0390831Z",
-  "total": 34,
+  "updated": "2026-04-27T23:31:30.2238958Z",
+  "total": 35,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -339,6 +339,16 @@
       "titulo": "Crear piso envolvente desde muros de la vista activa",
       "patron_error": "No filtrar muros por visibilidad de la vista — obtener todos los muros del proyecto en lugar de solo los visibles",
       "solucion": "Usar FilteredElementCollector(document, uidoc.ActiveView.Id).OfClass(typeof(Wall)) para obtener muros visibles, calcular bounding box de curvas, crear CurveLoop rectangular y usar Floor.Create(document, loops, tipoPiso.Id, nivelId)",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-27"
+    },
+    {
+      "id": "sk_20260427183130",
+      "categoria": "Pisos",
+      "titulo": "Crear piso que sigue perimetro real de muros usando convex hull",
+      "patron_error": "Crear piso con contorno rectangular simple basado solo en bounding box de muros, ignorando la geometria real del perimetro",
+      "solucion": "Recolectar puntos de curvas de muros, filtrar por distancia al centro para obtener vertices externos, aplicar algoritmo convex hull para ordenarlos, usar CurveLoop resultante con Floor.Create()",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-27"
