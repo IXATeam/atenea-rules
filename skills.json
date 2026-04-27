@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-27T03:25:29.7041894Z",
-  "total": 105,
+  "updated": "2026-04-27T22:03:45.3468483Z",
+  "total": 106,
   "skills": [
     {
       "id": "sk_001",
@@ -1052,6 +1052,16 @@
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-26"
+    },
+    {
+      "id": "sk_20260427170345",
+      "categoria": "General",
+      "titulo": "Etiquetas de muro: OST_WallTags no existe usar OST_MultiCategoryTags",
+      "patron_error": "Buscar FamilySymbol con OST_WallTags retorna null en Revit 2025 aunque hayan muros en el proyecto",
+      "solucion": "Usar BuiltInCategory.OST_MultiCategoryTags (ID:46807) en lugar de OST_WallTags para etiquetas de muro",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-27"
     }
   ]
 }
