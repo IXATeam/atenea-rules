@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-27T23:08:54.7484573Z",
-  "total": 30,
+  "updated": "2026-04-27T23:09:04.5415916Z",
+  "total": 31,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -299,6 +299,16 @@
       "titulo": "Autocorreccion: has una tabla Excel con esa información",
       "patron_error": "",
       "solucion": "Cambio: string tempFile = System.IO.Path.Combine(atenDir, \"Muros_\" + DateTime.Now.ToString(\"yyyyMMdd_HHmmss\") + \".xlsx\"); → string tempFile = System.IO.Path.Combine(atenDir, \"Muros_\" + DateTime.Now.ToString(\"yyyyMMdd_HHmmss\") + \".csv\");",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-27"
+    },
+    {
+      "id": "sk_20260427180904",
+      "categoria": "General",
+      "titulo": "Exportar datos de elementos Revit a Excel con ATENEAFileService",
+      "patron_error": "Usar rutas temporales o metodos de archivo incorrectos para exportar",
+      "solucion": "Usar ATENEAFileService.SaveExcelSimple con headers List<string> y rows List<List<object>>, ruta AppData\\ATENEA25\\exports",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-27"
