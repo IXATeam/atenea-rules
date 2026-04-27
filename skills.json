@@ -1,7 +1,7 @@
 {
   "version": "1.1",
-  "updated": "2026-04-27T02:35:34.8565800Z",
-  "total": 97,
+  "updated": "2026-04-27T03:22:42.8463039Z",
+  "total": 98,
   "skills": [
     {
       "id": "sk_001",
@@ -969,6 +969,16 @@
       "titulo": "Etiquetas de muro requieren Reference de elemento no Reference de cara",
       "patron_error": "Usar face.Reference en IndependentTag.Create() causa 'The reference can not be tagged' - las referencias de caras de muros no son válidas para etiquetado directo",
       "solucion": "Para etiquetar muros, usar Reference del elemento completo: document.ActiveUIDocument.Selection.GetElementIds() o Reference.TryCreateFromElement(document, elementId) en lugar de face.Reference. Alternativa: usar GetReferenceFromElementId() con BuiltInCategory.OST_Walls",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-26"
+    },
+    {
+      "id": "sk_20260426222242",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: coloca etiquetas en los muros de la vista activa",
+      "patron_error": "",
+      "solucion": "Cambio: // PASO 1: Diagnosticar tipos de etiqueta disponibles y muros en la vista → // Etiquetar muros en la vista activa\r\nCambio: string info = \"=== DIAGNOSTICO DE ETIQUETAS Y MUROS ===\\n\"; → View vista = uidoc.ActiveView;",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-26"
