@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-29T05:13:26.0918004Z",
-  "total": 39,
+  "updated": "2026-04-29T05:34:53.8175311Z",
+  "total": 40,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -389,6 +389,16 @@
       "titulo": "Autocorreccion: hola",
       "patron_error": "",
       "solucion": "Cambio: List<string> headers = new List<string> { \"ID\", \"Tipo de Muro\", \"Longitud (m)\" }; → System.Text.StringBuilder sb = new System.Text.StringBuilder();\r\nCambio: List<List<object>> rows = new List<List<object>>(); → sb.AppendLine(\"ID\\tTipo de Muro\\tLongitud (m)\");",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-29"
+    },
+    {
+      "id": "sk_20260429003453",
+      "categoria": "Autocorreccion",
+      "titulo": "Autocorreccion: lo has hecho mal, quiero que el piso siga el perímetro exact...",
+      "patron_error": "",
+      "solucion": "Cambio: foreach (XYZ p in puntos) { → foreach (XYZ pt in puntos) {\r\nCambio: if (p.X < minX) minX = p.X; → if (pt.X < minX) minX = pt.X;\r\nCambio: if (p.X > maxX) maxX = p.X; → if (pt.X > maxX) maxX = pt.X;",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-29"
