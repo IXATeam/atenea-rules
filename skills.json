@@ -1,7 +1,7 @@
 {
   "version": "1.2",
-  "updated": "2026-04-29T05:34:53.8175311Z",
-  "total": 40,
+  "updated": "2026-04-29T05:35:17.2544184Z",
+  "total": 41,
   "skills": [
     {
       "id": "sk_IndependentTag_Patron_Definitivo",
@@ -399,6 +399,16 @@
       "titulo": "Autocorreccion: lo has hecho mal, quiero que el piso siga el perímetro exact...",
       "patron_error": "",
       "solucion": "Cambio: foreach (XYZ p in puntos) { → foreach (XYZ pt in puntos) {\r\nCambio: if (p.X < minX) minX = p.X; → if (pt.X < minX) minX = pt.X;\r\nCambio: if (p.X > maxX) maxX = p.X; → if (pt.X > maxX) maxX = pt.X;",
+      "exitoso": true,
+      "usos": 1,
+      "fecha": "2026-04-29"
+    },
+    {
+      "id": "sk_20260429003517",
+      "categoria": "Muros",
+      "titulo": "Crear piso desde contorno/perímetro de muros existentes",
+      "patron_error": "Crear piso con dimensiones de bounding box o rectángulo genérico ignora el contorno real de muros",
+      "solucion": "Recolectar LocationCurve de todos los muros → extraer puntos de intersección → construir CurveLoop cerrado → Floor.Create(document, loops, floorTypeId, levelId)",
       "exitoso": true,
       "usos": 1,
       "fecha": "2026-04-29"
