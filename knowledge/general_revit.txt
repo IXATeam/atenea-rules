@@ -1,0 +1,176 @@
+═══════════════════════════════════════════════════════════
+ATENEA — REGLAS API REVIT — CONOCIMIENTO GENERAL
+Repositorio: https://github.com/IXATeam/atenea-rules
+═══════════════════════════════════════════════════════════
+
+■ SINTAXIS C# OBLIGATORIA:
+- NUNCA uses LINQ (.Where, .Cast, .Select, .First, .ToList, .Any)
+- NUNCA uses interpolacion de strings ($"texto {var}") — usa: "texto " + var
+- NUNCA uses lambdas (=>) excepto en Sort((a,b) => ...)
+- USA foreach en lugar de LINQ para iterar colecciones
+- Las variables 'document' y 'uidoc' ya estan disponibles — NO las redeclares
+- ElementId requiere sufijo L: new ElementId(12345L)
+- Para obtener valor numerico de ElementId usa: id.Value (NO .IntegerValue)
+- NUNCA usar Transaction directa — usa SubTransaction
+- Un solo bloque de codigo por respuesta — nunca dos bloques separados
+
+■ UNIDADES:
+- Revit usa pies internamente: metros * 3.28084 = pies
+- Para mostrar: pies * 304.8 = mm | pies * 0.3048 = metros
+- XYZ siempre en pies: new XYZ(x_pies, y_pies, z_pies)
+
+■ NIVELES:
+Level nivel = null;
+FilteredElementCollector col = new FilteredElementCollector(document);
+col.OfClass(typeof(Level));
+foreach (Level l in col) { if (l.Name == "Nivel 1") { nivel = l; break; } }
+if (nivel == null) { foreach (Level l in col) { nivel = l; break; } }
+
+■ REJILLAS (GRID):
+- Lineas SIEMPRE en plano XY con Z=0
+- Eje vertical (Y): Line.CreateBound(new XYZ(x,-30,0), new XYZ(x,30,0))
+- Eje horizontal (X): Line.CreateBound(new XYZ(-30,y,0), new XYZ(30,y,0))
+- Grid.Create(document, line) — no necesita nivel
+- Grid.Curve devuelve Curve (NO CurveArray)
+- NUNCA uses grid.Elevation — no existe
+- Interseccion de grids:
+  IntersectionResultArray ira;
+  SetComparisonResult scr = gridA.Curve.Intersect(grid1.Curve, out ira);
+  XYZ punto = (scr != SetComparisonResult.Disjoint && ira != null && ira.Size > 0)
+      ? ira.get_Item(0).XYZPoint
+      : new XYZ(gridA.Curve.GetEndPoint(0).X, grid1.Curve.GetEndPoint(0).Y, 0);
+
+■ MUROS (WALL):
+Wall.Create(document, curve, wallTypeId, levelId, height, offset, flip, structural)
+- height en pies: metros * 3.28084
+- offset: 0.0 | flip: false | structural: false
+- La curva del muro en Z=0
+WallType tipoMuro = null;
+FilteredElementCollector cwt = new FilteredElementCollector(document);
+cwt.OfClass(typeof(WallType));
+foreach (WallType wt in cwt) { tipoMuro = wt; break; }
+
+■ PISOS (FLOOR):
+Floor.Create(document, List<CurveLoop>, floorTypeId, levelId)
+CurveLoop loop = new CurveLoop();
+loop.Append(Line.CreateBound(p1,p2)); loop.Append(Line.CreateBound(p2,p3));
+loop.Append(Line.CreateBound(p3,p4)); loop.Append(Line.CreateBound(p4,p1));
+List<CurveLoop> loops = new List<CurveLoop>(); loops.Add(loop);
+Floor piso = Floor.Create(document, loops, floorTypeId, levelId);
+
+■ COLUMNAS Y VIGAS:
+// Columna:
+FamilySymbol symbol = null;
+FilteredElementCollector cfs = new FilteredElementCollector(document);
+cfs.OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_StructuralColumns);
+foreach (FamilySymbol fs in cfs) { symbol = fs; break; }
+if (symbol != null && !symbol.IsActive) symbol.Activate();
+document.Create.NewFamilyInstance(punto, symbol, nivel, StructuralType.Column);
+// Viga:
+document.Create.NewFamilyInstance(lineaEje, symbol, nivel, StructuralType.Beam);
+
+■ COLECCION DE ELEMENTOS:
+FilteredElementCollector col = new FilteredElementCollector(document);
+col.OfClass(typeof(TipoClase));
+foreach (Element e in col) { /* usa e */ }
+// Para elementos visibles en vista activa:
+FilteredElementCollector col = new FilteredElementCollector(document, uidoc.ActiveView.Id);
+// Tipos: Wall, Level, Grid, Floor, FamilyInstance
+// Categorias: OST_Doors, OST_Windows, OST_StructuralColumns, OST_StructuralFraming, OST_Rooms
+
+■ VISTAS:
+// Vista de planta:
+ViewFamilyType vft = null;
+FilteredElementCollector cvft = new FilteredElementCollector(document);
+cvft.OfClass(typeof(ViewFamilyType));
+foreach (ViewFamilyType v in cvft) {
+    if (v.ViewFamily == ViewFamily.FloorPlan) { vft = v; break; }
+}
+ViewPlan vista = ViewPlan.Create(document, vft.Id, nivel.Id);
+// Activar vista: return "ACTIVATEVIEW:" + vista.Id.Value + ":" + vista.Name;
+// NUNCA eliminar la vista activa — verificar: if (vp.Id == uidoc.ActiveView.Id) continue;
+
+■ LAMINAS Y VIEWPORTS:
+FamilySymbol titleBlock = null;
+FilteredElementCollector ctb = new FilteredElementCollector(document);
+ctb.OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_TitleBlocks);
+foreach (FamilySymbol tb in ctb) { titleBlock = tb; break; }
+ViewSheet lamina = ViewSheet.Create(document, titleBlock.Id);
+Viewport vp = Viewport.Create(document, lamina.Id, vista.Id, centro);
+
+■ COTAS (DIMENSION):
+// Usar geometria del solido con ComputeReferences=true:
+Options geoOpts = new Options(); geoOpts.View = uidoc.ActiveView; geoOpts.ComputeReferences = true;
+GeometryElement geo = muro.get_Geometry(geoOpts);
+// La linea de cota SIEMPRE paralela a las referencias
+// NUNCA usar grid.Curve.Reference directamente para cotas
+// DimensionType:
+DimensionType dimType = null;
+foreach (DimensionType dt in new FilteredElementCollector(document).OfClass(typeof(DimensionType)))
+{ dimType = dt; break; }
+
+■ ETIQUETAS (IndependentTag):
+FamilySymbol tagSym = null;
+FilteredElementCollector colTag = new FilteredElementCollector(document);
+colTag.OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_MultiCategoryTags);
+foreach (FamilySymbol fs in colTag) { tagSym = fs; break; }
+IndependentTag tag = IndependentTag.Create(document, tagSym.Id, vista.Id,
+    new Reference(elemento), false, TagOrientation.Horizontal, posicion);
+// TagOrientation: solo Horizontal o Vertical
+// Para habitaciones: document.Create.NewRoomTag(new LinkElementId(room.Id), new UV(x,y), viewId)
+
+■ TABLAS DE PLANIFICACION:
+ViewSchedule sched = ViewSchedule.CreateSchedule(document, categoryId);
+// Solo 2 argumentos — NO incluye segundo argumento de tipo
+
+■ SECCIONES:
+// Crear BoundingBoxXYZ con Transform correcto:
+Transform t = Transform.Identity;
+t.BasisX = tRef.BasisX; t.BasisY = tRef.BasisY; t.BasisZ = tRef.BasisZ;
+t.Origin = new XYZ(newX, newY, newZ);
+BoundingBoxXYZ bb = new BoundingBoxXYZ(); bb.Transform = t;
+bb.Min = new XYZ(-anchoMedio, 0, altoMin); bb.Max = new XYZ(anchoMedio, profundidad, altoMax);
+ViewFamilyType vftSec = null;
+foreach (ViewFamilyType v in new FilteredElementCollector(document).OfClass(typeof(ViewFamilyType)))
+    if (v.ViewFamily == ViewFamily.Section) { vftSec = v; break; }
+ViewSection seccion = ViewSection.CreateSection(document, vftSec.Id, bb);
+// CRITICO: Transform.Identity permite asignar BasisX/Y/Z
+// NUNCA usar Transform.CreateTranslation para secciones — BasisX/Y/Z son inmutables
+
+■ PARAMETROS:
+Parameter p = element.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM);
+if (p != null) double valor = p.AsDouble();
+element.LookupParameter("Comentarios").Set("valor");
+// Wall: nivel superior = BuiltInParameter.WALL_HEIGHT_TYPE (NO .TopConstraint)
+
+■ EXPORTACION DE ARCHIVOS:
+// Ruta OBLIGATORIA — SIEMPRE AppData\Roaming\ATENEA25\exports:
+string atenDir = System.IO.Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+    "ATENEA25", "exports");
+System.IO.Directory.CreateDirectory(atenDir);
+string tempFile = System.IO.Path.Combine(atenDir, "Nombre_" +
+    DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".doc");
+// Retorno: return "SAVEFILE:" + tempFile + "|Nombre|Filtro (*.ext)|*.ext";
+// NUNCA usar System.IO.Path.GetTempPath() — genera subcarpeta GUID en Revit
+
+■ SELECCION Y BOUNDING BOX:
+BoundingBoxXYZ bb = element.get_BoundingBox(null);
+XYZ centro = new XYZ((bb.Min.X+bb.Max.X)/2, (bb.Min.Y+bb.Max.Y)/2, (bb.Min.Z+bb.Max.Z)/2);
+LocationCurve lc = muro.Location as LocationCurve; Curve c = lc.Curve;
+LocationPoint lp = familia.Location as LocationPoint; XYZ pos = lp.Point;
+// NUNCA asumir seleccion activa — siempre verificar:
+ICollection<ElementId> sel = uidoc.Selection.GetElementIds();
+if (sel.Count == 0) { /* buscar por categoria como fallback */ }
+
+■ SECTION BOX EN VISTA 3D:
+// SetSectionBox() es METODO, NO propiedad:
+vista3d.SetSectionBox(sectionBox);    // CORRECTO
+vista3d.IsSectionBoxActive = true;    // OBLIGATORIO
+// NUNCA: vista3d.SectionBox = sectionBox — es de solo lectura
+
+■ ERRORES COMUNES:
+- Line.CreateBound requiere 2 puntos DISTINTOS — verificar DistanceTo > 0.01
+- NUNCA ElementIsVisibleFilter — no existe en la API
+- Para cambiar tipo de muro: w.ChangeTypeId(nuevoId) — NO eliminar y recrear
+- IDs del contexto pueden estar desactualizados — verificar: if (element == null) continue
