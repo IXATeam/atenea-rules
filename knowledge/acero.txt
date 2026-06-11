@@ -1,0 +1,372 @@
+================================================================================
+ATENEA BIM — REGLAS COMPLETAS DE ARMADURA EN REVIT API
+Aprendidas con Oscar / IXA Team — Mayo 2026
+================================================================================
+
+NOMENCLATURA:
+  Tipo G = Barras de parrilla en zapata (con ganchos 90 hacia arriba)
+  Tipo L = Barras longitudinales en columna (forma L con pata diagonal)
+  Tipo O = Estribos (columna o viga)
+  Tipo C = Barras longitudinales en viga (forma U o forma n invertida)
+
+================================================================================
+SECCION 1 — REGLAS GENERALES DE LA API ROSLYN (CRITICO)
+================================================================================
+
+- NUNCA usar Transaction directa -> usar SOLO SubTransaction
+- NUNCA usar LINQ (.Where, .Select, .ToList) -> usar foreach
+- NUNCA usar interpolacion $"..." -> usar concatenacion "+"
+- ElementId siempre con sufijo L: new ElementId(12345L)
+- Unidades internas Revit: PIES (metros x 3.28084 = pies)
+- Scripts < 150 lineas para evitar timeout
+- document (minuscula) esta pre-inyectado, nunca redeclarar
+- uidoc: var uidoc2 = new UIApplication(document.Application).ActiveUIDocument
+- Metodo correcto: Rebar.CreateFromCurves (no Rebar.Create)
+- CreateFromRebarShape NO respeta el origin en hosts complejos -> usar CreateFromCurves
+
+================================================================================
+SECCION 2 — ZAPATA / PLINTO ESTRUCTURAL
+================================================================================
+
+CREAR ZAPATA:
+  - Familia: M_Zapata-Rectangular
+  - Duplicar tipo: tipoBase.Duplicate("nombre") -> ajustar Width y Length
+  - Crear: document.Create.NewFamilyInstance(punto, tipo, nivel, StructuralType.Footing)
+  - SIEMPRE leer BoundingBox real: col.get_BoundingBox(null)
+  - El plinto puede ser RECTANGULAR -> nunca asumir que es cuadrado
+  - BBox Min/Max da las dimensiones exactas en X, Y, Z
+
+================================================================================
+SECCION 3 — BARRAS TIPO G (PARRILLA EN ZAPATA)
+================================================================================
+
+METODO: SIEMPRE CreateFromCurves con curvas manuales
+  -> NUNCA CreateFromRebarShape para plintos (ignora el origin)
+
+CAPAS:
+  Capa 1: barras en direccion X | Z = zBase + cover (ej: -450+50 = -400mm)
+  Capa 2: barras en direccion Y | Z = capa1 + diametro (ej: -400+12 = -388mm)
+  Capa 3: patas barras L        | Z = capa2 + diametro (ej: -388+12 = -376mm)
+
+GEOMETRIA (forma con ganchos 90 hacia arriba):
+  // Barra en direccion X:
+  normal = (0,1,0)
+  C0: (x0, yPos, z+gancho) -> (x0, yPos, z)   // gancho izq baja
+  C1: (x0, yPos, z)        -> (x1, yPos, z)   // tramo horizontal
+  C2: (x1, yPos, z)        -> (x1, yPos, z+gancho) // gancho der sube
+
+  // Barra en direccion Y:
+  normal = (1,0,0)
+  C0: (xPos, y0, z+gancho) -> (xPos, y0, z)
+  C1: (xPos, y0, z)        -> (xPos, y1, z)
+  C2: (xPos, y1, z)        -> (xPos, y1, z+gancho)
+
+RECUBRIMIENTO tipico: 50mm
+ESPACIADO tipico: 200mm
+GANCHO tipico: 150mm hacia arriba
+Hook: Estandar 90 grados
+
+REGLA ANTI-FLOTANTES (critica):
+  Una barra FLOTA si su posicion fija NO esta dentro del rango RECTO
+  de la capa perpendicular (el tramo recto = curva mas larga, SIN ganchos)
+  
+  - Barra en X flota si su Y < Y_min_recto_barras_Y o Y > Y_max_recto_barras_Y
+  - Barra en Y flota si su X < X_min_recto_barras_X o X > X_max_recto_barras_X
+  - El gancho NO cuenta como interseccion
+  - Si no cabe una barra respetando el espaciado -> NO ponerla
+  - Verificar primera y ultima barra de cada capa tienen cruce perpendicular
+  
+DISTRIBUCION simetrica respecto al centro del plinto:
+  posiciones = borde+cover, borde+cover+spacing, ... mientras < borde_opuesto-cover
+
+================================================================================
+SECCION 4 — COLUMNA ESTRUCTURAL DE HORMIGON
+================================================================================
+
+CREAR COLUMNA:
+  - Familia base: Hormigon-Rectangular-Pilar, parametros b y h
+  - Crear: NewFamilyInstance(punto, tipo, nivelBase, StructuralType.Column)
+  - Asignar niveles: FAMILY_BASE_LEVEL_PARAM y FAMILY_TOP_LEVEL_PARAM
+  - Offset en 0.0 para que arranque exacto desde el nivel
+
+================================================================================
+SECCION 5 — BARRAS TIPO L (LONGITUDINALES EN COLUMNA)
+================================================================================
+
+FORMA: pata diagonal + tramo vertical (2 segmentos con CreateFromCurves)
+
+REGLA CRITICA: la pata apunta HACIA AFUERA (misma direccion que la esquina)
+  NUNCA hacia adentro -> genera colisiones volumetricas entre las 4 barras
+
+DIRECCIONES de pata por esquina (HACIA AFUERA):
+  (+offset,+offset) -> direccion (+1,+1)/sqrt(2)
+  (-offset,+offset) -> direccion (-1,+1)/sqrt(2)
+  (+offset,-offset) -> direccion (+1,-1)/sqrt(2)
+  (-offset,-offset) -> direccion (-1,-1)/sqrt(2)
+
+LONGITUD pata: 400mm (verificar que no salga del plinto)
+  componente_diagonal = 400/sqrt(2) = 283mm en X e Y
+
+Z DE LA PATA (tercera capa, sobre parrilla):
+  Z_pata = Z_capa2_parrilla + diametro_barra
+  Ej: -388 + 12 = -376mm
+
+Z TOPE: nivel_superior - recubrimiento (ej: 3000-25=2975mm)
+
+CURVAS:
+  C0: punta_pata -> codo (pata diagonal hacia afuera)
+  C1: codo -> tope_vertical (tramo recto vertical)
+  Revit agrega el radio de doblado automaticamente (correcto en ingenieria)
+
+NORMAL: perpendicular al plano de la L
+  vector_pata = (dx,dy,0)/||(dx,dy,0)||
+  normal = (dy,-dx,0) normalizado
+
+OFFSET de posicion (mismo para columnas y vigas):
+  offset = halfSeccion - cover - diam_estribo - radio_barra - 2mm_holgura
+  Ej columna 400x400, barras 12mm, estribos 12mm:
+  offset = 200 - 25 - 12 - 6 - 2 = 155mm del centro
+
+REGLA: una barra longitudinal en cada esquina del estribo SIEMPRE
+
+================================================================================
+SECCION 6 — BARRAS TIPO O (ESTRIBOS EN COLUMNA)
+================================================================================
+
+METODO: SIEMPRE CreateFromCurves con RebarStyle.StirrupTie
+  -> NUNCA CreateFromRebarShape (no respeta el origin)
+
+GEOMETRIA (rectangulo cerrado en plano horizontal XY):
+  inner = halfCol - cover (ej: 200-25=175mm)
+  normal = (0,0,1)
+  p1=(cx-inner, cy-inner, z)
+  p2=(cx+inner, cy-inner, z)
+  p3=(cx+inner, cy+inner, z)
+  p4=(cx-inner, cy+inner, z)
+  curvas: p1->p2, p2->p3, p3->p4, p4->p1
+
+HookType: Sismico 135 grados ("Stirrup/Tie Seismic - 135 deg.")
+  hookOrientation: Left / Right
+
+RANGO de estribos:
+  Inicio: Z pata de barras L (donde arrancan los longitudinales)
+  Fin: Z tope columna - recubrimiento (ej: 3000-25=2975mm)
+
+DISTRIBUCION EN TERCIOS (zona sismica):
+  longitud_total = zFin - zInicio
+  tercio = longitud_total / 3
+  Zona 1 (confinamiento inf): de zInicio a zInicio+tercio -> cada 150mm (o 140mm)
+  Zona 2 (centro):            siguiente hasta zInicio+2*tercio -> cada 200mm
+  Zona 3 (confinamiento sup): siguiente hasta zFin -> cada 150mm (o 140mm)
+
+VERIFICAR: que los estribos no colisionen con estribos de vigas
+  -> Los estribos de la columna van DENTRO de la columna unicamente
+
+COLORES OVERRIDE (orden correcto):
+  // Paso 1: limpiar override de categoria
+  vista.SetCategoryOverrides(new ElementId(BuiltInCategory.OST_Rebar), new OverrideGraphicSettings());
+  // Paso 2: aplicar color por elemento
+  var ogs = new OverrideGraphicSettings();
+  ogs.SetProjectionLineColor(color);
+  vista.SetElementOverrides(elementId, ogs);
+
+================================================================================
+SECCION 7 — SECCION DE CORTE (obligatoria para visualizar armadura)
+================================================================================
+
+ViewSection.CreateSection(document, sectionTypeId, bbox)
+  BasisX = (1,0,0)   // horizontal en la vista
+  BasisY = (0,0,1)   // vertical en la vista
+  BasisZ = (0,-1,0)  // normal (corta en plano XZ, mira en -Y)
+  Origin = centro del elemento
+  sectionTypeId: buscar ViewFamilyType con ViewFamily.Section
+  Escala recomendada: 1:25
+
+================================================================================
+SECCION 8 — BARRAS TIPO C (LONGITUDINALES EN VIGA)
+================================================================================
+
+BARTYPE ESPECIAL (critico para forma correcta):
+  // Crear con radio minimo para evitar forma G (5 segmentos incorrectos)
+  barTypeViga = barType.Duplicate("12 B 500 S - Viga")
+  pRadCurv = barTypeViga.LookupParameter("Diametro de curvatura estandar")
+  pRadCurv.Set(0.024 * 3.28084)  // 24mm = 2x diametro
+  // Con radio por defecto (144mm) Revit genera forma G con 9 curvas = INCORRECTO
+  // Con radio 24mm genera forma C con 5 curvas (3 principales + 2 radios) = CORRECTO
+
+METODO: CreateFromCurves con null en hookTypes
+  -> NUNCA pasar hookType en barras de viga (genera forma G)
+
+FORMA C CORRECTA:
+  Barras inferiores (forma U) - ganchos hacia ARRIBA:
+    normal = (0,1,0)
+    C0: (xIni, yPos, zInf+longPata) -> (xIni, yPos, zInf)  // pata izq baja
+    C1: (xIni, yPos, zInf)          -> (xFin, yPos, zInf)  // tramo horizontal
+    C2: (xFin, yPos, zInf)          -> (xFin, yPos, zInf+longPata) // pata der sube
+
+  Barras superiores (forma n invertida) - ganchos hacia ABAJO:
+    normal = (0,1,0)
+    C0: (xIni, yPos, zSup-longPata) -> (xIni, yPos, zSup)  // pata izq sube
+    C1: (xIni, yPos, zSup)          -> (xFin, yPos, zSup)  // tramo horizontal
+    C2: (xFin, yPos, zSup)          -> (xFin, yPos, zSup-longPata) // pata der baja
+
+POSICIONES Z de las barras (esquinas del estribo):
+  zInf = zBase + cover + diam_estribo + radio_barra + holgura
+  zSup = zTop  - cover - diam_estribo - radio_barra - holgura
+
+LONGITUD DE PATAS (anti-colision, critico):
+  distancia_entre_barras = zSup - zInf
+  longPata = distancia_entre_barras - 2 x diam_barra - 5mm_holgura
+  Verificar: zInf + longPata < zSup (sin colision)
+  Verificar: zSup - longPata > zInf (sin colision)
+
+LONGITUD TOTAL DE BARRAS (desarrollo en columnas):
+  desarrollo = 3/4 x ancho_columna_empate
+  Barras superiores: de (xCaraInCol_A - desarrollo) a (xCaraInCol_B + desarrollo)
+  Barras inferiores: 14mm menos a cada lado (evitar colision volumetrica)
+    dev_inf = desarrollo - 14mm
+  
+  longitud_sup = longVigaLibre + dev_sup_A + dev_sup_B
+  longitud_inf = longVigaLibre + dev_inf_A + dev_inf_B
+
+REGLA: una barra longitudinal en cada esquina del estribo SIEMPRE
+  - Si hay mas barras que esquinas: distribuir proporcional entre esquinas
+
+================================================================================
+SECCION 9 — BARRAS TIPO O (ESTRIBOS EN VIGA)
+================================================================================
+
+ZONA VALIDA:
+  Los estribos de la viga van SOLO entre las caras interiores de las columnas
+  xCaraInteriorColA = cx_colA + halfCol
+  xCaraInteriorColB = cx_colB - halfCol
+  -> NUNCA fuera de esta zona (colisiona con estribos de columna)
+
+GEOMETRIA (rectangulo en plano YZ, perpendicular al eje de la viga):
+  normal = (1,0,0)
+  Para viga cuadrada b=h=400mm: innerY = innerZ = halfViga - cover = 175mm
+  Para viga rectangular (ej b=400, h=500): 
+    innerY = halfB - cover (175mm en Y)
+    innerZ = halfH - cover (225mm en Z)
+  p1=(xPos, yCentro-innerY, zBase+cover)
+  p2=(xPos, yCentro+innerY, zBase+cover)
+  p3=(xPos, yCentro+innerY, zTop-cover)
+  p4=(xPos, yCentro-innerY, zTop-cover)
+
+HookType: Sismico 135 grados
+
+DISTRIBUCION EN TERCIOS:
+  longitud_libre = xCaraC2 - xCaraC1
+  tercio = longitud_libre / 3
+  Zona 1 (confinamiento izq): de xCaraC1 a xCaraC1+tercio -> cada 150mm
+  Zona 2 (centro):            siguiente hasta xCaraC1+2*tercio -> cada 200mm
+  Zona 3 (confinamiento der): siguiente hasta xCaraC2 -> cada 150mm
+
+================================================================================
+SECCION 10 — SECUENCIA DE EJECUCION COMPLETA
+================================================================================
+
+ORDEN OBLIGATORIO (para no cometer errores):
+
+1. DIAGNOSTICO PREVIO:
+   - Leer BoundingBox de todos los elementos: zapatas, columnas, vigas
+   - Verificar dimensiones exactas (nunca asumir)
+   - Identificar niveles y elevaciones
+   - Calcular centros, caras interiores, rangos
+
+2. PARRILLAS EN ZAPATAS (Tipo G):
+   - Leer BBox real de cada zapata
+   - Calcular capas Z1 y Z2
+   - Distribuir barras X e Y con regla anti-flotantes
+   - Verificar cruces reales por tramo recto
+
+3. BARRAS LONGITUDINALES COLUMNAS (Tipo L):
+   - Calcular Z_pata = Z_capa2_parrilla + diametro (capa 3)
+   - Calcular Z_tope = nivel_superior - recubrimiento
+   - Patas hacia AFUERA en direccion diagonal de la esquina
+   - Verificar que punta no sale del plinto
+
+4. ESTRIBOS COLUMNAS (Tipo O):
+   - Rango: desde Z_pata hasta Z_tope
+   - Distribucion en tercios con espaciados 150/200/150mm
+   - Verificar inner correcto y que queden dentro de la columna
+
+5. VIGAS — CREAR BARTYPE ESPECIAL con radio minimo:
+   - Duplicar barType y reducir radio a 24mm
+   - Calcular posiciones Z de esquinas (zInf y zSup)
+   - Calcular longPata (anti-colision)
+   - Calcular desarrollo en columnas (3/4 x ancho)
+
+6. ESTRIBOS VIGAS (Tipo O):
+   - SOLO en zona entre caras interiores de columnas
+   - Rectangulares si la viga no es cuadrada
+   - Distribucion en tercios 150/200/150mm
+
+7. BARRAS LONGITUDINALES VIGAS (Tipo C):
+   - 4 barras en las 4 esquinas de los estribos
+   - 2 inferiores forma U (patas arriba)
+   - 2 superiores forma n (patas abajo)
+   - Barras inferiores 14mm mas cortas a cada lado
+
+8. VERIFICACION FINAL:
+   - Sin colisiones volumetricas entre elementos
+   - Barras en todas las esquinas de estribos
+   - Estribos dentro de su elemento host
+   - Patas dentro del hormigon (no salirse)
+
+================================================================================
+SECCION 11 — ERRORES CRITICOS A EVITAR
+================================================================================
+
+ERROR 1: Usar Transaction directa -> usar SubTransaction SIEMPRE
+ERROR 2: CreateFromRebarShape para control exacto de posicion
+         -> usar CreateFromCurves con curvas manuales
+ERROR 3: Patas de barras L hacia adentro -> van SIEMPRE hacia afuera
+ERROR 4: hookType en barras Tipo C de vigas -> pasar null, null
+ERROR 5: Barras longitudinales no en las esquinas del estribo
+ERROR 6: Estribos de viga fuera de la zona entre columnas
+ERROR 7: Longitud pata mayor a distancia entre barras (colision)
+ERROR 8: Asumir dimensiones sin verificar BoundingBox real
+ERROR 9: Barras flotantes en parrilla (tramo recto no cruza perpendicularmente)
+ERROR 10: Eliminar elementos correctos al modificar otros
+          -> Verificar IDs exactos antes de eliminar
+ERROR 11: Override de color no funciona por override de categoria
+          -> Siempre limpiar SetCategoryOverrides antes de SetElementOverrides
+ERROR 12: Radio de curvatura grande en barras de viga (144mm por defecto)
+          -> Crear BarType especial con radio 24mm para forma C correcta
+
+================================================================================
+SECCION 12 — FORMULAS RAPIDAS DE REFERENCIA
+================================================================================
+
+OFFSET barras longitudinales:
+  offset = halfSeccion - cover - diam_estribo - radio_barra - 2mm
+  Ej 400x400: 200 - 25 - 12 - 6 - 2 = 155mm
+
+INNER estribos:
+  inner = halfSeccion - cover
+  Ej 400x400: 200 - 25 = 175mm
+
+LONGITUD PATA viga (anti-colision):
+  longPata = (zSup - zInf) - 2*diam - 5mm
+
+DESARROLLO en columna:
+  dev_sup = 3/4 * ancho_columna
+  dev_inf = dev_sup - 14mm (por lado)
+
+CAPAS parrilla zapata:
+  z1 = zBase + cover_inferior         (primera capa, barras X)
+  z2 = z1 + diam                      (segunda capa, barras Y)
+  z3 = z2 + diam                      (tercera capa, patas barras L)
+
+PATA barra L:
+  longitud_pata = 400mm
+  componente_diagonal = 400/sqrt(2) = 283mm
+
+CONVERSION unidades:
+  metros * 3.28084 = pies (unidades internas Revit)
+  pies * 304.8 = mm (para mostrar en pantalla)
+
+================================================================================
+FIN DE REGLAS — ATENEA BIM / IXA Team 2026
+================================================================================
