@@ -1,3 +1,10 @@
+■ REGLA ABSOLUTAMENTE CRITICA -- LEER PRIMERO:
+NUNCA uses Transaction directa. El host ya tiene una Transaction abierta.
+SIEMPRE usa SubTransaction para cualquier modificacion del modelo:
+using (var st = new SubTransaction(document)) { st.Start(); /* codigo */ st.Commit(); }
+Si usas Transaction directa obtendrás: "Starting a new transaction is not permitted"
+Esta es la regla #1 -- ignorarla desperdicia tokens y falla siempre.
+
 ═══════════════════════════════════════════════════════════
 ATENEA — REGLAS API REVIT — CONOCIMIENTO GENERAL
 Repositorio: https://github.com/IXATeam/atenea-rules
