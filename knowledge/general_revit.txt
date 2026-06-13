@@ -181,3 +181,142 @@ vista3d.IsSectionBoxActive = true;    // OBLIGATORIO
 - NUNCA ElementIsVisibleFilter — no existe en la API
 - Para cambiar tipo de muro: w.ChangeTypeId(nuevoId) — NO eliminar y recrear
 - IDs del contexto pueden estar desactualizados — verificar: if (element == null) continue
+
+■ REGLA EXCEL — GENERAR .XLSX REAL CON FORMATO PROFESIONAL:
+NUNCA uses ATENEAFileService para Excel — genera HTML disfrazado, no Excel real.
+NUNCA uses separadores de coma en Excel — las celdas se escriben individualmente.
+SIEMPRE genera .xlsx real usando DocumentFormat.OpenXml via reflection o
+usa el patron CSV→Excel con extension .xlsx que Revit acepta.
+
+PATRON CORRECTO PARA XLSX CON FORMATO:
+string atenDir = System.IO.Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+    "ATENEA25", "exports");
+System.IO.Directory.CreateDirectory(atenDir);
+string filePath = System.IO.Path.Combine(atenDir,
+    "Report_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx");
+
+// Generar XML de SpreadsheetML directamente (compatible con Excel sin dependencias)
+var sb = new System.Text.StringBuilder();
+sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+sb.AppendLine("<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"");
+sb.AppendLine(" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">");
+// ... NO -- este metodo es complejo. Usar el metodo ZIP mas simple:
+
+// METODO RECOMENDADO: generar archivo .xlsx como ZIP con XML interno
+// Crear estructura minima de XLSX:
+string xmlContent = GenerarXlsxXml(datos); // ver patron abajo
+System.IO.File.WriteAllBytes(filePath, GenerarXlsxBytes(datos));
+return "SAVEFILE:" + filePath + "|Reporte Excel|Excel (*.xlsx)|*.xlsx";
+
+// PATRON SIMPLIFICADO VERIFICADO -- usar este exactamente:
+// 1. Crear datos como lista de filas (List<string[]>)
+// 2. Escribir como XML SpreadsheetML en un ZIP
+// 3. Guardar como .xlsx
+
+// IMPLEMENTACION COMPLETA:
+var rows = new System.Collections.Generic.List<string[]>();
+// Fila de encabezado con estilo
+rows.Add(new string[] { "ID", "Family", "Type", "Level", "Width(mm)", "Height(mm)", "Orientation", "Est. Price (USD)" });
+// Filas de datos
+foreach (FamilyInstance fi in collector) {
+    rows.Add(new string[] {
+        fi.Id.Value.ToString(),
+        fi.Symbol.FamilyName,
+        fi.Symbol.Name,
+        levelName,
+        width.ToString("F0"),
+        height.ToString("F0"),
+        orientation,
+        price.ToString("F2")
+    });
+}
+
+// Serializar a XML SpreadsheetML
+var xml = new System.Text.StringBuilder();
+xml.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+xml.AppendLine("<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">");
+xml.AppendLine("<sheetData>");
+int rowIdx = 1;
+foreach (var row in rows) {
+    xml.Append("<row r=\"" + rowIdx + "\">");
+    int colIdx = 1;
+    foreach (var cell in row) {
+        string colLetter = GetColLetter(colIdx);
+        string cellRef = colLetter + rowIdx;
+        // Escapar caracteres especiales XML
+        string val = cell.Replace("&","&amp;").Replace("<","&lt;").Replace(">","&gt;").Replace("\"","&quot;");
+        xml.Append("<c r=\"" + cellRef + "\" t=\"inlineStr\"><is><t>" + val + "</t></is></c>");
+        colIdx++;
+    }
+    xml.AppendLine("</row>");
+    rowIdx++;
+}
+xml.AppendLine("</sheetData></worksheet>");
+
+// Empaquetar como XLSX (ZIP)
+using (var ms = new System.IO.MemoryStream()) {
+    using (var zip = new System.IO.Compression.ZipArchive(ms, System.IO.Compression.ZipArchiveMode.Create, true)) {
+        // [Content_Types].xml
+        var ct = zip.CreateEntry("[Content_Types].xml");
+        using (var sw = new System.IO.StreamWriter(ct.Open())) {
+            sw.Write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                "<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">" +
+                "<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>" +
+                "<Default Extension=\"xml\" ContentType=\"application/xml\"/>" +
+                "<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>" +
+                "<Override PartName=\"/xl/worksheets/sheet1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>" +
+                "</Types>");
+        }
+        // _rels/.rels
+        var rels = zip.CreateEntry("_rels/.rels");
+        using (var sw = new System.IO.StreamWriter(rels.Open())) {
+            sw.Write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" +
+                "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>" +
+                "</Relationships>");
+        }
+        // xl/workbook.xml
+        var wb = zip.CreateEntry("xl/workbook.xml");
+        using (var sw = new System.IO.StreamWriter(wb.Open())) {
+            sw.Write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                "<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">" +
+                "<sheets><sheet name=\"Data\" sheetId=\"1\" r:id=\"rId1\"/></sheets></workbook>");
+        }
+        // xl/_rels/workbook.xml.rels
+        var wbrels = zip.CreateEntry("xl/_rels/workbook.xml.rels");
+        using (var sw = new System.IO.StreamWriter(wbrels.Open())) {
+            sw.Write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" +
+                "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/>" +
+                "</Relationships>");
+        }
+        // xl/worksheets/sheet1.xml -- datos reales
+        var ws = zip.CreateEntry("xl/worksheets/sheet1.xml");
+        using (var sw = new System.IO.StreamWriter(ws.Open())) {
+            sw.Write(xml.ToString());
+        }
+    }
+    System.IO.File.WriteAllBytes(filePath, ms.ToArray());
+}
+
+// Helper para letra de columna (A, B, C ... Z, AA, AB...)
+// Agregar este metodo al script:
+// string GetColLetter(int col) {
+//     string letter = "";
+//     while (col > 0) {
+//         int rem = (col - 1) % 26;
+//         letter = (char)(65 + rem) + letter;
+//         col = (col - 1) / 26;
+//     }
+//     return letter;
+// }
+
+REGLAS CRITICAS EXCEL:
+1. Usar System.IO.Compression.ZipArchive -- disponible en .NET sin dependencias externas
+2. Formato de celda: <c r="A1" t="inlineStr"><is><t>valor</t></is></c>
+3. NUNCA mezclar valores en una celda -- una celda por valor
+4. Primera fila = encabezados en MAYUSCULAS
+5. Ruta siempre en AppData\Roaming\ATENEA25\exports
+6. Extension SIEMPRE .xlsx -- NUNCA .doc, .csv o .html
+7. return "SAVEFILE:" + filePath + "|Nombre|Excel (*.xlsx)|*.xlsx"
