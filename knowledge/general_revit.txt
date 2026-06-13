@@ -320,3 +320,9 @@ REGLAS CRITICAS EXCEL:
 5. Ruta siempre en AppData\Roaming\ATENEA25\exports
 6. Extension SIEMPRE .xlsx -- NUNCA .doc, .csv o .html
 7. return "SAVEFILE:" + filePath + "|Nombre|Excel (*.xlsx)|*.xlsx"
+
+■ REGLA CONTEXTO LARGO:
+Si el script anterior generó un archivo (SAVEFILE), NO repetir el script completo.
+Solo confirmar la ruta y ofrecer abrir el archivo.
+NUNCA entrar en loop de return "ping" / return "ok" para verificar.
+Si Revit no responde en 2 intentos, informar al usuario directamente.
